@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a life-table page. A narrow mono "period" column runs down the left like the x column of a mortality table; content reads in the wide column beside it. Hero carries simulated CIR short-rate paths from the thesis model. */
+/* Layout: a life-table page. A narrow mono "period" column runs down the left like the x column of a mortality table; content reads in the wide column beside it. Hero pairs the introduction with a short profile card of key facts. */
 :root {
   --bg: #f2f4f3;
   --surface: #e7ecea;
@@ -131,25 +131,33 @@ h1 .full {
 .btn:hover { border-color: var(--accent); color: var(--accent); }
 .place { color: var(--muted); }
 
-.chart { margin: 0; min-width: 0; }
-.chart canvas {
-  display: block;
-  width: 100%;
-  height: clamp(200px, 26vw, 280px);
-  border-left: 1px solid var(--rule);
+.facts {
+  margin: 0;
+  min-width: 0;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--surface);
+  padding: 0.5rem 1.25rem;
+  align-self: center;
+}
+.facts div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.8rem 0;
   border-bottom: 1px solid var(--rule);
 }
-.chart figcaption {
-  margin-top: 0.75rem;
-  font-size: var(--s-xs);
-  color: var(--muted);
-  line-height: 1.5;
-}
-.chart .sde {
+.facts div:last-child { border-bottom: 0; }
+.facts dt {
   font-family: var(--f-mono);
-  color: var(--ink);
-  white-space: nowrap;
+  font-size: var(--s-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 0.2rem;
 }
+.facts dd { margin: 0; font-size: var(--s-sm); line-height: 1.45; }
+.facts dd b { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; color: var(--accent); }
 
 /* ---------- Sections ---------- */
 section { padding-block: clamp(2.5rem, 6vw, 4rem); border-bottom: 1px solid var(--rule); }
@@ -297,10 +305,13 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <span class="item place">Bogor, Indonesia</span>
       </div>
     </div>
-    <figure class="chart">
-      <canvas id="cir" aria-label="Simulated short-rate paths from a Cox–Ingersoll–Ross model, reverting toward a long-run mean" role="img"></canvas>
-      <figcaption>Simulated short-rate paths under the Cox–Ingersoll–Ross model used in my thesis: <span class="sde">dr = κ(θ − r)dt + σ√r dW</span>. Illustrative parameters, not fitted values.</figcaption>
-    </figure>
+    <dl class="facts" aria-label="Profile at a glance">
+      <div><dt>Now</dt><dd>Actuarial Intern, Asuransi ASEI Indonesia</dd></div>
+      <div><dt>Focus</dt><dd>PSAK 117 / IFRS 17 reserving, product pricing, risk modeling</dd></div>
+      <div><dt>GPA</dt><dd><b>3.61</b> / 4.00 · Cum Laude</dd></div>
+      <div><dt>PAI exams</dt><dd>CF3 · CF4</dd></div>
+      <div><dt>Tools</dt><dd>Python · R · MySQL · Looker Studio</dd></div>
+    </dl>
   </div>
 </header>
 
@@ -494,77 +505,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     setTimeout(function () { btn.textContent = 'Copy'; }, 1800);
   });
 
-  // CIR short-rate paths: Euler scheme with full truncation, seeded so it draws the same every time.
-  var canvas = document.getElementById('cir');
-  var ctx = canvas.getContext('2d');
-  var kappa = 0.9, theta = 0.055, sigma = 0.09, r0s = [0.02, 0.035, 0.07, 0.095];
-  var steps = 160, T = 10, dt = T / steps, nPaths = 28;
-
-  function rng(seed) { return function () { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
-  function gauss(rand) { var u = rand() || 1e-9, v = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
-
-  var paths = [];
-  var rand = rng(20260612);
-  for (var p = 0; p < nPaths; p++) {
-    var r = r0s[p % r0s.length], path = [r];
-    for (var i = 0; i < steps; i++) {
-      var rp = Math.max(r, 0);
-      r = r + kappa * (theta - rp) * dt + sigma * Math.sqrt(rp * dt) * gauss(rand);
-      path.push(Math.max(r, 0));
-    }
-    paths.push(path);
-  }
-  var yMax = 0.14;
-
-  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-
-  function draw() {
-    var dpr = window.devicePixelRatio || 1;
-    var w = canvas.clientWidth, h = canvas.clientHeight;
-    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-    var padL = 6, padR = 58, padT = 10, padB = 6;
-    function x(i) { return padL + (i / steps) * (w - padL - padR); }
-    function y(v) { return padT + (1 - v / yMax) * (h - padT - padB); }
-
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = css('--path');
-    paths.forEach(function (pt, k) {
-      if (k === 5) return;
-      ctx.beginPath();
-      pt.forEach(function (v, i) { i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)); });
-      ctx.stroke();
-    });
-
-    // long-run mean
-    ctx.setLineDash([3, 4]);
-    ctx.strokeStyle = css('--muted');
-    ctx.beginPath(); ctx.moveTo(padL, y(theta)); ctx.lineTo(w - padR, y(theta)); ctx.stroke();
-    ctx.setLineDash([]);
-
-    // one highlighted path
-    ctx.lineWidth = 1.75;
-    ctx.strokeStyle = css('--mark');
-    ctx.beginPath();
-    paths[5].forEach(function (v, i) { i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)); });
-    ctx.stroke();
-
-    ctx.fillStyle = css('--muted');
-    ctx.font = '11px ' + css('--f-mono');
-    ctx.textBaseline = 'middle';
-    ctx.fillText('θ ' + (theta * 100).toFixed(1) + '%', w - padR + 6, y(theta));
-  }
-
-  draw();
-  var t;
-  window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(draw, 120); });
-  if (window.matchMedia) {
-    var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    (mq.addEventListener ? mq.addEventListener('change', draw) : mq.addListener(draw));
-  }
-  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
 })();
 </script>
 </body>
