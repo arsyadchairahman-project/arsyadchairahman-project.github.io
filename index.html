@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Muhammad Arsyad As-Shadiqi Chairahman</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Actuarial Science graduate (Cum Laude) from IPB University. Actuarial intern at Asuransi ASEI Indonesia working on IFRS 17 reserving, pricing and risk modeling. PAI CF3 and CF4 passed.">
 <link rel="canonical" href="https://arsyadchairahman-project.github.io/">
 <meta property="og:type" content="website">
@@ -26,10 +25,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a life-table page. A narrow mono "period" column runs down the left like the x column of a mortality table; content reads in the wide column beside it. Hero pairs the introduction with a short profile card of key facts. */
+/* Layout: a life-table page. A narrow mono "period" column runs down the left like the x column of a mortality table; content reads in the wide column beside it. Sections are reached from a sticky index bar; projects open in a browser with a sidebar. */
 :root {
   --bg: #f2f4f3;
   --surface: #e7ecea;
+  --panel: #fbfcfb;
   --ink: #14212a;
   --muted: #56656e;
   --rule: #cdd6d4;
@@ -38,6 +38,7 @@
   --s1: #0082a3;
   --s2: #b8741a;
   --grid: #dde3e1;
+  --nav-h: 56px;
 
   --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
@@ -47,25 +48,25 @@
   --s-sm: 0.9375rem;
   --s-md: 1.0625rem;
   --s-lg: 1.375rem;
-  --s-xl: clamp(2.25rem, 6vw, 4rem);
+  --s-xl: clamp(1.75rem, 3.6vw, 2.5rem);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e1519; --surface: #152027; --ink: #e2e9e8; --muted: #8e9ca2;
+    --bg: #0e1519; --surface: #152027; --panel: #121c21; --ink: #e2e9e8; --muted: #8e9ca2;
     --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0e1519; --surface: #152027; --ink: #e2e9e8; --muted: #8e9ca2;
+  --bg: #0e1519; --surface: #152027; --panel: #121c21; --ink: #e2e9e8; --muted: #8e9ca2;
   --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d;
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; }
-img { max-width: 100%; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 12px); }
 body {
+  margin: 0;
   background: var(--bg);
   color: var(--ink);
   font-family: var(--f-body);
@@ -73,6 +74,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
+img { max-width: 100%; }
 a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { text-decoration-thickness: 2px; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
@@ -84,6 +86,32 @@ a:hover { text-decoration-thickness: 2px; }
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
+/* ---------- Index bar ---------- */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 11; background: var(--bg); }
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+.nav .wrap { display: flex; align-items: center; gap: 1.5rem; height: var(--nav-h); }
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.brand span { color: var(--muted); font-weight: 500; }
+.nav ul { display: flex; gap: 0.25rem; list-style: none; margin: 0 0 0 auto; padding: 0; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+.nav ul::-webkit-scrollbar { display: none; }
+.nav li a {
+  display: block; padding: 0.4rem 0.65rem; border-radius: 4px;
+  font-size: var(--s-sm); color: var(--muted); text-decoration: none; white-space: nowrap;
+}
+.nav li a:hover { color: var(--ink); background: var(--surface); }
+.nav li a[aria-current="true"] { color: var(--ink); background: var(--surface); font-weight: 500; }
+.nav .cv-mini {
+  flex-shrink: 0; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none;
+  background: var(--accent); color: var(--bg); font-size: var(--s-sm); font-weight: 600;
+}
+
 /* ---------- Hero ---------- */
 .hero { border-bottom: 1px solid var(--rule); }
 .hero .wrap {
@@ -91,7 +119,7 @@ a:hover { text-decoration-thickness: 2px; }
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: clamp(1.5rem, 4vw, 3.5rem);
   align-items: end;
-  padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2rem, 5vw, 3.5rem);
+  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 5vw, 3.5rem);
 }
 .eyebrow {
   font-family: var(--f-mono);
@@ -112,239 +140,164 @@ h1 {
 }
 .id { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; }
 .avatar {
-  width: 112px;
-  height: 112px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--rule);
-  background: var(--surface);
+  width: 112px; height: 112px; flex-shrink: 0;
+  border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--rule); background: var(--surface);
 }
 .id .eyebrow { margin: 0; }
-.lede {
-  max-width: 34rem;
-  margin: 1.5rem 0 0;
-  font-size: var(--s-lg);
-  line-height: 1.45;
-  text-wrap: pretty;
+.lede { max-width: 34rem; margin: 1.5rem 0 0; font-size: var(--s-lg); line-height: 1.45; text-wrap: pretty; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center; margin-top: 1.5rem; }
+.cv {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.7rem 1.1rem; border-radius: 4px;
+  background: var(--accent); color: var(--bg);
+  font-weight: 600; font-size: var(--s-sm); text-decoration: none;
 }
-.contact {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.25rem;
-  align-items: center;
-  margin-top: 1.75rem;
-  font-size: var(--s-sm);
+.cv:hover { filter: brightness(1.1); }
+.cv small { font-family: var(--f-mono); font-weight: 400; font-size: var(--s-xs); opacity: 0.85; }
+.ghost {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.65rem 1rem; border-radius: 4px; border: 1px solid var(--rule);
+  color: var(--ink); font-size: var(--s-sm); font-weight: 500; text-decoration: none;
 }
+.ghost:hover { border-color: var(--accent); color: var(--accent); }
+.contact { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; align-items: center; margin-top: 1.25rem; font-size: var(--s-sm); }
 .contact .item { display: inline-flex; align-items: center; gap: 0.5rem; }
 .email { font-family: var(--f-mono); font-size: var(--s-sm); user-select: all; }
 .btn {
-  font: 500 var(--s-xs)/1 var(--f-mono);
-  letter-spacing: 0.04em;
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 0.45rem 0.6rem;
-  cursor: pointer;
+  font: 500 var(--s-xs)/1 var(--f-mono); letter-spacing: 0.04em;
+  color: var(--ink); background: transparent; border: 1px solid var(--rule);
+  border-radius: 3px; padding: 0.45rem 0.6rem; cursor: pointer;
 }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
 .place { color: var(--muted); }
-.cv {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1.25rem;
-  padding: 0.7rem 1.1rem;
-  background: var(--accent);
-  color: var(--bg);
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: var(--s-sm);
-  text-decoration: none;
-}
-.cv:hover { filter: brightness(1.1); text-decoration: none; }
-.cv small { font-family: var(--f-mono); font-weight: 400; font-size: var(--s-xs); opacity: 0.85; }
 
 .facts {
-  margin: 0;
-  min-width: 0;
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  background: var(--surface);
-  padding: 0.5rem 1.25rem;
-  align-self: center;
+  margin: 0; min-width: 0; align-self: center;
+  border: 1px solid var(--rule); border-radius: 4px;
+  background: var(--surface); padding: 0.5rem 1.25rem;
 }
-.facts div {
-  display: grid;
-  grid-template-columns: 7rem minmax(0, 1fr);
-  gap: 1rem;
-  padding: 0.8rem 0;
-  border-bottom: 1px solid var(--rule);
-}
+.facts div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid var(--rule); }
 .facts div:last-child { border-bottom: 0; }
-.facts dt {
-  font-family: var(--f-mono);
-  font-size: var(--s-xs);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding-top: 0.2rem;
-}
+.facts dt { font-family: var(--f-mono); font-size: var(--s-xs); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding-top: 0.2rem; }
 .facts dd { margin: 0; font-size: var(--s-sm); line-height: 1.45; }
 .facts dd b { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; color: var(--accent); }
 
 /* ---------- Sections ---------- */
-section { padding-block: clamp(2.5rem, 6vw, 4rem); border-bottom: 1px solid var(--rule); }
-section:last-of-type { border-bottom: 0; }
+section { padding-block: clamp(3rem, 7vw, 5rem); border-bottom: 1px solid var(--rule); }
+.sec-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem 1rem; margin: 0 0 2.25rem; }
 h2 {
-  font-family: var(--f-display);
-  font-weight: 500;
-  font-size: var(--s-lg);
-  letter-spacing: -0.01em;
-  margin: 0 0 2rem;
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
+  font-family: var(--f-display); font-weight: 700; font-size: var(--s-xl);
+  letter-spacing: -0.02em; line-height: 1.1; margin: 0;
 }
-h2 .count {
-  font-family: var(--f-mono);
-  font-size: var(--s-xs);
-  font-weight: 400;
-  color: var(--muted);
+.sec-head p { margin: 0; color: var(--muted); font-size: var(--s-sm); }
+h3.sub {
+  font-family: var(--f-mono); font-weight: 500; font-size: var(--s-xs);
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  margin: 3rem 0 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--rule);
 }
 
-/* Life-table rows: period column + content */
+/* About */
+.about { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2.5rem 3.5rem; }
+.about .prose p { margin: 0 0 1rem; max-width: 36rem; }
+.about .prose p:last-child { margin-bottom: 0; }
+.evidence { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
+.evidence caption { text-align: left; font-family: var(--f-mono); font-size: var(--s-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-bottom: 0.6rem; }
+.evidence th, .evidence td { text-align: left; vertical-align: top; padding: 0.7rem 0; border-top: 1px solid var(--rule); }
+.evidence thead th { font-family: var(--f-mono); font-size: var(--s-xs); font-weight: 400; color: var(--muted); border-top: 0; padding-top: 0; }
+.evidence tbody th { font-weight: 600; padding-right: 1.25rem; width: 42%; }
+.evidence td a { white-space: nowrap; }
+
+.edu { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 0 2rem; }
+.edu-name { font-family: var(--f-display); font-weight: 500; font-size: var(--s-lg); margin: 0; }
+.courses { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem 2rem; margin-top: 1.25rem; max-width: 44rem; }
+.courses h4 { margin: 0 0 0.25rem; font-size: var(--s-sm); font-weight: 600; }
+.courses p { margin: 0; font-size: var(--s-sm); color: var(--muted); }
+
+/* Life-table rows */
 .rows { display: grid; gap: 2.25rem; }
-.row {
-  display: grid;
-  grid-template-columns: 9.5rem minmax(0, 1fr);
-  gap: 0 2rem;
-}
-.period {
-  font-family: var(--f-mono);
-  font-size: var(--s-xs);
-  color: var(--muted);
-  padding-top: 0.3rem;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.5;
-}
+.row, .edu { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 0 2rem; }
+.period { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); padding-top: 0.3rem; font-variant-numeric: tabular-nums; line-height: 1.5; }
 .period .now { color: var(--mark); font-weight: 500; }
-.row h3 {
-  font-family: var(--f-body);
-  font-weight: 600;
-  font-size: var(--s-md);
-  line-height: 1.35;
-  margin: 0;
-  text-wrap: balance;
-}
+.row h3 { font-family: var(--f-body); font-weight: 600; font-size: var(--s-md); line-height: 1.35; margin: 0; text-wrap: balance; }
 .org { color: var(--muted); font-size: var(--s-sm); margin: 0.15rem 0 0; }
-.row ul {
-  margin: 0.85rem 0 0;
-  padding-left: 1.1rem;
-  max-width: 44rem;
-  display: grid;
-  gap: 0.4rem;
-}
-.row li { padding-left: 0.25rem; }
-.row li::marker { color: var(--accent); }
-
-.figure {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.4rem;
-  margin-top: 0.85rem;
-  font-family: var(--f-mono);
-  font-size: var(--s-xs);
-  color: var(--muted);
-}
+.bul { margin: 0.85rem 0 0; padding-left: 1.1rem; max-width: 44rem; display: grid; gap: 0.4rem; }
+.bul li { padding-left: 0.25rem; }
+.bul li::marker { color: var(--accent); }
+.figure { display: inline-flex; align-items: baseline; gap: 0.4rem; margin-top: 0.85rem; font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); }
 .figure b { font-size: var(--s-lg); font-weight: 500; color: var(--ink); font-family: var(--f-display); }
 
-/* Projects */
-.project .kind {
-  font-family: var(--f-mono);
-  font-size: var(--s-xs);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--mark);
-  margin: 0 0 0.35rem;
+/* ---------- Project browser ---------- */
+.browser { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+.tabs { display: grid; gap: 0.25rem; position: sticky; top: calc(var(--nav-h) + 1.25rem); }
+.tabs .hint { font-size: var(--s-xs); color: var(--muted); margin: 0 0 0.5rem; }
+.tab {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  background: transparent; border: 0; border-left: 2px solid var(--rule);
+  padding: 0.6rem 0.85rem; color: var(--ink); font: inherit;
 }
-.project h3 { font-size: var(--s-lg); font-family: var(--f-display); font-weight: 500; letter-spacing: -0.01em; }
-.project p.sum { margin: 0.6rem 0 0; max-width: 44rem; }
-.tags {
-  list-style: none;
-  padding: 0 !important;
-  margin: 0.9rem 0 0 !important;
-  display: flex !important;
-  flex-wrap: wrap;
-  gap: 0.4rem !important;
-}
-.tags li {
-  font-family: var(--f-mono);
-  font-size: var(--s-xs);
-  padding: 0.2rem 0.5rem !important;
-  background: var(--surface);
-  border-radius: 2px;
-}
-.tags li::marker { content: ""; }
-.credit { font-size: var(--s-xs); color: var(--muted); margin: 0.35rem 0 0; }
-.results {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
-  gap: 0.75rem;
-  margin: 1rem 0 0;
-  max-width: 44rem;
-}
+.tab b { display: block; font-size: var(--s-sm); font-weight: 600; line-height: 1.35; }
+.tab span { display: block; font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); margin-top: 0.15rem; }
+.tab:hover { background: var(--surface); }
+.tab[aria-selected="true"] { border-left-color: var(--accent); background: var(--surface); }
+.tab[aria-selected="true"] b { color: var(--accent); }
+.panel { min-width: 0; }
+.panel .kind { font-family: var(--f-mono); font-size: var(--s-xs); letter-spacing: 0.04em; text-transform: uppercase; color: var(--mark); margin: 0 0 0.35rem; }
+.panel h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.4rem, 2.6vw, 1.9rem); letter-spacing: -0.015em; line-height: 1.15; margin: 0; text-wrap: balance; }
+.credit { font-size: var(--s-xs); color: var(--muted); margin: 0.5rem 0 0; }
+.panel p.sum { margin: 1rem 0 0; max-width: 44rem; }
+.results { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: 0.75rem; margin: 1.25rem 0 0; max-width: 44rem; }
 .results div { border-left: 2px solid var(--accent); padding: 0.15rem 0 0.15rem 0.75rem; min-width: 0; }
 .results dt { font-family: var(--f-display); font-weight: 700; font-size: 1.35rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .results dd { margin: 0.2rem 0 0; font-size: var(--s-xs); color: var(--muted); line-height: 1.45; }
-.finding { margin: 0.9rem 0 0; max-width: 44rem; font-size: var(--s-sm); }
-.finding b { font-weight: 600; }
-.more { display: inline-block; margin-top: 0.9rem; font-size: var(--s-sm); font-weight: 500; }
+.findings { margin: 1.5rem 0 0; padding: 0; list-style: none; counter-reset: f; max-width: 44rem; display: grid; gap: 0.75rem; }
+.findings li { counter-increment: f; display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); gap: 0.5rem; font-size: var(--s-sm); }
+.findings li::before { content: counter(f); font-family: var(--f-mono); font-size: var(--s-xs); width: 1.4rem; height: 1.4rem; border-radius: 50%; border: 1px solid var(--rule); display: grid; place-items: center; color: var(--muted); margin-top: 0.1rem; }
+.findings b { font-weight: 600; }
+.panel-h { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 2rem 0 0.75rem; }
+.tags { list-style: none; padding: 0; margin: 1.25rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tags li { font-family: var(--f-mono); font-size: var(--s-xs); padding: 0.2rem 0.5rem; background: var(--surface); border-radius: 2px; }
+.meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem 1.5rem; margin: 1.5rem 0 0; padding-top: 1rem; border-top: 1px solid var(--rule); max-width: 44rem; font-size: var(--s-sm); }
+.meta dt { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); }
+.meta dd { margin: 0.15rem 0 0; }
+.more { display: inline-flex; margin-top: 1.25rem; }
 
-/* Education + skills grid */
-.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 3rem; }
-.block h3 { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.9rem; }
-.edu-name { font-family: var(--f-display); font-weight: 500; font-size: var(--s-lg); margin: 0; }
-.gpa { margin-top: 0.6rem; font-family: var(--f-mono); font-size: var(--s-sm); }
-.gpa b { font-family: var(--f-display); font-size: 1.75rem; font-weight: 700; color: var(--accent); margin-right: 0.15rem; }
-.plain { margin: 0.75rem 0 0; color: var(--muted); font-size: var(--s-sm); }
+/* Scenario explorer */
+.explorer { margin: 0.5rem 0 0; max-width: 44rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); padding: 1.25rem; }
+.explorer fieldset { border: 0; padding: 0; margin: 0 0 1rem; min-width: 0; }
+.explorer legend { font-size: var(--s-xs); color: var(--muted); margin-bottom: 0.4rem; padding: 0; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.seg label { position: relative; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: block; padding: 0.45rem 0.85rem; font-size: var(--s-sm); cursor: pointer; border-right: 1px solid var(--rule); }
+.seg label:last-child span { border-right: 0; }
+.seg input:checked + span { background: var(--accent); color: var(--bg); font-weight: 600; }
+.seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: -2px; }
+.out { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.5rem 1.5rem; align-items: center; padding-top: 1rem; border-top: 1px solid var(--rule); }
+.out .big { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.75rem, 4vw, 2.4rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.out .big small { font-family: var(--f-body); font-weight: 400; font-size: var(--s-sm); color: var(--muted); margin-left: 0.25rem; }
+.out p { margin: 0; font-size: var(--s-sm); color: var(--muted); }
+.out p b { color: var(--ink); font-weight: 600; }
 
-.skills { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
-.skills th, .skills td { text-align: left; padding: 0.55rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
-.skills th { font-weight: 500; padding-right: 1rem; }
-.skills td { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); text-align: right; white-space: nowrap; }
-.level { display: inline-flex; gap: 3px; margin-left: 0.5rem; vertical-align: middle; }
-.level i { width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--accent); }
-.level i.on { background: var(--accent); }
-
-.certs { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; font-size: var(--s-sm); }
-.certs li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid var(--rule); }
-.certs li span:last-child { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); text-align: right; flex-shrink: 0; }
-
-footer { padding-block: 2rem 3rem; font-size: var(--s-xs); color: var(--muted); font-family: var(--f-mono); }
-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem; }
-
-/* ---------- Charts ---------- */
+/* Charts */
 .viz { margin: 1.25rem 0 0; max-width: 44rem; min-width: 0; }
 .viz figcaption { font-size: var(--s-sm); font-weight: 600; margin-bottom: 0.25rem; }
 .viz .note { font-size: var(--s-xs); color: var(--muted); margin: 0 0 0.5rem; }
-.row ul.legend { display: flex; max-width: none; flex-wrap: wrap; gap: 0.35rem 1rem; font-size: var(--s-xs); color: var(--muted); margin: 0 0 0.25rem; padding: 0; list-style: none; }
-.row ul.legend li { padding: 0; display: inline-flex; align-items: center; gap: 0.4rem; }
-.row ul.legend li::marker { content: ""; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; font-size: var(--s-xs); color: var(--muted); margin: 0 0 0.25rem; padding: 0; list-style: none; }
+.legend li { display: inline-flex; align-items: center; gap: 0.4rem; }
 .legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
 .legend i.l1 { background: var(--s1); }
 .legend i.l2 { background: var(--s2); }
 .plot { position: relative; width: 100%; }
 .plot svg { display: block; width: 100%; height: auto; overflow: visible; }
 .plot text { font-family: var(--f-mono); font-size: 11px; fill: var(--muted); }
-.plot text.val { fill: var(--ink); font-size: 11px; }
+.plot text.val { fill: var(--ink); }
 .plot .grid { stroke: var(--grid); stroke-width: 1; }
 .plot .axis { stroke: var(--rule); stroke-width: 1; }
 .plot .f1 { fill: var(--s1); } .plot .f2 { fill: var(--s2); }
-.plot .k1 { stroke: var(--s1); } .plot .k2 { stroke: var(--s2); }
 .plot .dot { stroke: var(--bg); stroke-width: 2; }
-.plot .hit { fill: transparent; cursor: default; }
+.plot .dot.sel { stroke: var(--ink); stroke-width: 2; }
+.plot .hit { fill: transparent; }
 .tip {
   position: absolute; pointer-events: none; z-index: 2;
   background: var(--ink); color: var(--bg);
@@ -358,18 +311,81 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .viz th, .viz td { text-align: left; padding: 0.25rem 1rem 0.25rem 0; border-bottom: 1px solid var(--rule); }
 .viz td { color: var(--ink); }
 
+/* ---------- Skills & certifications ---------- */
+.matrix { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
+.matrix th, .matrix td { text-align: left; vertical-align: top; padding: 0.9rem 0; border-top: 1px solid var(--rule); }
+.matrix tbody tr:last-child th, .matrix tbody tr:last-child td { border-bottom: 1px solid var(--rule); }
+.matrix th[scope="row"] { width: 13rem; padding-right: 1.5rem; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.chips li { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.65rem; border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); }
+.chips small { font-family: var(--f-mono); font-size: 0.75rem; color: var(--muted); }
+.chips.soft li { background: var(--surface); border-color: transparent; }
+
+.certs { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
+.certs thead th { font-family: var(--f-mono); font-size: var(--s-xs); font-weight: 400; color: var(--muted); text-align: left; padding: 0 1rem 0.6rem 0; border-bottom: 1px solid var(--ink); }
+.certs td { padding: 0.8rem 1rem 0.8rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.certs td:first-child { font-weight: 600; }
+.certs td small { display: block; font-weight: 400; color: var(--muted); font-size: var(--s-xs); }
+.pill { display: inline-block; font-family: var(--f-mono); font-size: 0.75rem; padding: 0.1rem 0.45rem; border-radius: 3px; background: var(--surface); color: var(--muted); white-space: nowrap; }
+.pill.pass { background: var(--accent); color: var(--bg); }
+.tablewrap { overflow-x: auto; }
+
+/* ---------- Contact ---------- */
+.contact-sec .wrap { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 2rem 3.5rem; align-items: start; }
+.cta { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.9rem, 4.2vw, 3rem); letter-spacing: -0.02em; line-height: 1.08; margin: 0; text-wrap: balance; }
+.cta-sub { color: var(--muted); margin: 1rem 0 0; max-width: 30rem; }
+.channels { margin: 0; }
+.channels div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid var(--rule); align-items: center; }
+.channels div:first-child { border-top: 1px solid var(--rule); }
+.channels dt { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); }
+.channels dd { margin: 0; font-size: var(--s-sm); min-width: 0; overflow-wrap: anywhere; }
+
+footer { padding-block: 2rem 3rem; font-size: var(--s-xs); color: var(--muted); font-family: var(--f-mono); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem; }
+
+@media (max-width: 860px) {
+  .browser { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .tabs { position: static; display: flex; overflow-x: auto; gap: 0.5rem; padding-bottom: 0.25rem; scrollbar-width: thin; }
+  .tabs .hint { display: none; }
+  .tab { flex: 0 0 auto; width: auto; max-width: 15rem; border-left: 0; border-bottom: 2px solid var(--rule); }
+  .tab[aria-selected="true"] { border-bottom-color: var(--accent); }
+  .about, .contact-sec .wrap { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 760px) {
   .hero .wrap { grid-template-columns: minmax(0, 1fr); }
-  .row { grid-template-columns: minmax(0, 1fr); }
+  .row, .edu { grid-template-columns: minmax(0, 1fr); }
   .period { padding-top: 0; margin-bottom: 0.35rem; }
-  .split { grid-template-columns: minmax(0, 1fr); }
+  .brand span, .nav .cv-mini { display: none; }
+  .nav .wrap { gap: 0.75rem; }
+  .matrix th[scope="row"] { display: block; width: auto; padding-bottom: 0.4rem; }
+  .matrix td { display: block; border-top: 0; padding-top: 0; }
+  .evidence tbody th { width: 46%; }
+  .seg { display: flex; width: 100%; }
+  .seg label { flex: 1 1 0; }
+  .seg span { text-align: center; height: 100%; display: grid; place-items: center; }
+  .out { grid-template-columns: minmax(0, 1fr); }
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 </style>
 </head>
 <body>
 
-<header class="hero">
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a class="brand" href="#top">M. Arsyad <span>Chairahman</span></a>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#certifications">Certifications</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a class="cv-mini" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>CV</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
   <div class="wrap">
     <div>
       <div class="id">
@@ -377,12 +393,15 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <p class="eyebrow">Actuarial Science<br>IPB University<br>Class of 2026</p>
       </div>
       <h1>Muhammad Arsyad <span style="white-space:nowrap">As-Shadiqi</span> Chairahman</h1>
-      <p class="lede">Actuarial Science graduate, Cum Laude. Currently an actuarial intern at Asuransi ASEI Indonesia, working on PSAK 117 / IFRS 17 technical reserves, product profitability and cash flow projections. Seeking actuarial, risk management, insurance or financial analytics roles.</p>
-      <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
+      <p class="lede">Actuarial Science graduate, Cum Laude. Currently an actuarial intern at Asuransi ASEI Indonesia, working on PSAK 117 / IFRS 17 technical reserves, product profitability and cash flow projections.</p>
+      <div class="actions">
+        <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
+        <a class="ghost" href="#projects">See projects ↓</a>
+      </div>
       <div class="contact">
         <span class="item">
           <span class="email" id="email">shadiqiarsyad@gmail.com</span>
-          <button class="btn" type="button" id="copy-email">Copy</button>
+          <button class="btn" type="button" data-copy="email">Copy</button>
         </span>
         <a class="item" href="https://www.linkedin.com/in/muhammad-arsyad-as-shadiqi-chairahman-157934246/" target="_blank" rel="noopener">LinkedIn ↗</a>
         <span class="item place">Bogor, Indonesia</span>
@@ -393,25 +412,63 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <div><dt>Focus</dt><dd>PSAK 117 / IFRS 17 reserving, product pricing, risk modeling</dd></div>
       <div><dt>GPA</dt><dd><b>3.61</b> / 4.00 · Cum Laude</dd></div>
       <div><dt>PAI exams</dt><dd>CF3 · CF4 · Passed</dd></div>
-      <div><dt>Tools</dt><dd>Python · R · MySQL · Looker Studio</dd></div>
+      <div><dt>Open to</dt><dd>Actuarial, risk management, insurance and financial analytics roles</dd></div>
     </dl>
   </div>
 </header>
 
 <main>
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head"><h2>About</h2></div>
+      <div class="about">
+        <div class="prose">
+          <p>I'm an actuarial science graduate from IPB University. My work so far sits where insurance meets data: calculating technical reserves under PSAK 117 / IFRS 17, cleaning and validating insurer financial data in Python, and turning survey results into dashboards people can act on.</p>
+          <p>My thesis priced a multi-life reversionary annuity under a stochastic interest rate model, and my course projects covered Monte Carlo risk estimation and option-based hedging. I have passed the PAI CF3 and CF4 exams.</p>
+          <p>I'm looking for an actuarial, risk management, insurance or financial analytics role.</p>
+        </div>
+        <table class="evidence">
+          <caption>What I do, and where to see it</caption>
+          <thead><tr><th scope="col">What I do</th><th scope="col">Where it shows</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Reserving and pricing</th><td><a href="#experience">ASEI internship</a> · <a href="#projects" data-open="thesis">Thesis</a></td></tr>
+            <tr><th scope="row">Stochastic and risk modeling</th><td><a href="#projects" data-open="thesis">CIR model</a> · <a href="#projects" data-open="montecarlo">VaR / TVaR</a> · <a href="#projects" data-open="options">Option hedging</a></td></tr>
+            <tr><th scope="row">Data validation in Python</th><td><a href="#experience">LPS internship</a></td></tr>
+            <tr><th scope="row">Dashboards and reporting</th><td><a href="#experience">BRI internship</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub">Education</h3>
+      <div class="edu">
+        <div class="period">Aug 2022 – Jun 2026</div>
+        <div>
+          <p class="edu-name">IPB University</p>
+          <p class="org">Bachelor of Actuarial Science · GPA 3.61 / 4.00 · Cum Laude</p>
+          <p class="org">Thesis: <a href="#projects" data-open="thesis">Determination of Monthly Premium for a Reversionary Annuity between Parents and Two Children Using the CIR Interest Rate Model</a></p>
+          <div class="courses">
+            <div><h4>Actuarial and risk</h4><p>Risk Theory, Financial Mathematics, Derivative Financial Modeling</p></div>
+            <div><h4>Probability and stochastics</h4><p>Probability Theory, Stochastic Processes</p></div>
+            <div><h4>Data and computing</h4><p>Predictive Model Analysis, Software Engineering</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="experience">
     <div class="wrap">
-      <h2>Experience <span class="count">3 internships</span></h2>
+      <div class="sec-head"><h2>Experience</h2><p>Three internships across insurance, deposit insurance and banking</p></div>
       <div class="rows">
         <article class="row">
           <div class="period"><span class="now">Aug 2026 – now</span></div>
           <div>
             <h3>Intern, Actuarial Division</h3>
             <p class="org">Perusahaan Asuransi ASEI Indonesia</p>
-            <ul>
+            <ul class="bul">
               <li>Process and analyze statistical data for insurance product pricing and actuarial assessments.</li>
               <li>Support the calculation and review of technical reserves under PSAK 117 / IFRS 17 and applicable actuarial standards.</li>
-              <li>Prepare actuarial reports and analyzes for internal management and regulatory reporting.</li>
+              <li>Prepare actuarial reports and analyses for internal management and regulatory reporting.</li>
               <li>Perform product profitability analysis and long-term cash flow projections.</li>
             </ul>
           </div>
@@ -421,7 +478,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <div>
             <h3>Intern, Insurance Data Management Group</h3>
             <p class="org">Lembaga Penjamin Simpanan (LPS)</p>
-            <ul>
+            <ul class="bul">
               <li>Collected and standardized 800+ financial statements from conventional and sharia insurers.</li>
               <li>Automated Python data validation, flagging inconsistencies, missing values and anomalies.</li>
               <li>Built structured datasets and reporting files that made insurance data analysis more reliable.</li>
@@ -434,7 +491,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <div>
             <h3>Intern, Activation Implementation Department</h3>
             <p class="org">PT Bank Rakyat Indonesia (Persero) Tbk · Culture Transformation Group</p>
-            <ul>
+            <ul class="bul">
               <li>Cleaned and consolidated employee survey datasets using Python, RStudio and Excel.</li>
               <li>Analyzed employee engagement survey results and turned findings into actionable insights.</li>
               <li>Developed interactive Looker Studio dashboards to monitor KPIs and track performance.</li>
@@ -442,98 +499,15 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           </div>
         </article>
       </div>
-    </div>
-  </section>
 
-  <section id="projects">
-    <div class="wrap">
-      <h2>Research &amp; projects <span class="count">4</span></h2>
-      <div class="rows">
-        <article class="row project">
-          <div class="period">Nov 2025 – Jun 2026</div>
-          <div>
-            <p class="kind">Undergraduate thesis</p>
-            <h3>Reversionary Annuity Pricing under the CIR Model</h3>
-            <p class="sum">Net monthly premium for a multi-life reversionary annuity covering two parents and two children: benefits start once both parents have died and continue while at least one child is alive. The BI 7-Day Reverse Repo Rate (Jan 2019 – Dec 2025) was modeled with a Cox–Ingersoll–Ross process estimated by OLS; survival probabilities come from the Indonesian Mortality Table 2023 under UDD. Premiums were priced for four policy scenarios combining joint life and last survivor statuses with combined or separate payment schemes, over a 15-year term.</p>
-            <dl class="results">
-              <div><dt>2.88%</dt><dd>MAPE of the CIR model on test data (9.75% on training)</dd></div>
-              <div><dt>Rp17,925 – 18,328</dt><dd>Net monthly premium across the four scenarios</dd></div>
-              <div><dt>4</dt><dd>Policy scenarios priced, family aged 30, 27, 3 and 1</dd></div>
-            </dl>
-            <p class="finding"><b>Finding:</b> joint life scenarios cost more than last survivor ones, and paying premiums separately per insured comes out slightly cheaper than one combined contract.</p>
-            <figure class="viz">
-              <figcaption>Net monthly premium by scenario</figcaption>
-              <p class="note">Rupiah per month. Axis starts at Rp17,800 to show the gaps between scenarios.</p>
-              <ul class="legend"><li><i class="l1"></i>One combined contract</li><li><i class="l2"></i>Separate contracts per insured</li></ul>
-              <div class="plot" data-chart="premium" role="img" aria-label="Dot plot of net monthly premium: last survivor 17,943 combined and 17,925 separate; joint life 18,328 combined and 18,310 separate."></div>
-              <details><summary>View data</summary>
-                <table><tr><th>Parents' status</th><th>Combined</th><th>Separate</th></tr>
-                <tr><td>Last survivor</td><td>Rp17,943.13</td><td>Rp17,924.66</td></tr>
-                <tr><td>Joint life</td><td>Rp18,328.49</td><td>Rp18,309.63</td></tr></table>
-              </details>
-            </figure>
-            <ul class="tags"><li>Multi-life contingencies</li><li>CIR model</li><li>OLS</li><li>MAPE</li><li>TMI 2023</li></ul>
-            <a class="more" href="https://drive.google.com/file/d/1QIe2NTbcRRrfP33RXW3Hjyrlln9e9J6V/view?usp=sharing" target="_blank" rel="noopener">Read the thesis ↗</a>
-          </div>
-        </article>
-        <article class="row project">
-          <div class="period">Oct 2025 – Dec 2025</div>
-          <div>
-            <p class="kind">Risk modeling</p>
-            <h3>Monte Carlo Variance Reduction for Claim Severity</h3>
-            <p class="credit">Journal article draft · co-author in a team of 5</p>
-            <p class="sum">Modeled 1,340 health insurance claims with a five-component lognormal mixture fitted by the EM algorithm (Kolmogorov–Smirnov p = 0.99), then compared standard Monte Carlo with antithetic variates, stratified sampling and importance sampling for estimating 95% VaR and TVaR. Each method ran 10,000 simulations, replicated 200 and 500 times, and was judged on bias, variance, MSE, efficiency and computing time.</p>
-            <dl class="results">
-              <div><dt>41,406</dt><dd>Analytical 95% VaR used as the benchmark (TVaR 46,203)</dd></div>
-              <div><dt>1.74×</dt><dd>Efficiency of stratified sampling for VaR vs. standard Monte Carlo</dd></div>
-              <div><dt>2.87×</dt><dd>Efficiency of importance sampling for TVaR vs. standard Monte Carlo</dd></div>
-            </dl>
-            <p class="finding"><b>Finding:</b> the best technique depends on the risk measure. Stratified sampling gave the lowest MSE for VaR, while importance sampling did best for TVaR at a higher computing cost.</p>
-            <ul class="tags"><li>Monte Carlo</li><li>VaR / TVaR</li><li>Importance sampling</li></ul>
-            <a class="more" href="https://drive.google.com/file/d/18a-5_LOVK0ySQpnOxDUiNVKjrn_YDOLW/view?usp=sharing" target="_blank" rel="noopener">View project ↗</a>
-          </div>
-        </article>
-        <article class="row project">
-          <div class="period">Apr 2025 – Jun 2025</div>
-          <div>
-            <p class="kind">Machine learning</p>
-            <h3>PCA and Machine Learning for Stock Prediction</h3>
-            <p class="sum">Measured prediction accuracy of four models on AMD price data from 2014 to 2024, before and after reducing dimensions with principal component analysis.</p>
-            <ul class="tags"><li>PCA</li><li>XGBoost</li><li>Random Forest</li><li>Ridge</li><li>KNN</li></ul>
-            <a class="more" href="https://ipb.link/amp-project" target="_blank" rel="noopener">View project ↗</a>
-          </div>
-        </article>
-        <article class="row project">
-          <div class="period">Apr 2025 – Jun 2025</div>
-          <div>
-            <p class="kind">Derivatives</p>
-            <h3>Option Spread Strategies for Gold Futures Risk</h3>
-            <p class="credit">Capstone paper · co-author in a team of 5</p>
-            <p class="sum">Compared Butterfly and Broken Wing Condor call spreads as hedges for gold futures, using 2024 daily prices from Yahoo Finance, the Black-76 model with a 3-month maturity, and a lognormal price distribution to estimate each strategy's probability of profit.</p>
-            <dl class="results">
-              <div><dt>15.14%</dt><dd>Annualized volatility of gold futures in 2024</dd></div>
-              <div><dt>49.8% vs 28.3%</dt><dd>Probability of profit: Broken Wing Condor vs. Butterfly</dd></div>
-              <div><dt>41.8% vs 1.9%</dt><dd>Chance of landing in the max-profit range, same comparison</dd></div>
-            </dl>
-            <p class="finding"><b>Finding:</b> both spreads cap the losses of an unhedged position. The Broken Wing Condor costs more up front but is far more likely to end in profit.</p>
-            <ul class="tags"><li>Black-76</li><li>Option spreads</li><li>Gold futures</li></ul>
-            <a class="more" href="https://ipb.link/pkd-project" target="_blank" rel="noopener">View project ↗</a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="leadership">
-    <div class="wrap">
-      <h2>Leadership</h2>
+      <h3 class="sub">Leadership</h3>
       <div class="rows">
         <article class="row">
           <div class="period">Feb 2025 – Jun 2026</div>
           <div>
             <h3>Vice President of Research</h3>
             <p class="org">Komunitas Anak Aktuaria Indonesia (AAID), a national actuarial student community</p>
-            <ul>
+            <ul class="bul">
               <li>Designed and managed academic development programs for actuarial students nationwide.</li>
               <li>Supervised department members and kept the research work plan on schedule.</li>
             </ul>
@@ -544,7 +518,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <div>
             <h3>Director, Sport and Arts Management</h3>
             <p class="org">Actuarial Sciences Students Association (ASSA), IPB University</p>
-            <ul>
+            <ul class="bul">
               <li>Led the planning and execution of sports and arts programs for actuarial students.</li>
             </ul>
           </div>
@@ -553,73 +527,267 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
-  <section id="background">
-    <div class="wrap split">
-      <div class="block">
-        <h3>Education</h3>
-        <p class="edu-name">IPB University</p>
-        <p class="org">Bachelor of Actuarial Science · Aug 2022 – Jun 2026</p>
-        <p class="gpa"><b>3.61</b>/ 4.00 GPA · Cum Laude</p>
-        <p class="plain">Financial Mathematics, Probability Theory, Stochastic Processes, Risk Theory, Predictive Model Analysis, Derivative Financial Modeling, Software Engineering.</p>
-        <h3 style="margin-top:2.25rem">Languages</h3>
-        <table class="skills">
-          <tr><th>Indonesian</th><td>Native</td></tr>
-          <tr><th>English</th><td>Working proficiency</td></tr>
+  <section id="projects">
+    <div class="wrap">
+      <div class="sec-head"><h2>Research &amp; projects</h2><p>Thesis and course research, with the results from each paper</p></div>
+      <div class="browser">
+        <div class="tabs" role="tablist" aria-label="Projects" aria-orientation="vertical">
+          <p class="hint">Pick a project to open it.</p>
+          <button class="tab" role="tab" id="tab-thesis" aria-controls="p-thesis" aria-selected="true" data-key="thesis"><b>Reversionary Annuity Pricing</b><span>Thesis · Life contingencies</span></button>
+          <button class="tab" role="tab" id="tab-montecarlo" aria-controls="p-montecarlo" aria-selected="false" tabindex="-1" data-key="montecarlo"><b>Monte Carlo Variance Reduction</b><span>Team of 5 · Risk modeling</span></button>
+          <button class="tab" role="tab" id="tab-options" aria-controls="p-options" aria-selected="false" tabindex="-1" data-key="options"><b>Option Spreads for Gold Futures</b><span>Team of 5 · Derivatives</span></button>
+          <button class="tab" role="tab" id="tab-pca" aria-controls="p-pca" aria-selected="false" tabindex="-1" data-key="pca"><b>PCA and Machine Learning</b><span>Course project · ML</span></button>
+        </div>
+
+        <div>
+          <article class="panel" role="tabpanel" id="p-thesis" aria-labelledby="tab-thesis">
+            <p class="kind">Undergraduate thesis · Nov 2025 – Jun 2026</p>
+            <h3>Reversionary Annuity Pricing under the CIR Model</h3>
+            <p class="sum">Net monthly premium for a multi-life reversionary annuity covering two parents and two children: benefits start once both parents have died and continue while at least one child is alive. The BI 7-Day Reverse Repo Rate (Jan 2019 – Dec 2025) was modeled with a Cox–Ingersoll–Ross process estimated by OLS; survival probabilities come from the Indonesian Mortality Table 2023 under UDD. Premiums were priced for four policy scenarios over a 15-year term.</p>
+            <dl class="results">
+              <div><dt>2.88%</dt><dd>MAPE of the CIR model on test data (9.75% on training)</dd></div>
+              <div><dt>Rp17,925 – 18,328</dt><dd>Net monthly premium across the four scenarios</dd></div>
+              <div><dt>4</dt><dd>Policy scenarios priced, family aged 30, 27, 3 and 1</dd></div>
+            </dl>
+
+            <p class="panel-h">Try it: how the scenario changes the premium</p>
+            <div class="explorer" id="explorer">
+              <fieldset>
+                <legend>Parents' status while premiums are paid</legend>
+                <div class="seg">
+                  <label><input type="radio" name="status" value="ls" checked><span>Last survivor</span></label>
+                  <label><input type="radio" name="status" value="jl"><span>Joint life</span></label>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>How premiums are paid</legend>
+                <div class="seg">
+                  <label><input type="radio" name="scheme" value="c" checked><span>One combined contract</span></label>
+                  <label><input type="radio" name="scheme" value="s"><span>Separate per insured</span></label>
+                </div>
+              </fieldset>
+              <div class="out" aria-live="polite">
+                <div class="big" id="ex-prem">Rp17,943<small>/ month</small></div>
+                <p id="ex-note">Scenario 1. <b>Rp18 more</b> than the cheapest scenario.</p>
+              </div>
+            </div>
+
+            <figure class="viz">
+              <figcaption>Net monthly premium by scenario</figcaption>
+              <p class="note">Rupiah per month. Axis starts at Rp17,800 to show the gaps between scenarios. The outlined dot is the scenario picked above.</p>
+              <ul class="legend"><li><i class="l1"></i>One combined contract</li><li><i class="l2"></i>Separate contracts per insured</li></ul>
+              <div class="plot" data-chart="premium" role="img" aria-label="Dot plot of net monthly premium: last survivor 17,943 combined and 17,925 separate; joint life 18,328 combined and 18,310 separate."></div>
+              <details><summary>View data</summary>
+                <table><tr><th>Parents' status</th><th>Combined</th><th>Separate</th></tr>
+                <tr><td>Last survivor</td><td>Rp17,943.13</td><td>Rp17,924.66</td></tr>
+                <tr><td>Joint life</td><td>Rp18,328.49</td><td>Rp18,309.63</td></tr></table>
+              </details>
+            </figure>
+
+            <p class="panel-h">What the thesis found</p>
+            <ol class="findings">
+              <li><span><b>The CIR model tracks the BI-Rate closely.</b> Fitted on 70 months and tested on the last 14, it reached a MAPE of 2.88% on the test period.</span></li>
+              <li><span><b>Joint life costs more than last survivor.</b> Covering the parents on a joint life basis raises the monthly premium by about Rp385.</span></li>
+              <li><span><b>Separate contracts are slightly cheaper.</b> Pricing each insured separately and adding them up comes out Rp18–19 below one combined contract.</span></li>
+            </ol>
+            <dl class="meta">
+              <div><dt>Type</dt><dd>Undergraduate thesis, IPB University</dd></div>
+              <div><dt>Data</dt><dd>BI7DRR monthly rates 2019–2025; TMI 2023</dd></div>
+              <div><dt>Method</dt><dd>CIR (Euler–Maruyama, OLS), UDD, equivalence principle, R</dd></div>
+            </dl>
+            <ul class="tags"><li>Multi-life contingencies</li><li>CIR model</li><li>OLS</li><li>MAPE</li><li>TMI 2023</li></ul>
+            <a class="ghost more" href="https://drive.google.com/file/d/1QIe2NTbcRRrfP33RXW3Hjyrlln9e9J6V/view?usp=sharing" target="_blank" rel="noopener">Read the thesis ↗</a>
+          </article>
+
+          <article class="panel" role="tabpanel" id="p-montecarlo" aria-labelledby="tab-montecarlo">
+            <p class="kind">Risk modeling · Oct 2025 – Dec 2025</p>
+            <h3>Monte Carlo Variance Reduction for Claim Severity</h3>
+            <p class="credit">Journal article draft · co-author in a team of 5</p>
+            <p class="sum">Modeled 1,340 health insurance claims with a five-component lognormal mixture fitted by the EM algorithm (Kolmogorov–Smirnov p = 0.99), then compared standard Monte Carlo with antithetic variates, stratified sampling and importance sampling for estimating 95% VaR and TVaR. Each method ran 10,000 simulations, replicated 200 and 500 times, and was judged on bias, variance, MSE, efficiency and computing time.</p>
+            <dl class="results">
+              <div><dt>41,406</dt><dd>Analytical 95% VaR used as the benchmark (TVaR 46,203)</dd></div>
+              <div><dt>1.74×</dt><dd>Efficiency of stratified sampling for VaR vs. standard Monte Carlo</dd></div>
+              <div><dt>2.87×</dt><dd>Efficiency of importance sampling for TVaR vs. standard Monte Carlo</dd></div>
+            </dl>
+            <p class="panel-h">What the paper found</p>
+            <ol class="findings">
+              <li><span><b>A five-lognormal mixture fits the claims.</b> The Kolmogorov–Smirnov statistic was 0.0119 against a critical value of 0.0372.</span></li>
+              <li><span><b>Stratified sampling is best for VaR.</b> It gave the lowest MSE and the highest efficiency at both 200 and 500 replications.</span></li>
+              <li><span><b>Importance sampling is best for TVaR,</b> but it is the slowest method and performed worse than standard Monte Carlo for VaR.</span></li>
+            </ol>
+            <ul class="tags"><li>Monte Carlo</li><li>EM algorithm</li><li>VaR / TVaR</li><li>Importance sampling</li><li>R</li></ul>
+            <a class="ghost more" href="https://drive.google.com/file/d/18a-5_LOVK0ySQpnOxDUiNVKjrn_YDOLW/view?usp=sharing" target="_blank" rel="noopener">Read the paper ↗</a>
+          </article>
+
+          <article class="panel" role="tabpanel" id="p-options" aria-labelledby="tab-options">
+            <p class="kind">Derivatives · Apr 2025 – Jun 2025</p>
+            <h3>Option Spread Strategies for Gold Futures Risk</h3>
+            <p class="credit">Capstone paper · co-author in a team of 5</p>
+            <p class="sum">Compared Butterfly and Broken Wing Condor call spreads as hedges for gold futures, using 2024 daily prices from Yahoo Finance, the Black-76 model with a 3-month maturity, and a lognormal price distribution to estimate each strategy's probability of profit.</p>
+            <dl class="results">
+              <div><dt>15.14%</dt><dd>Annualized volatility of gold futures in 2024</dd></div>
+              <div><dt>49.8% vs 28.3%</dt><dd>Probability of profit: Broken Wing Condor vs. Butterfly</dd></div>
+              <div><dt>41.8% vs 1.9%</dt><dd>Chance of landing in the max-profit range, same comparison</dd></div>
+            </dl>
+            <p class="panel-h">What the paper found</p>
+            <ol class="findings">
+              <li><span><b>Both spreads cap the losses</b> that an unhedged gold futures position would face.</span></li>
+              <li><span><b>The Butterfly has the higher peak</b> (about 98.9 per contract at 2,641) but only a 28.3% chance of ending in profit.</span></li>
+              <li><span><b>The Broken Wing Condor costs more up front</b> (net debit 48.91 vs 33.11) but profits across a much wider range, 2,458 to 2,824.</span></li>
+            </ol>
+            <ul class="tags"><li>Black-76</li><li>Option spreads</li><li>Gold futures</li><li>Probability of profit</li></ul>
+            <a class="ghost more" href="https://ipb.link/pkd-project" target="_blank" rel="noopener">View project ↗</a>
+          </article>
+
+          <article class="panel" role="tabpanel" id="p-pca" aria-labelledby="tab-pca">
+            <p class="kind">Machine learning · Apr 2025 – Jun 2025</p>
+            <h3>PCA and Machine Learning for Stock Prediction</h3>
+            <p class="sum">Measured the prediction accuracy of Ridge Regression, K-Nearest Neighbors, Random Forest and XGBoost on AMD stock data from 2014 to 2024, before and after reducing dimensions with principal component analysis.</p>
+            <ul class="tags"><li>PCA</li><li>XGBoost</li><li>Random Forest</li><li>Ridge</li><li>KNN</li></ul>
+            <a class="ghost more" href="https://ipb.link/amp-project" target="_blank" rel="noopener">View project ↗</a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="wrap">
+      <div class="sec-head"><h2>Skills</h2></div>
+      <table class="matrix">
+        <tbody>
+          <tr><th scope="row">Actuarial</th><td><ul class="chips soft"><li>Life contingencies</li><li>PSAK 117 / IFRS 17 reserving</li><li>Product pricing</li><li>Profitability and cash flow projection</li><li>Risk measures (VaR, TVaR)</li></ul></td></tr>
+          <tr><th scope="row">Modeling</th><td><ul class="chips soft"><li>Stochastic interest rates (CIR)</li><li>Monte Carlo simulation</li><li>Mixture models and EM</li><li>Option pricing (Black-76)</li><li>Regression and ML</li></ul></td></tr>
+          <tr><th scope="row">Programming</th><td><ul class="chips"><li>Python <small>Intermediate</small></li><li>R / RStudio <small>Intermediate</small></li><li>MySQL <small>Intermediate</small></li></ul></td></tr>
+          <tr><th scope="row">Analytics and reporting</th><td><ul class="chips"><li>Looker Studio <small>Intermediate</small></li><li>Tableau <small>Beginner</small></li><li>Power BI <small>Beginner</small></li><li>Excel / VBA <small>Daily use</small></li><li>Google Workspace <small>Daily use</small></li></ul></td></tr>
+          <tr><th scope="row">Languages</th><td><ul class="chips"><li>Indonesian <small>Native</small></li><li>English <small>Working proficiency</small></li></ul></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="certifications">
+    <div class="wrap">
+      <div class="sec-head"><h2>Certifications</h2><p>Professional exams, courses and job simulations</p></div>
+      <div class="tablewrap">
+        <table class="certs">
+          <thead><tr><th scope="col">Certification</th><th scope="col">Issuer</th><th scope="col">Type</th></tr></thead>
+          <tbody>
+            <tr><td>CF4 · Accounting and Financial Management</td><td>Persatuan Aktuaris Indonesia (PAI)</td><td><span class="pill pass">Exam passed</span></td></tr>
+            <tr><td>CF3 · Economics and Financial Markets</td><td>Persatuan Aktuaris Indonesia (PAI)</td><td><span class="pill pass">Exam passed</span></td></tr>
+            <tr><td>Mastering IFRS 17<small>Comprehensive Guide to Insurance Contracts</small></td><td>—</td><td><span class="pill">Course</span></td></tr>
+            <tr><td>Actuarial Analyst Job Simulation</td><td>AIG · Forage</td><td><span class="pill">Job simulation</span></td></tr>
+            <tr><td>Data Analytics Job Simulation</td><td>Deloitte Australia · Forage</td><td><span class="pill">Job simulation</span></td></tr>
+            <tr><td>Excel/VBA for Creative Problem Solving, Part 1</td><td>University of Colorado Boulder · Coursera</td><td><span class="pill">Course</span></td></tr>
+            <tr><td>Fundamental Python</td><td>Coding Studio</td><td><span class="pill">Course</span></td></tr>
+            <tr><td>Fundamental MySQL</td><td>Coding Studio</td><td><span class="pill">Course</span></td></tr>
+          </tbody>
         </table>
       </div>
-      <div class="block">
-        <h3>Tools</h3>
-        <table class="skills">
-          <tr><th>Python</th><td>Intermediate<span class="level" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span></td></tr>
-          <tr><th>R / RStudio</th><td>Intermediate<span class="level" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span></td></tr>
-          <tr><th>MySQL</th><td>Intermediate<span class="level" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span></td></tr>
-          <tr><th>Looker Studio</th><td>Intermediate<span class="level" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span></td></tr>
-          <tr><th>Tableau, Power BI</th><td>Beginner<span class="level" aria-hidden="true"><i class="on"></i><i></i><i></i></span></td></tr>
-          <tr><th>Excel / VBA, Google Workspace</th><td>Daily use</td></tr>
-        </table>
+    </div>
+  </section>
+
+  <section id="contact" class="contact-sec">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h2 class="cta">Hiring for an actuarial or risk role? Let's talk.</h2>
+        <p class="cta-sub">Email is the fastest way to reach me. My CV has the full details.</p>
+        <div class="actions">
+          <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
+        </div>
       </div>
-      <div class="block" style="grid-column: 1 / -1">
-        <h3>Exams &amp; certifications</h3>
-        <ul class="certs">
-          <li><span>CF4 · Accounting and Financial Management</span><span>PAI exam · Passed</span></li>
-          <li><span>CF3 · Economics and Financial Markets</span><span>PAI exam · Passed</span></li>
-          <li><span>Mastering IFRS 17: Comprehensive Guide to Insurance Contracts</span><span>Course</span></li>
-          <li><span>AIG Actuarial Analyst Job Simulation</span><span>Forage</span></li>
-          <li><span>Deloitte Australia Data Analytics Job Simulation</span><span>Forage</span></li>
-          <li><span>Excel/VBA for Creative Problem Solving, Part 1</span><span>CU Boulder · Coursera</span></li>
-          <li><span>Fundamental Python · Fundamental MySQL</span><span>Coding Studio</span></li>
-        </ul>
-      </div>
+      <dl class="channels">
+        <div><dt>Email</dt><dd><span class="email" id="email2">shadiqiarsyad@gmail.com</span> <button class="btn" type="button" data-copy="email2">Copy</button></dd></div>
+        <div><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/muhammad-arsyad-as-shadiqi-chairahman-157934246/" target="_blank" rel="noopener">Muhammad Arsyad As-Shadiqi Chairahman ↗</a></dd></div>
+        <div><dt>Location</dt><dd>Bogor, Indonesia</dd></div>
+      </dl>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>Muhammad Arsyad As-Shadiqi Chairahman</span>
-    <span><a href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV (PDF)</a> · Updated November 2026</span>
+    <span>Muhammad Arsyad As-Shadiqi Chairahman · Updated November 2026</span>
+    <a href="#top">Back to top ↑</a>
   </div>
 </footer>
 
 <script>
 (function () {
-  // Copy email
-  var btn = document.getElementById('copy-email');
-  var emailEl = document.getElementById('email');
-  btn.addEventListener('click', function () {
-    var text = emailEl.textContent.trim();
-    function selectFallback() {
-      var r = document.createRange(); r.selectNodeContents(emailEl);
-      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
-      btn.textContent = 'Selected';
-    }
-    try {
-      navigator.clipboard.writeText(text).then(function () { btn.textContent = 'Copied'; }, selectFallback);
-    } catch (e) { selectFallback(); }
-    setTimeout(function () { btn.textContent = 'Copy'; }, 1800);
+  // ---------- Copy email buttons ----------
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    var src = document.getElementById(btn.dataset.copy);
+    btn.addEventListener('click', function () {
+      var text = src.textContent.trim();
+      function selectFallback() {
+        var r = document.createRange(); r.selectNodeContents(src);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = 'Selected';
+      }
+      try { navigator.clipboard.writeText(text).then(function () { btn.textContent = 'Copied'; }, selectFallback); }
+      catch (e) { selectFallback(); }
+      setTimeout(function () { btn.textContent = 'Copy'; }, 1800);
+    });
   });
 
-  // ---------- Charts: inline SVG, drawn from the published figures ----------
+  // ---------- Highlight the section in view ----------
+  var links = {};
+  document.querySelectorAll('.nav li a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        Object.keys(links).forEach(function (k) { links[k].removeAttribute('aria-current'); });
+        var a = links[e.target.id]; if (a) a.setAttribute('aria-current', 'true');
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    Object.keys(links).forEach(function (k) { var s = document.getElementById(k); if (s) io.observe(s); });
+  }
+
+  // ---------- Project browser ----------
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function openProject(key, focus) {
+    tabs.forEach(function (t) {
+      var on = t.dataset.key === key;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      if (on && focus) t.focus();
+    });
+    drawCharts();
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { openProject(t.dataset.key); });
+    t.addEventListener('keydown', function (e) {
+      var d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (!d) return;
+      e.preventDefault();
+      openProject(tabs[(i + d + tabs.length) % tabs.length].dataset.key, true);
+    });
+  });
+  document.querySelectorAll('[data-open]').forEach(function (a) {
+    a.addEventListener('click', function () { openProject(a.dataset.open); });
+  });
+
+  // ---------- Thesis scenario explorer (Table 7 of the thesis) ----------
+  var PREM = { 'ls-c': [1, 17943.13], 'ls-s': [2, 17924.66], 'jl-c': [3, 18328.49], 'jl-s': [4, 18309.63] };
+  var MIN = 17924.66;
+  var picked = 'ls-c';
+  function fmt(n, d) { return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function updateExplorer() {
+    var st = document.querySelector('input[name="status"]:checked').value;
+    var sc = document.querySelector('input[name="scheme"]:checked').value;
+    picked = st + '-' + sc;
+    var p = PREM[picked], diff = p[1] - MIN;
+    document.getElementById('ex-prem').innerHTML = 'Rp' + fmt(p[1], 0) + '<small>/ month</small>';
+    document.getElementById('ex-note').innerHTML = 'Scenario ' + p[0] + '. ' +
+      (diff < 0.5 ? '<b>The cheapest</b> of the four scenarios.' : '<b>Rp' + fmt(diff, 0) + ' more</b> than the cheapest scenario.');
+    drawCharts();
+  }
+  document.querySelectorAll('#explorer input').forEach(function (r) { r.addEventListener('change', updateExplorer); });
+
+  // ---------- Chart: inline SVG from the thesis figures ----------
   var NS = 'http://www.w3.org/2000/svg';
   function el(tag, attrs, parent) {
     var e = document.createElementNS(NS, tag);
@@ -639,7 +807,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   }
   function showTip(box, html, x, y) { var t = tipFor(box); t.innerHTML = html; t.style.left = x + 'px'; t.style.top = y + 'px'; t.hidden = false; }
   function hideTip(box) { tipFor(box).hidden = true; }
-  function fmt(n, d) { return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }); }
 
   function premium(box, W) {
     var H = 150, L = 104, R = 30, T = 10, B = 34;
@@ -649,31 +816,33 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       el('line', { x1: sx(v), x2: sx(v), y1: T, y2: H - B, class: 'grid' }, svg);
       if ((v - x0) % 200 === 0) txt(svg, sx(v), H - B + 16, fmt(v, 0), 'middle');
     }
-    var rows = [['Last survivor', 17943.13, 17924.66], ['Joint life', 18328.49, 18309.63]];
+    var rows = [['Last survivor', 'ls'], ['Joint life', 'jl']];
     rows.forEach(function (r, i) {
-      var y = T + 28 + i * 46;
+      var y = T + 28 + i * 46, c = PREM[r[1] + '-c'][1], s = PREM[r[1] + '-s'][1];
       txt(svg, 0, y + 4, r[0]);
-      el('line', { x1: sx(r[2]), x2: sx(r[1]), y1: y, y2: y, class: 'axis' }, svg);
-      [[r[1], 'f1', 'Combined'], [r[2], 'f2', 'Separate']].forEach(function (d, j) {
-        el('circle', { cx: sx(d[0]), cy: y, r: 6, class: 'dot ' + d[1] }, svg);
+      el('line', { x1: sx(s), x2: sx(c), y1: y, y2: y, class: 'axis' }, svg);
+      [[c, 'f1', 'Combined', 'c'], [s, 'f2', 'Separate', 's']].forEach(function (d) {
+        var sel = picked === r[1] + '-' + d[3];
+        el('circle', { cx: sx(d[0]), cy: y, r: sel ? 7 : 6, class: 'dot ' + d[1] + (sel ? ' sel' : '') }, svg);
         var hit = el('circle', { cx: sx(d[0]), cy: y, r: 14, class: 'hit' }, svg);
         hit.addEventListener('pointerenter', function () { showTip(box, '<b>' + r[0] + ' · ' + d[2] + '</b><br>Rp' + fmt(d[0], 2) + ' / month', sx(d[0]) / W * box.clientWidth, y / H * box.clientHeight); });
         hit.addEventListener('pointerleave', function () { hideTip(box); });
       });
-      txt(svg, sx(r[1]) + 10, y - 9, fmt(r[1], 0), 'start', 'val');
+      txt(svg, sx(c) + 10, y - 9, fmt(c, 0), 'start', 'val');
     });
   }
 
   var charts = { premium: premium };
   function drawCharts() {
     document.querySelectorAll('.plot[data-chart]').forEach(function (box) {
+      if (!box.offsetParent) return;
       var w = Math.max(280, Math.round(box.clientWidth));
       var old = box.querySelector('svg'); if (old) old.remove();
       hideTip(box);
       charts[box.dataset.chart](box, w);
     });
   }
-  drawCharts();
+  openProject('thesis');
   var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(drawCharts, 150); });
 })();
 </script>
