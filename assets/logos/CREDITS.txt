@@ -22,3 +22,7 @@ assets/orgs/bri.svg, assets/orgs/lps.svg
 assets/orgs/asei.png
   Supplied by the site owner. The logo mark belongs to PT Asuransi Asei Indonesia
   and identifies a current employer only.
+
+assets/orgs/ipb.png
+  Supplied by the site owner. The emblem belongs to IPB University (Institut
+  Pertanian Bogor) and identifies the owner's university only.
