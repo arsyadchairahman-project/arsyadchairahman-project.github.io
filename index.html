@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arsyad Chairahman</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Muhammad Arsyad As-Shadiqi Chairahman — actuarial science graduate, IPB University. Actuarial, insurance data and risk analytics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a life-table page. A narrow mono "period" column runs down the left like the x column of a mortality table; content reads in the wide column beside it. Hero carries simulated CIR short-rate paths from the thesis model. */
+:root {
+  --bg: #f2f4f3;
+  --surface: #e7ecea;
+  --ink: #14212a;
+  --muted: #56656e;
+  --rule: #cdd6d4;
+  --accent: #0d5868;
+  --mark: #a8741b;
+  --path: rgba(13, 88, 104, 0.16);
+
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --s-xs: 0.8125rem;
+  --s-sm: 0.9375rem;
+  --s-md: 1.0625rem;
+  --s-lg: 1.375rem;
+  --s-xl: clamp(2.25rem, 6vw, 4rem);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1519; --surface: #152027; --ink: #e2e9e8; --muted: #8e9ca2;
+    --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --path: rgba(99, 181, 196, 0.18);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1519; --surface: #152027; --ink: #e2e9e8; --muted: #8e9ca2;
+  --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --path: rgba(99, 181, 196, 0.18);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+img { max-width: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: var(--s-md);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.wrap {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- Hero ---------- */
+.hero { border-bottom: 1px solid var(--rule); }
+.hero .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: end;
+  padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2rem, 5vw, 3.5rem);
+}
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: var(--s-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+h1 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: var(--s-xl);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 .full {
+  display: block;
+  font-family: var(--f-body);
+  font-weight: 400;
+  font-size: var(--s-sm);
+  letter-spacing: 0;
+  color: var(--muted);
+  margin-top: 0.75rem;
+}
+.lede {
+  max-width: 34rem;
+  margin: 1.5rem 0 0;
+  font-size: var(--s-lg);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: center;
+  margin-top: 1.75rem;
+  font-size: var(--s-sm);
+}
+.contact .item { display: inline-flex; align-items: center; gap: 0.5rem; }
+.email { font-family: var(--f-mono); font-size: var(--s-sm); user-select: all; }
+.btn {
+  font: 500 var(--s-xs)/1 var(--f-mono);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.place { color: var(--muted); }
+
+.chart { margin: 0; min-width: 0; }
+.chart canvas {
+  display: block;
+  width: 100%;
+  height: clamp(200px, 26vw, 280px);
+  border-left: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.chart figcaption {
+  margin-top: 0.75rem;
+  font-size: var(--s-xs);
+  color: var(--muted);
+  line-height: 1.5;
+}
+.chart .sde {
+  font-family: var(--f-mono);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ---------- Sections ---------- */
+section { padding-block: clamp(2.5rem, 6vw, 4rem); border-bottom: 1px solid var(--rule); }
+section:last-of-type { border-bottom: 0; }
+h2 {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: var(--s-lg);
+  letter-spacing: -0.01em;
+  margin: 0 0 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+h2 .count {
+  font-family: var(--f-mono);
+  font-size: var(--s-xs);
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Life-table rows: period column + content */
+.rows { display: grid; gap: 2.25rem; }
+.row {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0 2rem;
+}
+.period {
+  font-family: var(--f-mono);
+  font-size: var(--s-xs);
+  color: var(--muted);
+  padding-top: 0.3rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+.period .now { color: var(--mark); font-weight: 500; }
+.row h3 {
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: var(--s-md);
+  line-height: 1.35;
+  margin: 0;
+  text-wrap: balance;
+}
+.org { color: var(--muted); font-size: var(--s-sm); margin: 0.15rem 0 0; }
+.row ul {
+  margin: 0.85rem 0 0;
+  padding-left: 1.1rem;
+  max-width: 44rem;
+  display: grid;
+  gap: 0.4rem;
+}
+.row li { padding-left: 0.25rem; }
+.row li::marker { color: var(--accent); }
+
+.figure {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+  font-family: var(--f-mono);
+  font-size: var(--s-xs);
+  color: var(--muted);
+}
+.figure b { font-size: var(--s-lg); font-weight: 500; color: var(--ink); font-family: var(--f-display); }
+
+/* Projects */
+.project .kind {
+  font-family: var(--f-mono);
+  font-size: var(--s-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mark);
+  margin: 0 0 0.35rem;
+}
+.project h3 { font-size: var(--s-lg); font-family: var(--f-display); font-weight: 500; letter-spacing: -0.01em; }
+.project p.sum { margin: 0.6rem 0 0; max-width: 44rem; }
+.tags {
+  list-style: none;
+  padding: 0 !important;
+  margin: 0.9rem 0 0 !important;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.4rem !important;
+}
+.tags li {
+  font-family: var(--f-mono);
+  font-size: var(--s-xs);
+  padding: 0.2rem 0.5rem !important;
+  background: var(--surface);
+  border-radius: 2px;
+}
+.tags li::marker { content: ""; }
+.more { display: inline-block; margin-top: 0.9rem; font-size: var(--s-sm); font-weight: 500; }
+
+/* Education + skills grid */
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 3rem; }
+.block h3 { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.9rem; }
+.edu-name { font-family: var(--f-display); font-weight: 500; font-size: var(--s-lg); margin: 0; }
+.gpa { margin-top: 0.6rem; font-family: var(--f-mono); font-size: var(--s-sm); }
+.gpa b { font-family: var(--f-display); font-size: 1.75rem; font-weight: 700; color: var(--accent); margin-right: 0.15rem; }
+.plain { margin: 0.75rem 0 0; color: var(--muted); font-size: var(--s-sm); }
+
+.skills { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
+.skills th, .skills td { text-align: left; padding: 0.55rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.skills th { font-weight: 500; padding-right: 1rem; }
+.skills td { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); text-align: right; white-space: nowrap; }
+.level { display: inline-flex; gap: 3px; margin-left: 0.5rem; vertical-align: middle; }
+.level i { width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--accent); }
+.level i.on { background: var(--accent); }
+
+.certs { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; font-size: var(--s-sm); }
+.certs li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid var(--rule); }
+.certs li span:last-child { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); text-align: right; flex-shrink: 0; }
+
+footer { padding-block: 2rem 3rem; font-size: var(--s-xs); color: var(--muted); font-family: var(--f-mono); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem; }
+
+@media (max-width: 760px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); }
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .period { padding-top: 0; margin-bottom: 0.35rem; }
+  .split { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Actuarial Science · IPB University · Class of 2026</p>
+      <h1>Arsyad Chairahman
+        <span class="full">Muhammad Arsyad As-Shadiqi Chairahman</span>
+      </h1>
+      <p class="lede">I work on insurance data, reserving and pricing models. Currently in the actuarial division at Asuransi ASEI Indonesia, working on technical reserves under PSAK 117 / IFRS 17.</p>
+      <div class="contact">
+        <span class="item">
+          <span class="email" id="email">shadiqiarsyad@gmail.com</span>
+          <button class="btn" type="button" id="copy-email">Copy</button>
+        </span>
+        <a class="item" href="https://www.linkedin.com/in/muhammad-arsyad-as-shadiqi-chairahman-157934246/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <span class="item place">Bogor, Indonesia</span>
+      </div>
+    </div>
+    <figure class="chart">
+      <canvas id="cir" aria-label="Simulated short-rate paths from a Cox–Ingersoll–Ross model, reverting toward a long-run mean" role="img"></canvas>
+      <figcaption>Simulated short-rate paths under the Cox–Ingersoll–Ross model used in my thesis: <span class="sde">dr = κ(θ − r)dt + σ√r dW</span>. Illustrative parameters, not fitted values.</figcaption>
+    </figure>
+  </div>
+</header>
+
+<main>
+  <section id="experience">
+    <div class="wrap">
+      <h2>Experience <span class="count">3 internships</span></h2>
+      <div class="rows">
+        <article class="row">
+          <div class="period"><span class="now">Aug 2026 – now</span></div>
+          <div>
+            <h3>Actuarial Intern</h3>
+            <p class="org">Perusahaan Asuransi ASEI Indonesia · Actuarial Division</p>
+            <ul>
+              <li>Calculate and review technical reserves under PSAK 117 / IFRS 17 and applicable actuarial standards.</li>
+              <li>Process and analyse data for insurance product pricing and actuarial assessments.</li>
+              <li>Run product profitability analysis and long-term cash-flow projections.</li>
+              <li>Prepare actuarial reports for internal management and regulatory submissions.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="row">
+          <div class="period">May 2026 – Aug 2026</div>
+          <div>
+            <h3>Data Intern, Insurance Data Management Group</h3>
+            <p class="org">Lembaga Penjamin Simpanan (LPS)</p>
+            <ul>
+              <li>Collected, consolidated and standardised financial statements from conventional and sharia insurers for regulatory reporting.</li>
+              <li>Automated validation and quality checks in Python to flag inconsistencies, missing values and reporting anomalies.</li>
+              <li>Built structured datasets and reporting files used by internal analysts.</li>
+            </ul>
+            <div class="figure"><b>800+</b> insurer financial statements standardised</div>
+          </div>
+        </article>
+        <article class="row">
+          <div class="period">Oct 2025 – Apr 2026</div>
+          <div>
+            <h3>Intern, Activation Implementation Department</h3>
+            <p class="org">PT Bank Rakyat Indonesia (Persero) Tbk · Culture Transformation Group</p>
+            <ul>
+              <li>Cleaned and consolidated employee and survey data in Excel, Python and R.</li>
+              <li>Analysed employee engagement survey results and turned them into recommendations for management.</li>
+              <li>Built Looker Studio dashboards to track KPIs.</li>
+              <li>Delivered reporting with cross-functional teams on project timelines.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap">
+      <h2>Research &amp; projects <span class="count">4</span></h2>
+      <div class="rows">
+        <article class="row project">
+          <div class="period">Nov 2025 – Jun 2026</div>
+          <div>
+            <p class="kind">Undergraduate thesis</p>
+            <h3>Monthly premiums for a reversionary annuity on one parent and two children, under CIR interest rates</h3>
+            <p class="sum">A multi-life pricing model where the annuity pays to the children after the parent's death. Interest follows a Cox–Ingersoll–Ross stochastic model with parameters estimated by OLS and forecasts checked with MAPE. Present values of premiums and benefits use the Indonesian Mortality Table (TMI 2023) across several benefit structures.</p>
+            <ul class="tags"><li>Multi-life contingencies</li><li>CIR model</li><li>OLS</li><li>MAPE</li><li>TMI 2023</li></ul>
+            <a class="more" href="https://drive.google.com/file/d/1QIe2NTbcRRrfP33RXW3Hjyrlln9e9J6V/view?usp=sharing" target="_blank" rel="noopener">Read the thesis ↗</a>
+          </div>
+        </article>
+        <article class="row project">
+          <div class="period">Oct 2025 – Dec 2025</div>
+          <div>
+            <p class="kind">Risk modelling</p>
+            <h3>Variance reduction in Monte Carlo estimates of health-claim severity</h3>
+            <p class="sum">Compared antithetic, stratified and importance sampling for simulating health insurance claim severity, measuring VaR and TVaR over 10,000 simulations to weigh accuracy against computing cost.</p>
+            <ul class="tags"><li>Monte Carlo</li><li>VaR / TVaR</li><li>Importance sampling</li></ul>
+            <a class="more" href="https://drive.google.com/file/d/18a-5_LOVK0ySQpnOxDUiNVKjrn_YDOLW/view?usp=sharing" target="_blank" rel="noopener">View project ↗</a>
+          </div>
+        </article>
+        <article class="row project">
+          <div class="period">Apr 2025 – Jun 2025</div>
+          <div>
+            <p class="kind">Machine learning</p>
+            <h3>Does PCA help? Ridge, KNN, Random Forest and XGBoost on AMD stock prices</h3>
+            <p class="sum">Measured prediction accuracy of four models on AMD price data from 2014 to 2024, before and after reducing dimensions with principal component analysis.</p>
+            <ul class="tags"><li>PCA</li><li>XGBoost</li><li>Random Forest</li><li>Ridge</li><li>KNN</li></ul>
+            <a class="more" href="https://ipb.link/amp-project" target="_blank" rel="noopener">View project ↗</a>
+          </div>
+        </article>
+        <article class="row project">
+          <div class="period">Apr 2025 – Jun 2025</div>
+          <div>
+            <p class="kind">Derivatives</p>
+            <h3>Butterfly and broken-wing condor spreads for hedging gold futures</h3>
+            <p class="sum">Priced options with the Black-76 model on historical gold futures data and compared how each spread limits downside risk under different market conditions.</p>
+            <ul class="tags"><li>Black-76</li><li>Option spreads</li><li>Gold futures</li></ul>
+            <a class="more" href="https://ipb.link/pkd-project" target="_blank" rel="noopener">View project ↗</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="leadership">
+    <div class="wrap">
+      <h2>Leadership</h2>
+      <div class="rows">
+        <article class="row">
+          <div class="period">Feb 2025 – Jun 2026</div>
+          <div>
+            <h3>Vice President of Research</h3>
+            <p class="org">Komunitas Anak Aktuaria Indonesia (AAID), a national actuarial student community</p>
+            <ul>
+              <li>Designed and ran academic development and technical learning programmes for actuarial students.</li>
+              <li>Led the research department's members and kept its work plan on schedule.</li>
+              <li>Organised educational programmes with other AAID divisions.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="row">
+          <div class="period">Jan 2025 – Dec 2025</div>
+          <div>
+            <h3>Director, Sport and Arts Management</h3>
+            <p class="org">Actuarial Sciences Students Association (ASSA), IPB University</p>
+            <ul>
+              <li>Planned and ran sports and arts programmes for actuarial students, coordinating with other departments and managing the team's timelines.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="background">
+    <div class="wrap split">
+      <div class="block">
+        <h3>Education</h3>
+        <p class="edu-name">IPB University</p>
+        <p class="org">Bachelor of Actuarial Science · Aug 2022 – Jun 2026</p>
+        <p class="gpa"><b>3.61</b>/ 4.00 GPA</p>
+        <p class="plain">Financial Mathematics, Probability Theory, Stochastic Processes, Risk Theory, Predictive Modelling, Derivative Financial Modelling, Software Engineering.</p>
+        <h3 style="margin-top:2.25rem">Languages</h3>
+        <table class="skills">
+          <tr><th>Indonesian</th><td>Native</td></tr>
+          <tr><th>English</th><td>Working proficiency</td></tr>
+        </table>
+      </div>
+      <div class="block">
+        <h3>Tools</h3>
+        <table class="skills">
+          <tr><th>Python</th><td>Intermediate<span class="level" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span></td></tr>
+          <tr><th>R / RStudio</th><td>Intermediate<span class="level" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span></td></tr>
+          <tr><th>MySQL</th><td>Intermediate<span class="level" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span></td></tr>
+          <tr><th>Looker Studio</th><td>Intermediate<span class="level" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span></td></tr>
+          <tr><th>Tableau, Power BI</th><td>Beginner<span class="level" aria-hidden="true"><i class="on"></i><i></i><i></i></span></td></tr>
+          <tr><th>Excel / VBA, Google Workspace</th><td>Daily use</td></tr>
+        </table>
+      </div>
+      <div class="block" style="grid-column: 1 / -1">
+        <h3>Exams &amp; certifications</h3>
+        <ul class="certs">
+          <li><span>CF4 · Accounting and Financial Management</span><span>Persatuan Aktuaris Indonesia</span></li>
+          <li><span>CF3 · Economics and Financial Markets</span><span>Persatuan Aktuaris Indonesia</span></li>
+          <li><span>Mastering IFRS 17: Comprehensive Guide to Insurance Contracts</span><span>Course</span></li>
+          <li><span>AIG Actuarial Analyst Job Simulation</span><span>Forage</span></li>
+          <li><span>Deloitte Australia Data Analytics</span><span>Forage</span></li>
+          <li><span>Excel/VBA for Creative Problem Solving, Part 1</span><span>CU Boulder · Coursera</span></li>
+          <li><span>Fundamental Python · Fundamental MySQL</span><span>Coding Studio</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Muhammad Arsyad As-Shadiqi Chairahman</span>
+    <span>Updated November 2026</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Copy email
+  var btn = document.getElementById('copy-email');
+  var emailEl = document.getElementById('email');
+  btn.addEventListener('click', function () {
+    var text = emailEl.textContent.trim();
+    function selectFallback() {
+      var r = document.createRange(); r.selectNodeContents(emailEl);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = 'Selected';
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = 'Copied'; }, selectFallback);
+    } catch (e) { selectFallback(); }
+    setTimeout(function () { btn.textContent = 'Copy'; }, 1800);
+  });
+
+  // CIR short-rate paths: Euler scheme with full truncation, seeded so it draws the same every time.
+  var canvas = document.getElementById('cir');
+  var ctx = canvas.getContext('2d');
+  var kappa = 0.9, theta = 0.055, sigma = 0.09, r0s = [0.02, 0.035, 0.07, 0.095];
+  var steps = 160, T = 10, dt = T / steps, nPaths = 28;
+
+  function rng(seed) { return function () { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+  function gauss(rand) { var u = rand() || 1e-9, v = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+  var paths = [];
+  var rand = rng(20260612);
+  for (var p = 0; p < nPaths; p++) {
+    var r = r0s[p % r0s.length], path = [r];
+    for (var i = 0; i < steps; i++) {
+      var rp = Math.max(r, 0);
+      r = r + kappa * (theta - rp) * dt + sigma * Math.sqrt(rp * dt) * gauss(rand);
+      path.push(Math.max(r, 0));
+    }
+    paths.push(path);
+  }
+  var yMax = 0.14;
+
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function draw() {
+    var dpr = window.devicePixelRatio || 1;
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    var padL = 6, padR = 58, padT = 10, padB = 6;
+    function x(i) { return padL + (i / steps) * (w - padL - padR); }
+    function y(v) { return padT + (1 - v / yMax) * (h - padT - padB); }
+
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = css('--path');
+    paths.forEach(function (pt, k) {
+      if (k === 5) return;
+      ctx.beginPath();
+      pt.forEach(function (v, i) { i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)); });
+      ctx.stroke();
+    });
+
+    // long-run mean
+    ctx.setLineDash([3, 4]);
+    ctx.strokeStyle = css('--muted');
+    ctx.beginPath(); ctx.moveTo(padL, y(theta)); ctx.lineTo(w - padR, y(theta)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // one highlighted path
+    ctx.lineWidth = 1.75;
+    ctx.strokeStyle = css('--mark');
+    ctx.beginPath();
+    paths[5].forEach(function (v, i) { i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)); });
+    ctx.stroke();
+
+    ctx.fillStyle = css('--muted');
+    ctx.font = '11px ' + css('--f-mono');
+    ctx.textBaseline = 'middle';
+    ctx.fillText('θ ' + (theta * 100).toFixed(1) + '%', w - padR + 6, y(theta));
+  }
+
+  draw();
+  var t;
+  window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(draw, 120); });
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    (mq.addEventListener ? mq.addEventListener('change', draw) : mq.addListener(draw));
+  }
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+})();
+</script>
+</body>
+</html>
