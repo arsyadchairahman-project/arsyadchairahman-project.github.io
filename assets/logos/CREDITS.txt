@@ -18,3 +18,7 @@ assets/orgs/bri.svg, assets/orgs/lps.svg
   Changed: added the SVG namespace attribute so the files render as images.
   The logo marks belong to PT Bank Rakyat Indonesia (Persero) Tbk and
   Lembaga Penjamin Simpanan; they identify past employers only.
+
+assets/orgs/asei.png
+  Supplied by the site owner. The logo mark belongs to PT Asuransi Asei Indonesia
+  and identifies a current employer only.
