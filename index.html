@@ -374,6 +374,10 @@ h3.sub {
 .certs td { padding: 0.8rem 1rem 0.8rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
 .certs td:first-child { font-weight: 600; }
 .certs td small { display: block; font-weight: 400; color: var(--muted); font-size: var(--s-xs); }
+.certs td .kind { display: block; margin-top: 0.35rem; }
+.certs td.date { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--muted); }
+.certs td.cred { white-space: nowrap; font-family: var(--f-mono); font-size: var(--s-xs); }
+.certs .na { color: var(--muted); }
 .pill { display: inline-block; font-family: var(--f-mono); font-size: 0.75rem; padding: 0.1rem 0.45rem; border-radius: 3px; background: var(--surface); color: var(--muted); white-space: nowrap; }
 .pill.pass { background: var(--accent); color: var(--bg); }
 .tablewrap { overflow-x: auto; }
@@ -408,6 +412,13 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .matrix th[scope="row"] { display: block; width: auto; padding-bottom: 0.4rem; }
   .matrix td { display: block; border-top: 0; padding-top: 0; }
   .evidence tbody th { width: 46%; }
+  .certs thead { display: none; }
+  .certs tr { display: block; padding: 0.85rem 0; border-bottom: 1px solid var(--rule); }
+  .certs td { display: block; padding: 0; border: 0; }
+  .certs td:nth-child(2) { color: var(--muted); margin-top: 0.15rem; }
+  .certs td.date, .certs td.cred { display: inline-block; margin-top: 0.35rem; margin-right: 0.75rem; }
+  .certs td.empty { display: none; }
+  .certs td .kind { margin-top: 0.4rem; }
   .seg { display: flex; width: 100%; }
   .seg label { flex: 1 1 0; }
   .seg span { text-align: center; height: 100%; display: grid; place-items: center; }
@@ -743,16 +754,16 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <div class="sec-head"><h2>Certifications</h2><p>Professional exams, courses and job simulations</p></div>
       <div class="tablewrap">
         <table class="certs">
-          <thead><tr><th scope="col">Certification</th><th scope="col">Issuer</th><th scope="col">Type</th></tr></thead>
+          <thead><tr><th scope="col">Certification</th><th scope="col">Issuer</th><th scope="col">Completed</th><th scope="col">Credential</th></tr></thead>
           <tbody>
-            <tr><td>CF4 · Accounting and Financial Management</td><td>Persatuan Aktuaris Indonesia (PAI)</td><td><span class="pill pass">Exam passed</span></td></tr>
-            <tr><td>CF3 · Economics and Financial Markets</td><td>Persatuan Aktuaris Indonesia (PAI)</td><td><span class="pill pass">Exam passed</span></td></tr>
-            <tr><td>Mastering IFRS 17<small>Comprehensive Guide to Insurance Contracts</small></td><td>Udemy</td><td><span class="pill">Course</span></td></tr>
-            <tr><td>Actuarial Analyst Job Simulation</td><td>AIG · Forage</td><td><span class="pill">Job simulation</span></td></tr>
-            <tr><td>Data Analytics Job Simulation</td><td>Deloitte Australia · Forage</td><td><span class="pill">Job simulation</span></td></tr>
-            <tr><td>Excel/VBA for Creative Problem Solving, Part 1</td><td>University of Colorado Boulder · Coursera</td><td><span class="pill">Course</span></td></tr>
-            <tr><td>Fundamental Python</td><td>Coding Studio</td><td><span class="pill">Course</span></td></tr>
-            <tr><td>Fundamental MySQL</td><td>Coding Studio</td><td><span class="pill">Course</span></td></tr>
+            <tr><td>CF4 · Accounting and Financial Management<span class="kind"><span class="pill pass">Exam passed</span></span></td><td>Persatuan Aktuaris Indonesia (PAI)</td><td class="date empty"><span class="na">—</span></td><td class="cred empty"><span class="na">—</span></td></tr>
+            <tr><td>CF3 · Economics and Financial Markets<span class="kind"><span class="pill pass">Exam passed</span></span></td><td>Persatuan Aktuaris Indonesia (PAI)</td><td class="date empty"><span class="na">—</span></td><td class="cred empty"><span class="na">—</span></td></tr>
+            <tr><td>Mastering IFRS 17<small>Comprehensive Guide to Insurance Contract · 4.5 hours</small><span class="kind"><span class="pill">Course</span></span></td><td>Udemy · Murtaza Quaid</td><td class="date">Jun 2026</td><td class="cred"><a href="https://ude.my/UC-529fdadf-bc5e-4261-9189-a9a972419526" target="_blank" rel="noopener">UC-529fdadf ↗</a></td></tr>
+            <tr><td>Actuarial Analyst Job Simulation<span class="kind"><span class="pill">Job simulation</span></span></td><td>AIG · Forage</td><td class="date empty"><span class="na">—</span></td><td class="cred empty"><span class="na">—</span></td></tr>
+            <tr><td>Data Analytics Job Simulation<span class="kind"><span class="pill">Job simulation</span></span></td><td>Deloitte Australia · Forage</td><td class="date empty"><span class="na">—</span></td><td class="cred empty"><span class="na">—</span></td></tr>
+            <tr><td>Excel/VBA for Creative Problem Solving, Part 1<span class="kind"><span class="pill">Course</span></span></td><td>University of Colorado Boulder · Coursera</td><td class="date empty"><span class="na">—</span></td><td class="cred empty"><span class="na">—</span></td></tr>
+            <tr><td>Fundamental Python<span class="kind"><span class="pill">Course</span></span></td><td>Coding Studio</td><td class="date">Jan 2026</td><td class="cred empty"><span class="na">—</span></td></tr>
+            <tr><td>Fundamental Database MySQL<span class="kind"><span class="pill">Course</span></span></td><td>Coding Studio</td><td class="date">Jan 2026</td><td class="cred empty"><span class="na">—</span></td></tr>
           </tbody>
         </table>
       </div>
