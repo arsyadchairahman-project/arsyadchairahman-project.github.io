@@ -220,6 +220,15 @@ h3.sub {
 .period { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); padding-top: 0.3rem; font-variant-numeric: tabular-nums; line-height: 1.5; }
 .period .now { color: var(--mark); font-weight: 500; }
 .row h3 { font-family: var(--f-body); font-weight: 600; font-size: var(--s-md); line-height: 1.35; margin: 0; text-wrap: balance; }
+.who { display: flex; align-items: center; gap: 1rem; }
+.who > div { min-width: 0; }
+.logo {
+  flex-shrink: 0; width: 5.5rem; height: 3.25rem; padding: 0.4rem 0.5rem;
+  display: grid; place-items: center; border-radius: 6px;
+  background: #fff; box-shadow: 0 0 0 1px var(--rule);
+}
+.logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.logo-text { font-family: var(--f-display); font-weight: 700; font-size: 1rem; letter-spacing: 0.04em; color: #56656e; }
 .org { color: var(--muted); font-size: var(--s-sm); margin: 0.15rem 0 0; }
 .bul { margin: 0.85rem 0 0; padding-left: 1.1rem; max-width: 44rem; display: grid; gap: 0.4rem; }
 .bul li { padding-left: 0.25rem; }
@@ -464,8 +473,11 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <article class="row">
           <div class="period"><span class="now">Aug 2026 – now</span></div>
           <div>
-            <h3>Intern, Actuarial Division</h3>
-            <p class="org">Perusahaan Asuransi ASEI Indonesia</p>
+            <div class="who">
+              <span class="logo logo-text" aria-hidden="true">ASEI</span>
+              <div><h3>Intern, Actuarial Division</h3>
+              <p class="org">Perusahaan Asuransi ASEI Indonesia</p></div>
+            </div>
             <ul class="bul">
               <li>Process and analyze statistical data for insurance product pricing and actuarial assessments.</li>
               <li>Support the calculation and review of technical reserves under PSAK 117 / IFRS 17 and applicable actuarial standards.</li>
@@ -477,8 +489,11 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <article class="row">
           <div class="period">May 2026 – Aug 2026</div>
           <div>
-            <h3>Intern, Insurance Data Management Group</h3>
-            <p class="org">Lembaga Penjamin Simpanan (LPS)</p>
+            <div class="who">
+              <span class="logo"><img src="assets/orgs/lps.svg" alt="Lembaga Penjamin Simpanan logo" width="80" height="32"></span>
+              <div><h3>Intern, Insurance Data Management Group</h3>
+              <p class="org">Lembaga Penjamin Simpanan (LPS)</p></div>
+            </div>
             <ul class="bul">
               <li>Collected and standardized 800+ financial statements from conventional and sharia insurers.</li>
               <li>Automated Python data validation, flagging inconsistencies, missing values and anomalies.</li>
@@ -490,8 +505,11 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <article class="row">
           <div class="period">Oct 2025 – Apr 2026</div>
           <div>
-            <h3>Intern, Activation Implementation Department</h3>
-            <p class="org">PT Bank Rakyat Indonesia (Persero) Tbk · Culture Transformation Group</p>
+            <div class="who">
+              <span class="logo"><img src="assets/orgs/bri.svg" alt="Bank Rakyat Indonesia logo" width="80" height="41"></span>
+              <div><h3>Intern, Activation Implementation Department</h3>
+              <p class="org">PT Bank Rakyat Indonesia (Persero) Tbk · Culture Transformation Group</p></div>
+            </div>
             <ul class="bul">
               <li>Cleaned and consolidated employee survey datasets using Python, RStudio and Excel.</li>
               <li>Analyzed employee engagement survey results and turned findings into actionable insights.</li>

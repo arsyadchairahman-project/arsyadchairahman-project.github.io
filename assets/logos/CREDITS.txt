@@ -9,3 +9,12 @@ excel.svg
 
 All product names and logos are trademarks of their respective owners and are
 used here only to identify the tools.
+
+Organization logos used in the Experience section.
+
+assets/orgs/bri.svg, assets/orgs/lps.svg
+  From idn-finlogos by Hafidz Noor Fauzi (https://github.com/hafidznoor/idn-finlogos),
+  licensed CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/).
+  Changed: added the SVG namespace attribute so the files render as images.
+  The logo marks belong to PT Bank Rakyat Indonesia (Persero) Tbk and
+  Lembaga Penjamin Simpanan; they identify past employers only.
