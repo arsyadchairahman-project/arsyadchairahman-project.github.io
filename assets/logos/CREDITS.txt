@@ -1,0 +1,11 @@
+Tool logos used in the Skills section.
+
+python.svg, r.svg, mysql.svg, tableau.svg, power-bi.svg
+  From gilbarbara/logos (https://github.com/gilbarbara/logos), CC0-1.0.
+
+excel.svg
+  From vscode-icons (https://github.com/vscode-icons/vscode-icons), MIT License,
+  Copyright (c) 2016 Roberto Huertas.
+
+All product names and logos are trademarks of their respective owners and are
+used here only to identify the tools.
