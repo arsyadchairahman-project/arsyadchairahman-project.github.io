@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Arsyad Chairahman</title>
+<title>Muhammad Arsyad As-Shadiqi Chairahman</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Muhammad Arsyad As-Shadiqi Chairahman — actuarial science graduate, IPB University. Actuarial, insurance data and risk analytics.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,21 +86,23 @@ a:hover { text-decoration-thickness: 2px; }
 h1 {
   font-family: var(--f-display);
   font-weight: 700;
-  font-size: var(--s-xl);
-  line-height: 1.02;
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  line-height: 1.06;
   letter-spacing: -0.02em;
   margin: 0;
   text-wrap: balance;
 }
-h1 .full {
-  display: block;
-  font-family: var(--f-body);
-  font-weight: 400;
-  font-size: var(--s-sm);
-  letter-spacing: 0;
-  color: var(--muted);
-  margin-top: 0.75rem;
+.id { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; }
+.avatar {
+  width: 112px;
+  height: 112px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  background: var(--surface);
 }
+.id .eyebrow { margin: 0; }
 .lede {
   max-width: 34rem;
   margin: 1.5rem 0 0;
@@ -252,6 +254,19 @@ h2 .count {
   border-radius: 2px;
 }
 .tags li::marker { content: ""; }
+.credit { font-size: var(--s-xs); color: var(--muted); margin: 0.35rem 0 0; }
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  max-width: 44rem;
+}
+.results div { border-left: 2px solid var(--accent); padding: 0.15rem 0 0.15rem 0.75rem; min-width: 0; }
+.results dt { font-family: var(--f-display); font-weight: 700; font-size: 1.35rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.results dd { margin: 0.2rem 0 0; font-size: var(--s-xs); color: var(--muted); line-height: 1.45; }
+.finding { margin: 0.9rem 0 0; max-width: 44rem; font-size: var(--s-sm); }
+.finding b { font-weight: 600; }
 .more { display: inline-block; margin-top: 0.9rem; font-size: var(--s-sm); font-weight: 500; }
 
 /* Education + skills grid */
@@ -291,10 +306,11 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 <header class="hero">
   <div class="wrap">
     <div>
-      <p class="eyebrow">Actuarial Science · IPB University · Class of 2026</p>
-      <h1>Arsyad Chairahman
-        <span class="full">Muhammad Arsyad As-Shadiqi Chairahman</span>
-      </h1>
+      <div class="id">
+        <img class="avatar" src="photo.jpg" width="112" height="112" alt="Portrait of Muhammad Arsyad As-Shadiqi Chairahman">
+        <p class="eyebrow">Actuarial Science<br>IPB University<br>Class of 2026</p>
+      </div>
+      <h1>Muhammad Arsyad <span style="white-space:nowrap">As-Shadiqi</span> Chairahman</h1>
       <p class="lede">Actuarial Science graduate, Cum Laude. Currently an actuarial intern at Asuransi ASEI Indonesia, working on PSAK 117 / IFRS 17 technical reserves, product profitability and cash flow projections. Seeking actuarial, risk management, insurance or financial analytics roles.</p>
       <div class="contact">
         <span class="item">
@@ -371,7 +387,13 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <div>
             <p class="kind">Undergraduate thesis</p>
             <h3>Reversionary Annuity Pricing under the CIR Model</h3>
-            <p class="sum">A multi-life pricing model where the annuity pays to the children after the parent's death. Interest follows a Cox–Ingersoll–Ross stochastic model with parameters estimated by OLS and forecasts checked with MAPE. Present values of premiums and benefits use the Indonesian Mortality Table (TMI 2023) across several benefit structures.</p>
+            <p class="sum">Net monthly premium for a multi-life reversionary annuity covering two parents and two children: benefits start once both parents have died and continue while at least one child is alive. The BI 7-Day Reverse Repo Rate (Jan 2019 – Dec 2025) was modeled with a Cox–Ingersoll–Ross process estimated by OLS; survival probabilities come from the Indonesian Mortality Table 2023 under UDD. Premiums were priced for four policy scenarios combining joint life and last survivor statuses with combined or separate payment schemes, over a 15-year term.</p>
+            <dl class="results">
+              <div><dt>2.88%</dt><dd>MAPE of the CIR model on test data (9.75% on training)</dd></div>
+              <div><dt>Rp17,925 – 18,328</dt><dd>Net monthly premium across the four scenarios</dd></div>
+              <div><dt>4</dt><dd>Policy scenarios priced, family aged 30, 27, 3 and 1</dd></div>
+            </dl>
+            <p class="finding"><b>Finding:</b> joint life scenarios cost more than last survivor ones, and paying premiums separately per insured comes out slightly cheaper than one combined contract.</p>
             <ul class="tags"><li>Multi-life contingencies</li><li>CIR model</li><li>OLS</li><li>MAPE</li><li>TMI 2023</li></ul>
             <a class="more" href="https://drive.google.com/file/d/1QIe2NTbcRRrfP33RXW3Hjyrlln9e9J6V/view?usp=sharing" target="_blank" rel="noopener">Read the thesis ↗</a>
           </div>
@@ -381,7 +403,14 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <div>
             <p class="kind">Risk modeling</p>
             <h3>Monte Carlo Variance Reduction for Claim Severity</h3>
-            <p class="sum">Compared antithetic, stratified and importance sampling for simulating health insurance claim severity, measuring VaR and TVaR over 10,000 simulations to weigh accuracy against computing cost.</p>
+            <p class="credit">Journal article draft · co-author in a team of 5</p>
+            <p class="sum">Modeled 1,340 health insurance claims with a five-component lognormal mixture fitted by the EM algorithm (Kolmogorov–Smirnov p = 0.99), then compared standard Monte Carlo with antithetic variates, stratified sampling and importance sampling for estimating 95% VaR and TVaR. Each method ran 10,000 simulations, replicated 200 and 500 times, and was judged on bias, variance, MSE, efficiency and computing time.</p>
+            <dl class="results">
+              <div><dt>41,406</dt><dd>Analytical 95% VaR used as the benchmark (TVaR 46,203)</dd></div>
+              <div><dt>1.74×</dt><dd>Efficiency of stratified sampling for VaR vs. standard Monte Carlo</dd></div>
+              <div><dt>2.87×</dt><dd>Efficiency of importance sampling for TVaR vs. standard Monte Carlo</dd></div>
+            </dl>
+            <p class="finding"><b>Finding:</b> the best technique depends on the risk measure. Stratified sampling gave the lowest MSE for VaR, while importance sampling did best for TVaR at a higher computing cost.</p>
             <ul class="tags"><li>Monte Carlo</li><li>VaR / TVaR</li><li>Importance sampling</li></ul>
             <a class="more" href="https://drive.google.com/file/d/18a-5_LOVK0ySQpnOxDUiNVKjrn_YDOLW/view?usp=sharing" target="_blank" rel="noopener">View project ↗</a>
           </div>
@@ -401,7 +430,14 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <div>
             <p class="kind">Derivatives</p>
             <h3>Option Spread Strategies for Gold Futures Risk</h3>
-            <p class="sum">Priced options with the Black-76 model on historical gold futures data and compared how each spread limits downside risk under different market conditions.</p>
+            <p class="credit">Capstone paper · co-author in a team of 5</p>
+            <p class="sum">Compared Butterfly and Broken Wing Condor call spreads as hedges for gold futures, using 2024 daily prices from Yahoo Finance, the Black-76 model with a 3-month maturity, and a lognormal price distribution to estimate each strategy's probability of profit.</p>
+            <dl class="results">
+              <div><dt>15.14%</dt><dd>Annualized volatility of gold futures in 2024</dd></div>
+              <div><dt>49.8% vs 28.3%</dt><dd>Probability of profit: Broken Wing Condor vs. Butterfly</dd></div>
+              <div><dt>41.8% vs 1.9%</dt><dd>Chance of landing in the max-profit range, same comparison</dd></div>
+            </dl>
+            <p class="finding"><b>Finding:</b> both spreads cap the losses of an unhedged position. The Broken Wing Condor costs more up front but is far more likely to end in profit.</p>
             <ul class="tags"><li>Black-76</li><li>Option spreads</li><li>Gold futures</li></ul>
             <a class="more" href="https://ipb.link/pkd-project" target="_blank" rel="noopener">View project ↗</a>
           </div>
