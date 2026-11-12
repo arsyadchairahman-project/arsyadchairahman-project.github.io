@@ -38,6 +38,8 @@
   --s1: #0082a3;
   --s2: #b8741a;
   --grid: #dde3e1;
+  --band: #e5edea;
+  --band-surface: #d9e4e0;
   --nav-h: 56px;
 
   --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
@@ -53,13 +55,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0e1519; --surface: #152027; --panel: #121c21; --ink: #e2e9e8; --muted: #8e9ca2;
-    --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d;
+    --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d; --band: #111b20; --band-surface: #1a272e;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0e1519; --surface: #152027; --panel: #121c21; --ink: #e2e9e8; --muted: #8e9ca2;
-  --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d;
+  --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d; --band: #111b20; --band-surface: #1a272e;
   color-scheme: dark;
 }
 
@@ -182,6 +184,37 @@ h1 {
 .facts dt { font-family: var(--f-mono); font-size: var(--s-xs); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding-top: 0.2rem; }
 .facts dd { margin: 0; font-size: var(--s-sm); line-height: 1.45; }
 .facts dd b { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; color: var(--accent); }
+
+/* ---------- Colour bands ----------
+   Hero and Contact are deep-teal "worksheet" panels with a faint graph-paper grid;
+   they re-declare the colour tokens so everything inside adapts automatically. */
+.hero, .contact-sec {
+  --bg: #0f3f4a;
+  --ink: #eef5f4;
+  --muted: #a8c4c7;
+  --rule: rgba(255, 255, 255, 0.16);
+  --accent: #8fd6e2;
+  --mark: #f0c46c;
+  --surface: rgba(255, 255, 255, 0.07);
+  --panel: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+  background-color: #0f3f4a;
+  background-image:
+    radial-gradient(60rem 30rem at 85% -10%, rgba(143, 214, 226, 0.22), transparent 60%),
+    radial-gradient(40rem 24rem at -10% 110%, rgba(240, 196, 108, 0.12), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 28px);
+  border-bottom: 0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero, :root:not([data-theme="light"]) .contact-sec { background-color: #0b2e36; --bg: #0b2e36; }
+}
+:root[data-theme="dark"] .hero, :root[data-theme="dark"] .contact-sec { background-color: #0b2e36; --bg: #0b2e36; }
+.hero .avatar { border: 3px solid rgba(255, 255, 255, 0.85); }
+.hero .facts { backdrop-filter: blur(2px); }
+/* Light bands alternate with the plain page colour */
+.band { background: var(--band); --surface: var(--band-surface); }
+.band .tab[aria-selected="true"], .band .tab:hover { background: var(--panel); }
 
 /* ---------- Sections ---------- */
 section { padding-block: clamp(3rem, 7vw, 5rem); border-bottom: 1px solid var(--rule); }
@@ -427,7 +460,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </header>
 
 <main>
-  <section id="about">
+  <section id="about" class="band">
     <div class="wrap">
       <div class="sec-head"><h2>About</h2></div>
       <div class="about">
@@ -545,7 +578,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
-  <section id="projects">
+  <section id="projects" class="band">
     <div class="wrap">
       <div class="sec-head"><h2>Research &amp; projects</h2><p>Thesis and course research, with the results from each paper</p></div>
       <div class="browser">
@@ -684,7 +717,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
-  <section id="certifications">
+  <section id="certifications" class="band">
     <div class="wrap">
       <div class="sec-head"><h2>Certifications</h2><p>Professional exams, courses and job simulations</p></div>
       <div class="tablewrap">
