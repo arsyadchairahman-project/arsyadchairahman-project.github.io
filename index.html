@@ -77,6 +77,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; }
+::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); color: var(--ink); }
+html { scrollbar-color: color-mix(in srgb, var(--muted) 55%, transparent) var(--bg); accent-color: var(--accent); caret-color: var(--accent); }
 a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { text-decoration-thickness: 2px; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
@@ -119,10 +121,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .hero .wrap {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  gap: clamp(1.5rem, 4vw, 3.5rem);
-  align-items: end;
-  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 5vw, 3.5rem);
+  gap: clamp(1.75rem, 4vw, 3.5rem) clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2.5rem, 6vw, 4.5rem);
 }
+.hero-top { grid-column: 1 / -1; }
+.cred { margin: 0; font-size: var(--s-sm); line-height: 1.5; color: var(--muted); }
 .eyebrow {
   font-family: var(--f-mono);
   font-size: var(--s-xs);
@@ -134,20 +138,20 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 h1 {
   font-family: var(--f-display);
   font-weight: 700;
-  font-size: clamp(2rem, 4.6vw, 3.1rem);
-  line-height: 1.06;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.35rem, 6.6vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
   margin: 0;
-  text-wrap: balance;
 }
-.id { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; }
+h1 .l { display: block; }
+.id { display: flex; align-items: center; gap: 1.25rem; margin-bottom: clamp(1.25rem, 3vw, 2rem); }
 .avatar {
   width: 112px; height: 112px; flex-shrink: 0;
   border-radius: 50%; object-fit: cover;
   border: 1px solid var(--rule); background: var(--surface);
 }
 .id .eyebrow { margin: 0; }
-.lede { max-width: 34rem; margin: 1.5rem 0 0; font-size: var(--s-lg); line-height: 1.45; text-wrap: pretty; }
+.lede { max-width: 34rem; margin: 0; font-size: var(--s-lg); line-height: 1.45; text-wrap: pretty; }
 .actions { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center; margin-top: 1.5rem; }
 .cv {
   display: inline-flex; align-items: center; gap: 0.5rem;
@@ -202,8 +206,10 @@ h1 {
   background-image:
     radial-gradient(60rem 30rem at 85% -10%, rgba(143, 214, 226, 0.22), transparent 60%),
     radial-gradient(40rem 24rem at -10% 110%, rgba(240, 196, 108, 0.12), transparent 60%),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 28px),
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 28px);
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.075) 0 1px, transparent 1px 140px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.075) 0 1px, transparent 1px 140px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 28px);
   border-bottom: 0;
 }
 @media (prefers-color-scheme: dark) {
@@ -211,7 +217,6 @@ h1 {
 }
 :root[data-theme="dark"] .hero, :root[data-theme="dark"] .contact-sec { background-color: #0b2e36; --bg: #0b2e36; }
 .hero .avatar { border: 3px solid rgba(255, 255, 255, 0.85); }
-.hero .facts { backdrop-filter: blur(2px); }
 /* Light bands alternate with the plain page colour */
 .band { background: var(--band); --surface: var(--band-surface); }
 .band .tab[aria-selected="true"], .band .tab:hover { background: var(--panel); }
@@ -220,14 +225,14 @@ h1 {
 section { padding-block: clamp(3rem, 7vw, 5rem); border-bottom: 1px solid var(--rule); }
 .sec-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem 1rem; margin: 0 0 2.25rem; }
 h2 {
-  font-family: var(--f-display); font-weight: 700; font-size: var(--s-xl);
-  letter-spacing: -0.02em; line-height: 1.1; margin: 0;
+  font-family: var(--f-display); font-weight: 700; font-size: clamp(2.1rem, 4.4vw, 3.3rem);
+  letter-spacing: -0.03em; line-height: 1.02; margin: 0;
 }
 .sec-head p { margin: 0; color: var(--muted); font-size: var(--s-sm); }
 h3.sub {
-  font-family: var(--f-mono); font-weight: 500; font-size: var(--s-xs);
-  letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
-  margin: 3rem 0 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--rule);
+  font-family: var(--f-display); font-weight: 700; font-size: var(--s-lg);
+  letter-spacing: -0.015em; color: var(--ink);
+  margin: 3.5rem 0 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule);
 }
 
 /* About */
@@ -235,7 +240,7 @@ h3.sub {
 .about .prose p { margin: 0 0 1rem; max-width: 36rem; }
 .about .prose p:last-child { margin-bottom: 0; }
 .evidence { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
-.evidence caption { text-align: left; font-family: var(--f-mono); font-size: var(--s-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-bottom: 0.6rem; }
+.evidence caption { text-align: left; font-weight: 600; font-size: var(--s-sm); color: var(--ink); padding-bottom: 0.75rem; }
 .evidence th, .evidence td { text-align: left; vertical-align: top; padding: 0.7rem 0; border-top: 1px solid var(--rule); }
 .evidence thead th { font-family: var(--f-mono); font-size: var(--s-xs); font-weight: 400; color: var(--muted); border-top: 0; padding-top: 0; }
 .evidence tbody th { font-weight: 600; padding-right: 1.25rem; width: 42%; }
@@ -244,7 +249,7 @@ h3.sub {
 .edu { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 0 2rem; }
 .edu-name { font-family: var(--f-display); font-weight: 500; font-size: var(--s-lg); margin: 0; }
 .courses { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem 2rem; margin-top: 1.25rem; max-width: 44rem; }
-.courses h4 { margin: 0 0 0.25rem; font-size: var(--s-sm); font-weight: 600; }
+.courses h4 { margin: 0 0 0.35rem; font-family: var(--f-display); font-size: var(--s-md); font-weight: 700; letter-spacing: -0.01em; }
 .courses p { margin: 0; font-size: var(--s-sm); color: var(--muted); }
 
 /* Life-table rows */
@@ -252,7 +257,7 @@ h3.sub {
 .row, .edu { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 0 2rem; }
 .period { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); padding-top: 0.3rem; font-variant-numeric: tabular-nums; line-height: 1.5; }
 .period .now { color: var(--mark); font-weight: 500; }
-.row h3 { font-family: var(--f-body); font-weight: 600; font-size: var(--s-md); line-height: 1.35; margin: 0; text-wrap: balance; }
+.row h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.25rem, 2vw, 1.4rem); letter-spacing: -0.015em; line-height: 1.2; margin: 0; text-wrap: balance; }
 .who { display: flex; align-items: center; gap: 1rem; }
 .who > div { min-width: 0; }
 .logo {
@@ -274,28 +279,29 @@ h3.sub {
 .tabs .hint { font-size: var(--s-xs); color: var(--muted); margin: 0 0 0.5rem; }
 .tab {
   display: block; width: 100%; text-align: left; cursor: pointer;
-  background: transparent; border: 0; border-left: 2px solid var(--rule);
+  background: transparent; border: 0; border-left: 1px solid var(--rule); border-radius: 0 4px 4px 0;
   padding: 0.6rem 0.85rem; color: var(--ink); font: inherit;
 }
 .tab b { display: block; font-size: var(--s-sm); font-weight: 600; line-height: 1.35; }
 .tab span { display: block; font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); margin-top: 0.15rem; }
 .tab:hover { background: var(--surface); }
-.tab[aria-selected="true"] { border-left-color: var(--accent); background: var(--surface); }
+.tab[aria-selected="true"] { border-left-color: var(--accent); background: var(--surface); box-shadow: 0 1px 2px rgba(15, 63, 74, 0.08), 0 4px 12px -6px rgba(15, 63, 74, 0.18); }
 .tab[aria-selected="true"] b { color: var(--accent); }
 .panel { min-width: 0; }
-.panel .kind { font-family: var(--f-mono); font-size: var(--s-xs); letter-spacing: 0.04em; text-transform: uppercase; color: var(--mark); margin: 0 0 0.35rem; }
+.byline { margin: 0.6rem 0 0; font-size: var(--s-sm); color: var(--mark); font-weight: 500; }
 .panel h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.4rem, 2.6vw, 1.9rem); letter-spacing: -0.015em; line-height: 1.15; margin: 0; text-wrap: balance; }
-.credit { font-size: var(--s-xs); color: var(--muted); margin: 0.5rem 0 0; }
+.credit { font-size: var(--s-sm); color: var(--muted); margin: 0.15rem 0 0; }
 .panel p.sum { margin: 1rem 0 0; max-width: 44rem; }
-.results { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: 0.75rem; margin: 1.25rem 0 0; max-width: 44rem; }
-.results div { border-left: 2px solid var(--accent); padding: 0.15rem 0 0.15rem 0.75rem; min-width: 0; }
-.results dt { font-family: var(--f-display); font-weight: 700; font-size: 1.35rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
-.results dd { margin: 0.2rem 0 0; font-size: var(--s-xs); color: var(--muted); line-height: 1.45; }
+.ledger { width: 100%; max-width: 44rem; margin: 1.5rem 0 0; border-collapse: collapse; }
+.ledger thead th { font-size: var(--s-xs); font-weight: 500; color: var(--muted); text-align: left; padding: 0 0 0.5rem; border-bottom: 1px solid var(--ink); }
+.ledger thead th:last-child, .ledger td { text-align: right; }
+.ledger tbody th { font-weight: 400; font-size: var(--s-sm); text-align: left; padding: 0.7rem 1.5rem 0.7rem 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
+.ledger td { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.15rem, 2.2vw, 1.5rem); letter-spacing: -0.01em; color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; padding: 0.7rem 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
 .findings { margin: 1.5rem 0 0; padding: 0; list-style: none; counter-reset: f; max-width: 44rem; display: grid; gap: 0.75rem; }
 .findings li { counter-increment: f; display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); gap: 0.5rem; font-size: var(--s-sm); }
 .findings li::before { content: counter(f); font-family: var(--f-mono); font-size: var(--s-xs); width: 1.4rem; height: 1.4rem; border-radius: 50%; border: 1px solid var(--rule); display: grid; place-items: center; color: var(--muted); margin-top: 0.1rem; }
 .findings b { font-weight: 600; }
-.panel-h { font-family: var(--f-mono); font-weight: 500; font-size: var(--s-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 2rem 0 0.75rem; }
+.panel-h { font-family: var(--f-display); font-weight: 700; font-size: var(--s-md); letter-spacing: -0.01em; color: var(--ink); margin: 2.25rem 0 0.75rem; }
 .tags { list-style: none; padding: 0; margin: 1.25rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .tags li { font-family: var(--f-mono); font-size: var(--s-xs); padding: 0.2rem 0.5rem; background: var(--surface); border-radius: 2px; }
 .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem 1.5rem; margin: 1.5rem 0 0; padding-top: 1rem; border-top: 1px solid var(--rule); max-width: 44rem; font-size: var(--s-sm); }
@@ -389,7 +395,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .browser { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
   .tabs { position: static; display: flex; overflow-x: auto; gap: 0.5rem; padding-bottom: 0.25rem; scrollbar-width: thin; }
   .tabs .hint { display: none; }
-  .tab { flex: 0 0 auto; width: auto; max-width: 15rem; border-left: 0; border-bottom: 2px solid var(--rule); }
+  .tab { flex: 0 0 auto; width: auto; max-width: 15rem; border-left: 0; border-bottom: 1px solid var(--rule); border-radius: 4px 4px 0 0; }
   .tab[aria-selected="true"] { border-bottom-color: var(--accent); }
   .about, .contact-sec .wrap { grid-template-columns: minmax(0, 1fr); }
 }
@@ -429,12 +435,14 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
 <header class="hero" id="top">
   <div class="wrap">
-    <div>
+    <div class="hero-top">
       <div class="id">
         <img class="avatar" src="photo.jpg" width="112" height="112" alt="Portrait of Muhammad Arsyad As-Shadiqi Chairahman">
-        <p class="eyebrow">Actuarial Science<br>IPB University<br>Class of 2026</p>
+        <p class="cred">Actuarial Science, IPB University<br>Class of 2026 · Cum Laude</p>
       </div>
-      <h1>Muhammad Arsyad <span style="white-space:nowrap">As-Shadiqi</span> Chairahman</h1>
+      <h1><span class="l">Muhammad Arsyad</span> <span class="l"><span style="white-space:nowrap">As-Shadiqi</span> Chairahman</span></h1>
+    </div>
+    <div class="hero-copy">
       <p class="lede">Actuarial Science graduate, Cum Laude. Currently an actuarial intern at Asuransi ASEI Indonesia, working on PSAK 117 / IFRS 17 technical reserves, product profitability and cash flow projections.</p>
       <div class="actions">
         <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
@@ -595,14 +603,17 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
         <div>
           <article class="panel" role="tabpanel" id="p-thesis" aria-labelledby="tab-thesis">
-            <p class="kind">Undergraduate thesis · Nov 2025 – Jun 2026</p>
             <h3>Reversionary Annuity Pricing under the CIR Model</h3>
+            <p class="byline">Undergraduate thesis · Nov 2025 – Jun 2026</p>
             <p class="sum">Net monthly premium for a multi-life reversionary annuity covering two parents and two children: benefits start once both parents have died and continue while at least one child is alive. The BI 7-Day Reverse Repo Rate (Jan 2019 – Dec 2025) was modeled with a Cox–Ingersoll–Ross process estimated by OLS; survival probabilities come from the Indonesian Mortality Table 2023 under UDD. Premiums were priced for four policy scenarios over a 15-year term.</p>
-            <dl class="results">
-              <div><dt>2.88%</dt><dd>MAPE of the CIR model on test data (9.75% on training)</dd></div>
-              <div><dt>Rp17,925 – 18,328</dt><dd>Net monthly premium across the four scenarios</dd></div>
-              <div><dt>4</dt><dd>Policy scenarios priced, family aged 30, 27, 3 and 1</dd></div>
-            </dl>
+            <table class="ledger">
+              <thead><tr><th scope="col">Result</th><th scope="col">Value</th></tr></thead>
+              <tbody>
+              <tr><th scope="row">MAPE of the CIR model on test data (9.75% on training)</th><td>2.88%</td></tr>
+              <tr><th scope="row">Net monthly premium across the four scenarios</th><td>Rp17,925 – 18,328</td></tr>
+              <tr><th scope="row">Policy scenarios priced, family aged 30, 27, 3 and 1</th><td>4</td></tr>
+              </tbody>
+            </table>
 
             <p class="panel-h">Try it: how the scenario changes the premium</p>
             <div class="explorer" id="explorer">
@@ -654,15 +665,18 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           </article>
 
           <article class="panel" role="tabpanel" id="p-montecarlo" aria-labelledby="tab-montecarlo">
-            <p class="kind">Risk modeling · Oct 2025 – Dec 2025</p>
             <h3>Monte Carlo Variance Reduction for Claim Severity</h3>
+            <p class="byline">Risk modeling · Oct 2025 – Dec 2025</p>
             <p class="credit">Journal article draft · co-author in a team of 5</p>
             <p class="sum">Modeled 1,340 health insurance claims with a five-component lognormal mixture fitted by the EM algorithm (Kolmogorov–Smirnov p = 0.99), then compared standard Monte Carlo with antithetic variates, stratified sampling and importance sampling for estimating 95% VaR and TVaR. Each method ran 10,000 simulations, replicated 200 and 500 times, and was judged on bias, variance, MSE, efficiency and computing time.</p>
-            <dl class="results">
-              <div><dt>41,406</dt><dd>Analytical 95% VaR used as the benchmark (TVaR 46,203)</dd></div>
-              <div><dt>1.74×</dt><dd>Efficiency of stratified sampling for VaR vs. standard Monte Carlo</dd></div>
-              <div><dt>2.87×</dt><dd>Efficiency of importance sampling for TVaR vs. standard Monte Carlo</dd></div>
-            </dl>
+            <table class="ledger">
+              <thead><tr><th scope="col">Result</th><th scope="col">Value</th></tr></thead>
+              <tbody>
+              <tr><th scope="row">Analytical 95% VaR used as the benchmark (TVaR 46,203)</th><td>41,406</td></tr>
+              <tr><th scope="row">Efficiency of stratified sampling for VaR vs. standard Monte Carlo</th><td>1.74×</td></tr>
+              <tr><th scope="row">Efficiency of importance sampling for TVaR vs. standard Monte Carlo</th><td>2.87×</td></tr>
+              </tbody>
+            </table>
             <p class="panel-h">What the paper found</p>
             <ol class="findings">
               <li><span><b>A five-lognormal mixture fits the claims.</b> The Kolmogorov–Smirnov statistic was 0.0119 against a critical value of 0.0372.</span></li>
@@ -674,15 +688,18 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           </article>
 
           <article class="panel" role="tabpanel" id="p-options" aria-labelledby="tab-options">
-            <p class="kind">Derivatives · Apr 2025 – Jun 2025</p>
             <h3>Option Spread Strategies for Gold Futures Risk</h3>
+            <p class="byline">Derivatives · Apr 2025 – Jun 2025</p>
             <p class="credit">Capstone paper · co-author in a team of 5</p>
             <p class="sum">Compared Butterfly and Broken Wing Condor call spreads as hedges for gold futures, using 2024 daily prices from Yahoo Finance, the Black-76 model with a 3-month maturity, and a lognormal price distribution to estimate each strategy's probability of profit.</p>
-            <dl class="results">
-              <div><dt>15.14%</dt><dd>Annualized volatility of gold futures in 2024</dd></div>
-              <div><dt>49.8% vs 28.3%</dt><dd>Probability of profit: Broken Wing Condor vs. Butterfly</dd></div>
-              <div><dt>41.8% vs 1.9%</dt><dd>Chance of landing in the max-profit range, same comparison</dd></div>
-            </dl>
+            <table class="ledger">
+              <thead><tr><th scope="col">Result</th><th scope="col">Value</th></tr></thead>
+              <tbody>
+              <tr><th scope="row">Annualized volatility of gold futures in 2024</th><td>15.14%</td></tr>
+              <tr><th scope="row">Probability of profit: Broken Wing Condor vs. Butterfly</th><td>49.8% vs 28.3%</td></tr>
+              <tr><th scope="row">Chance of landing in the max-profit range, same comparison</th><td>41.8% vs 1.9%</td></tr>
+              </tbody>
+            </table>
             <p class="panel-h">What the paper found</p>
             <ol class="findings">
               <li><span><b>Both spreads cap the losses</b> that an unhedged gold futures position would face.</span></li>
@@ -694,8 +711,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           </article>
 
           <article class="panel" role="tabpanel" id="p-pca" aria-labelledby="tab-pca">
-            <p class="kind">Machine learning · Apr 2025 – Jun 2025</p>
             <h3>PCA and Machine Learning for Stock Prediction</h3>
+            <p class="byline">Machine learning · Apr 2025 – Jun 2025</p>
             <p class="sum">Measured the prediction accuracy of Ridge Regression, K-Nearest Neighbors, Random Forest and XGBoost on AMD stock data from 2014 to 2024, before and after reducing dimensions with principal component analysis.</p>
             <ul class="tags"><li>PCA</li><li>XGBoost</li><li>Random Forest</li><li>Ridge</li><li>KNN</li></ul>
             <a class="ghost more" href="https://ipb.link/amp-project" target="_blank" rel="noopener">View project ↗</a>
@@ -744,7 +761,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <section id="contact" class="contact-sec">
     <div class="wrap">
       <div>
-        <p class="eyebrow">Contact</p>
         <h2 class="cta">Hiring for an actuarial or risk role? Let's talk.</h2>
         <p class="cta-sub">Email is the fastest way to reach me. My CV has the full details.</p>
         <div class="actions">
@@ -829,12 +845,26 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   var MIN = 17924.66;
   var picked = 'ls-c';
   function fmt(n, d) { return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  var shown = 17943.13, raf = 0;
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function paint(el, v) { el.innerHTML = 'Rp' + fmt(v, 0) + '<small>/ month</small>'; }
+  function countTo(el, target) {
+    cancelAnimationFrame(raf);
+    if (still) { shown = target; paint(el, target); return; }
+    var from = shown, t0 = performance.now(), dur = 520;
+    (function step(now) {
+      var k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(2, -10 * k);
+      shown = from + (target - from) * (k === 1 ? 1 : e);
+      paint(el, shown);
+      if (k < 1) raf = requestAnimationFrame(step);
+    })(t0);
+  }
   function updateExplorer() {
     var st = document.querySelector('input[name="status"]:checked').value;
     var sc = document.querySelector('input[name="scheme"]:checked').value;
     picked = st + '-' + sc;
     var p = PREM[picked], diff = p[1] - MIN;
-    document.getElementById('ex-prem').innerHTML = 'Rp' + fmt(p[1], 0) + '<small>/ month</small>';
+    countTo(document.getElementById('ex-prem'), p[1]);
     document.getElementById('ex-note').innerHTML = 'Scenario ' + p[0] + '. ' +
       (diff < 0.5 ? '<b>The cheapest</b> of the four scenarios.' : '<b>Rp' + fmt(diff, 0) + ' more</b> than the cheapest scenario.');
     drawCharts();
