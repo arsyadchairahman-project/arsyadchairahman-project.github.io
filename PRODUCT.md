@@ -33,7 +33,7 @@ Insurance-side actuarial experience (current actuarial intern at Asuransi ASEI w
 - English only (owner decided against an EN/ID toggle).
 - The page must work on phones, in light and dark mode.
 - A public copy of the CV without the phone number is published; the phone number must not appear on the site.
-- Link preview card (`og-image.png`) shows name, role, GPA and PAI exams; it must be kept in sync with the page when facts change.
+- Link preview card (`og-card.png`) shows name, role, GPA and PAI exams; it must be kept in sync with the page when facts change.
 - No replica dashboards from internships (owner decision: confidentiality and no invented numbers).
 - Monte Carlo and option-spread projects are team work (5 authors each) and must stay labelled as such. The Monte Carlo paper is a draft, not published.
 - Thesis code publication is on hold (IPB holds thesis copyright).
