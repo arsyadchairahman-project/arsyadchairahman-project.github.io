@@ -146,8 +146,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 h1 {
   font-family: var(--f-display);
   font-weight: 700;
-  font-size: clamp(1.45rem, 2.6vw, 2.05rem);
-  line-height: 1.1;
+  font-size: clamp(1.25rem, 2.1vw, 1.6rem);
+  line-height: 1.15;
   letter-spacing: -0.025em;
   margin: 0;
 }
@@ -161,15 +161,18 @@ h1 {
 .id .eyebrow { margin: 0; }
 /* Intro: a short get-to-know-me block; key facts sit in a small ledger beside it */
 .intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem); gap: 1.75rem clamp(2rem, 5vw, 4.5rem); align-items: start; }
-.hello { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--mark); margin: 0 0 0.3rem; }
-.lede { max-width: 34rem; margin: 1.35rem 0 0; font-size: var(--s-lg); line-height: 1.45; text-wrap: pretty; }
+.gtkm { font-family: var(--f-display); font-weight: 700; font-size: clamp(2.1rem, 4.6vw, 3.4rem); line-height: 1; letter-spacing: -0.035em; margin: 0 0 clamp(1.25rem, 2.6vw, 1.75rem); color: var(--ink); }
+.role { margin: 0.35rem 0 0; font-size: var(--s-sm); color: var(--muted); }
+.role abbr { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; white-space: nowrap; }
+.open { display: inline-flex; align-items: center; gap: 0.6rem; margin: 1.5rem 0 0; padding: 0.5rem 0.9rem; border: 1px solid color-mix(in srgb, var(--mark) 55%, transparent); border-radius: 999px; font-size: var(--s-sm); font-weight: 500; color: var(--ink); background: color-mix(in srgb, var(--mark) 10%, transparent); }
+.open span { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--mark); flex-shrink: 0; }
+.hero .actions { margin-top: 1.5rem; }
 .facts { margin: 0; font-size: var(--s-sm); border-top: 1px solid var(--rule); }
 .facts div { display: grid; grid-template-columns: 5.75rem minmax(0, 1fr); gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--rule); }
 .facts dt { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); padding-top: 0.1rem; }
 .facts dd { margin: 0; line-height: 1.4; }
 .facts dd b { font-weight: 600; }
 .facts dd span { color: var(--muted); }
-.lede abbr { white-space: nowrap; text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
 .actions { display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center; margin-top: 1.5rem; }
 .cv {
   display: inline-flex; align-items: center; gap: 0.5rem;
@@ -243,9 +246,14 @@ h3.sub {
 }
 
 /* About */
-.about { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2.5rem 3.5rem; }
+.about { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2.5rem 3.5rem; align-items: start; }
 .about .prose p { margin: 0 0 1rem; max-width: 36rem; }
 .about .prose p:last-child { margin-bottom: 0; }
+.hl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 1.75rem 0 0; max-width: 36rem; border-top: 1px solid var(--rule); }
+.hl div { padding: 1rem 1.25rem 1rem 0; border-bottom: 1px solid var(--rule); }
+.hl div:nth-child(even) { padding: 1rem 0 1rem 1.25rem; border-left: 1px solid var(--rule); }
+.hl dt { font-family: var(--f-display); font-weight: 700; font-size: var(--s-lg); line-height: 1.15; letter-spacing: -0.015em; color: var(--accent); }
+.hl dd { margin: 0.3rem 0 0; font-size: var(--s-sm); line-height: 1.45; color: var(--muted); }
 .evidence { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
 .evidence caption { text-align: left; font-weight: 600; font-size: var(--s-sm); color: var(--ink); padding-bottom: 0.75rem; }
 .evidence th, .evidence td { text-align: left; vertical-align: top; padding: 0.7rem 0; border-top: 1px solid var(--rule); }
@@ -420,6 +428,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .scn .v { font-size: 0.84rem; letter-spacing: -0.01em; }
   .explorer { padding: 0.9rem 0.7rem; }
 }
+@media (max-width: 480px) {
+  .hl { grid-template-columns: minmax(0, 1fr); }
+  .hl div, .hl div:nth-child(even) { padding: 0.85rem 0; border-left: 0; }
+}
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 </style>
 </head>
@@ -445,14 +457,15 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <div class="wrap">
     <div class="intro">
       <div>
+        <p class="gtkm">Get to know me</p>
         <div class="id">
           <img class="avatar" src="photo.jpg" width="80" height="80" alt="Portrait of Muhammad Arsyad As-Shadiqi Chairahman">
           <div>
-            <p class="hello">Hi, I'm Arsyad</p>
             <h1>Muhammad Arsyad <span style="white-space:nowrap">As-Shadiqi</span> Chairahman</h1>
+            <p class="role">Actuarial Intern at Asuransi ASEI · <abbr title="Indonesia's adoption of IFRS 17, the insurance contracts accounting standard">PSAK 117</abbr> reserves</p>
           </div>
         </div>
-        <p class="lede">Actuarial intern at Asuransi ASEI, working on <abbr title="Indonesia's adoption of IFRS 17, the insurance contracts accounting standard">PSAK 117</abbr> reserves and cash flow projections. Open to actuarial, risk, insurance and data analyst roles.</p>
+        <p class="open"><span aria-hidden="true"></span>Open to actuarial, risk, insurance and data analyst roles</p>
         <div class="actions">
           <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
           <a class="ghost" href="mailto:shadiqiarsyad@gmail.com?subject=Opportunity%20for%20Muhammad%20Arsyad%20As-Shadiqi%20Chairahman">Email me</a>
@@ -476,8 +489,14 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <div class="sec-head"><h2>About</h2></div>
       <div class="about">
         <div class="prose">
-          <p>Actuarial science graduate from IPB University (Cum Laude, PAI CF3 and CF4 passed) with three internships in insurance, deposit insurance and banking.</p>
+          <p>I'm Arsyad, an actuarial science graduate from IPB University (Cum Laude, PAI CF3 and CF4 passed). I have worked on both sides of Indonesian insurance: inside an insurer on PSAK 117 reserves, and at the deposit insurer LPS on insurer financial data.</p>
           <p>My thesis on annuity pricing is solo work. The other projects on this page were done in teams of four.</p>
+          <dl class="hl" aria-label="Highlights">
+            <div><dt>3 internships</dt><dd>Insurer, deposit insurer and bank: ASEI, LPS, BRI</dd></div>
+            <div><dt>800+ statements</dt><dd>Insurer financial statements standardized at LPS</dd></div>
+            <div><dt>Solo thesis</dt><dd>Annuity pricing under the CIR model, 2.88% test MAPE</dd></div>
+            <div><dt>VP of Research</dt><dd>AAID, a national actuarial student community, 2025–2026</dd></div>
+          </dl>
         </div>
         <table class="evidence">
           <caption>What I do, and where to see it</caption>
