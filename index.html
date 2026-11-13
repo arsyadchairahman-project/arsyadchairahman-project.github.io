@@ -34,7 +34,7 @@
   --muted: #56656e;
   --rule: #cdd6d4;
   --accent: #0d5868;
-  --mark: #a8741b;
+  --mark: #8a5c12;
   --s1: #0082a3;
   --s2: #b8741a;
   --grid: #dde3e1;
@@ -55,13 +55,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0e1519; --surface: #152027; --panel: #121c21; --ink: #e2e9e8; --muted: #8e9ca2;
-    --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d; --band: #111b20; --band-surface: #1a272e;
+    --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d; --band: #15232a; --band-surface: #1d2c34;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0e1519; --surface: #152027; --panel: #121c21; --ink: #e2e9e8; --muted: #8e9ca2;
-  --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d; --band: #111b20; --band-surface: #1a272e;
+  --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d; --band: #15232a; --band-surface: #1d2c34;
   color-scheme: dark;
 }
 
@@ -77,6 +77,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; }
+p, li, dd, td, th { text-wrap: pretty; }
 ::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); color: var(--ink); }
 html { scrollbar-color: color-mix(in srgb, var(--muted) 55%, transparent) var(--bg); accent-color: var(--accent); caret-color: var(--accent); }
 a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
@@ -118,14 +119,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* ---------- Hero ---------- */
 .hero { border-bottom: 1px solid var(--rule); }
-.hero .wrap {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  gap: clamp(1.75rem, 4vw, 3.5rem) clamp(1.5rem, 4vw, 3.5rem);
-  align-items: start;
-  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2.5rem, 6vw, 4.5rem);
-}
-.hero-top { grid-column: 1 / -1; }
+.hero .wrap { padding-block: clamp(2rem, 5vw, 4rem) clamp(2.5rem, 6vw, 4.5rem); }
 .cred { margin: 0; font-size: var(--s-sm); line-height: 1.5; color: var(--muted); }
 .eyebrow {
   font-family: var(--f-mono);
@@ -138,21 +132,35 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 h1 {
   font-family: var(--f-display);
   font-weight: 700;
-  font-size: clamp(2.35rem, 6.6vw, 5.4rem);
-  line-height: 0.98;
-  letter-spacing: -0.035em;
+  font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
   margin: 0;
 }
-h1 .l { display: block; }
-.id { display: flex; align-items: center; gap: 1.25rem; margin-bottom: clamp(1.25rem, 3vw, 2rem); }
+.id { display: flex; align-items: center; gap: clamp(0.9rem, 2vw, 1.5rem); }
+.id .cred { margin-top: 0.4rem; }
 .avatar {
-  width: 112px; height: 112px; flex-shrink: 0;
+  width: clamp(64px, 9vw, 96px); height: clamp(64px, 9vw, 96px); flex-shrink: 0;
   border-radius: 50%; object-fit: cover;
   border: 1px solid var(--rule); background: var(--surface);
 }
 .id .eyebrow { margin: 0; }
-.lede { max-width: 34rem; margin: 0; font-size: var(--s-lg); line-height: 1.45; text-wrap: pretty; }
-.actions { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center; margin-top: 1.5rem; }
+/* The headline: three facts set as one worksheet row, the largest type on the page */
+.headline {
+  display: grid; grid-template-columns: 1.35fr 1fr 1fr;
+  margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.headline div { padding: clamp(0.9rem, 2vw, 1.4rem) clamp(1rem, 2.4vw, 1.75rem); border-left: 1px solid var(--rule); min-width: 0; }
+.headline div:first-child { border-left: 0; padding-left: 0; }
+.headline dt { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.7rem, 4.4vw, 3.4rem); line-height: 1; letter-spacing: -0.03em; color: var(--ink); }
+.headline dt em { font-style: normal; color: var(--accent); }
+.headline dd { margin: 0.55rem 0 0; font-size: var(--s-sm); line-height: 1.4; color: var(--muted); }
+.hero-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.25rem 3rem; align-items: end; margin-top: clamp(1.5rem, 3.5vw, 2.25rem); }
+.lede { max-width: 38rem; margin: 0; font-size: var(--s-lg); line-height: 1.45; }
+.lede abbr { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center; margin-top: 1.5rem; }
+.hero-body .actions { margin-top: 0; justify-content: flex-end; }
 .cv {
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.7rem 1.1rem; border-radius: 4px;
@@ -173,21 +181,12 @@ h1 .l { display: block; }
 .btn {
   font: 500 var(--s-xs)/1 var(--f-mono); letter-spacing: 0.04em;
   color: var(--ink); background: transparent; border: 1px solid var(--rule);
-  border-radius: 3px; padding: 0.45rem 0.6rem; cursor: pointer;
+  border-radius: 3px; padding: 0.45rem 0.75rem; cursor: pointer;
+  min-height: 2.75rem; min-width: 2.75rem;
 }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
 .place { color: var(--muted); }
 
-.facts {
-  margin: 0; min-width: 0; align-self: center;
-  border: 1px solid var(--rule); border-radius: 4px;
-  background: var(--surface); padding: 0.5rem 1.25rem;
-}
-.facts div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid var(--rule); }
-.facts div:last-child { border-bottom: 0; }
-.facts dt { font-family: var(--f-mono); font-size: var(--s-xs); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding-top: 0.2rem; }
-.facts dd { margin: 0; font-size: var(--s-sm); line-height: 1.45; }
-.facts dd b { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; color: var(--accent); }
 
 /* ---------- Colour bands ----------
    Hero and Contact are deep-teal "worksheet" panels with a faint graph-paper grid;
@@ -204,8 +203,6 @@ h1 .l { display: block; }
   color: var(--ink);
   background-color: #0f3f4a;
   background-image:
-    radial-gradient(60rem 30rem at 85% -10%, rgba(143, 214, 226, 0.22), transparent 60%),
-    radial-gradient(40rem 24rem at -10% 110%, rgba(240, 196, 108, 0.12), transparent 60%),
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.075) 0 1px, transparent 1px 140px),
     repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.075) 0 1px, transparent 1px 140px),
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 28px),
@@ -257,6 +254,7 @@ h3.sub {
 .row, .edu { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 0 2rem; }
 .period { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); padding-top: 0.3rem; font-variant-numeric: tabular-nums; line-height: 1.5; }
 .period .now { color: var(--mark); font-weight: 500; }
+.row { scroll-margin-top: calc(var(--nav-h) + 16px); }
 .row h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.25rem, 2vw, 1.4rem); letter-spacing: -0.015em; line-height: 1.2; margin: 0; text-wrap: balance; }
 .who { display: flex; align-items: center; gap: 1rem; }
 .who > div { min-width: 0; }
@@ -270,13 +268,13 @@ h3.sub {
 .bul { margin: 0.85rem 0 0; padding-left: 1.1rem; max-width: 44rem; display: grid; gap: 0.4rem; }
 .bul li { padding-left: 0.25rem; }
 .bul li::marker { color: var(--accent); }
-.figure { display: inline-flex; align-items: baseline; gap: 0.4rem; margin-top: 0.85rem; font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); }
-.figure b { font-size: var(--s-lg); font-weight: 500; color: var(--ink); font-family: var(--f-display); }
 
 /* ---------- Project browser ---------- */
 .browser { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 2.5rem; align-items: start; }
-.tabs { display: grid; gap: 0.25rem; position: sticky; top: calc(var(--nav-h) + 1.25rem); }
-.tabs .hint { font-size: var(--s-xs); color: var(--muted); margin: 0 0 0.5rem; }
+.tabcol { position: sticky; top: calc(var(--nav-h) + 1.25rem); }
+.tabs { display: grid; gap: 0.25rem; }
+.hint { font-size: var(--s-xs); color: var(--muted); margin: 0 0 0.5rem; }
+.panel { scroll-margin-top: calc(var(--nav-h) + 16px); }
 .tab {
   display: block; width: 100%; text-align: left; cursor: pointer;
   background: transparent; border: 0; border-left: 1px solid var(--rule); border-radius: 0 4px 4px 0;
@@ -291,7 +289,8 @@ h3.sub {
 .byline { margin: 0.6rem 0 0; font-size: var(--s-sm); color: var(--mark); font-weight: 500; }
 .panel h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.4rem, 2.6vw, 1.9rem); letter-spacing: -0.015em; line-height: 1.15; margin: 0; text-wrap: balance; }
 .credit { font-size: var(--s-sm); color: var(--muted); margin: 0.15rem 0 0; }
-.panel p.sum { margin: 1rem 0 0; max-width: 44rem; }
+.panel p.sum { margin: 1rem 0 0; max-width: 68ch; }
+.ledger-note { margin: 0.6rem 0 0; font-size: var(--s-xs); color: var(--muted); max-width: 44rem; }
 .ledger { width: 100%; max-width: 44rem; margin: 1.5rem 0 0; border-collapse: collapse; }
 .ledger thead th { font-size: var(--s-xs); font-weight: 500; color: var(--muted); text-align: left; padding: 0 0 0.5rem; border-bottom: 1px solid var(--ink); }
 .ledger thead th:last-child, .ledger td { text-align: right; }
@@ -309,54 +308,25 @@ h3.sub {
 .meta dd { margin: 0.15rem 0 0; }
 .more { display: inline-flex; margin-top: 1.25rem; }
 
-/* Scenario explorer */
+/* Scenario explorer: the 2x2 premium table is the control */
 .explorer { margin: 0.5rem 0 0; max-width: 44rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); padding: 1.25rem; }
-.explorer fieldset { border: 0; padding: 0; margin: 0 0 1rem; min-width: 0; }
-.explorer legend { font-size: var(--s-xs); color: var(--muted); margin-bottom: 0.4rem; padding: 0; }
-.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
-.seg label { position: relative; }
-.seg input { position: absolute; opacity: 0; pointer-events: none; }
-.seg span { display: block; padding: 0.45rem 0.85rem; font-size: var(--s-sm); cursor: pointer; border-right: 1px solid var(--rule); }
-.seg label:last-child span { border-right: 0; }
-.seg input:checked + span { background: var(--accent); color: var(--bg); font-weight: 600; }
-.seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: -2px; }
-.out { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.5rem 1.5rem; align-items: center; padding-top: 1rem; border-top: 1px solid var(--rule); }
+.scn { width: 100%; border-collapse: separate; border-spacing: 0.5rem; margin: -0.5rem; width: calc(100% + 1rem); table-layout: fixed; }
+.scn caption { caption-side: top; text-align: left; font-size: var(--s-xs); color: var(--muted); padding: 0.5rem 0.5rem 0.25rem; }
+.scn thead th { font-size: var(--s-xs); font-weight: 600; color: var(--muted); text-align: left; padding: 0 0.25rem; }
+.scn tbody th { font-size: var(--s-sm); font-weight: 600; text-align: left; padding-right: 0.5rem; width: 30%; }
+.scn td { padding: 0; }
+.scn label { display: block; position: relative; border: 1px solid var(--rule); border-radius: 6px; padding: 0.7rem 0.8rem; cursor: pointer; background: var(--bg); min-height: 2.75rem; }
+.scn label:hover { border-color: var(--accent); }
+.scn input { position: absolute; opacity: 0; pointer-events: none; }
+.scn .n { display: block; font-size: var(--s-xs); color: var(--muted); }
+.scn .v { display: block; font-family: var(--f-display); font-weight: 700; font-size: clamp(1rem, 1.8vw, 1.2rem); font-variant-numeric: tabular-nums; margin-top: 0.15rem; }
+.scn label:has(input:checked), .scn label.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); }
+.scn label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.out { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.5rem 1.5rem; align-items: center; padding-top: 1rem; margin-top: 0.75rem; border-top: 1px solid var(--rule); }
 .out .big { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.75rem, 4vw, 2.4rem); line-height: 1; font-variant-numeric: tabular-nums; }
 .out .big small { font-family: var(--f-body); font-weight: 400; font-size: var(--s-sm); color: var(--muted); margin-left: 0.25rem; }
 .out p { margin: 0; font-size: var(--s-sm); color: var(--muted); }
 .out p b { color: var(--ink); font-weight: 600; }
-
-/* Charts */
-.viz { margin: 1.25rem 0 0; max-width: 44rem; min-width: 0; }
-.viz figcaption { font-size: var(--s-sm); font-weight: 600; margin-bottom: 0.25rem; }
-.viz .note { font-size: var(--s-xs); color: var(--muted); margin: 0 0 0.5rem; }
-.legend { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; font-size: var(--s-xs); color: var(--muted); margin: 0 0 0.25rem; padding: 0; list-style: none; }
-.legend li { display: inline-flex; align-items: center; gap: 0.4rem; }
-.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-.legend i.l1 { background: var(--s1); }
-.legend i.l2 { background: var(--s2); }
-.plot { position: relative; width: 100%; }
-.plot svg { display: block; width: 100%; height: auto; overflow: visible; }
-.plot text { font-family: var(--f-mono); font-size: 11px; fill: var(--muted); }
-.plot text.val { fill: var(--ink); }
-.plot .grid { stroke: var(--grid); stroke-width: 1; }
-.plot .axis { stroke: var(--rule); stroke-width: 1; }
-.plot .f1 { fill: var(--s1); } .plot .f2 { fill: var(--s2); }
-.plot .dot { stroke: var(--bg); stroke-width: 2; }
-.plot .dot.sel { stroke: var(--ink); stroke-width: 2; }
-.plot .hit { fill: transparent; }
-.tip {
-  position: absolute; pointer-events: none; z-index: 2;
-  background: var(--ink); color: var(--bg);
-  font-size: var(--s-xs); line-height: 1.45; padding: 0.4rem 0.6rem; border-radius: 4px;
-  white-space: nowrap; transform: translate(-50%, calc(-100% - 10px));
-}
-.tip b { font-weight: 600; }
-.viz details { margin-top: 0.5rem; font-size: var(--s-xs); color: var(--muted); }
-.viz summary { cursor: pointer; }
-.viz table { border-collapse: collapse; margin-top: 0.5rem; font-variant-numeric: tabular-nums; }
-.viz th, .viz td { text-align: left; padding: 0.25rem 1rem 0.25rem 0; border-bottom: 1px solid var(--rule); }
-.viz td { color: var(--ink); }
 
 /* ---------- Skills & certifications ---------- */
 .matrix { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
@@ -379,6 +349,8 @@ h3.sub {
 .certs td.cred { white-space: nowrap; font-family: var(--f-mono); font-size: var(--s-xs); }
 .pill { display: inline-block; font-family: var(--f-mono); font-size: 0.75rem; padding: 0.1rem 0.45rem; border-radius: 3px; background: var(--surface); color: var(--muted); white-space: nowrap; }
 .pill.pass { background: var(--accent); color: var(--bg); }
+.certs tr.grp th { text-align: left; font-family: var(--f-display); font-weight: 700; font-size: var(--s-md); padding: 1.5rem 0 0.5rem; border-bottom: 1px solid var(--rule); }
+.certs tbody:first-of-type tr.grp th { padding-top: 0.9rem; }
 .tablewrap { overflow-x: auto; }
 
 /* ---------- Contact ---------- */
@@ -396,32 +368,46 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
 @media (max-width: 860px) {
   .browser { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
-  .tabs { position: static; display: flex; overflow-x: auto; gap: 0.5rem; padding-bottom: 0.25rem; scrollbar-width: thin; }
-  .tabs .hint { display: none; }
-  .tab { flex: 0 0 auto; width: auto; max-width: 15rem; border-left: 0; border-bottom: 1px solid var(--rule); border-radius: 4px 4px 0 0; }
-  .tab[aria-selected="true"] { border-bottom-color: var(--accent); }
+  .tabcol { position: static; }
+  .tabs { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .tab { border: 1px solid var(--rule); border-radius: 6px; padding: 0.6rem 0.75rem; }
+  .tab[aria-selected="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
   .about, .contact-sec .wrap { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 760px) {
-  .hero .wrap { grid-template-columns: minmax(0, 1fr); }
+  .hero-body { grid-template-columns: minmax(0, 1fr); }
+  .hero-body .actions { justify-content: flex-start; order: -1; }
+  .headline { grid-template-columns: minmax(0, 1fr); }
+  .headline div { border-left: 0; padding: 0.75rem 0; border-top: 1px solid var(--rule); display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .headline div:first-child { border-top: 0; }
+  .headline dd { margin: 0; text-align: right; }
   .row, .edu { grid-template-columns: minmax(0, 1fr); }
   .period { padding-top: 0; margin-bottom: 0.35rem; }
-  .brand span, .nav .cv-mini { display: none; }
+  .brand, .nav li.opt { display: none; }
+  .nav ul { margin-left: 0; }
+  .nav .cv-mini { margin-left: auto; }
+  .nav li a { padding: 0.55rem 0.45rem; font-size: 0.875rem; }
+  .nav ul { gap: 0; }
   .nav .wrap { gap: 0.75rem; }
   .matrix th[scope="row"] { display: block; width: auto; padding-bottom: 0.4rem; }
   .matrix td { display: block; border-top: 0; padding-top: 0; }
   .evidence tbody th { width: 46%; }
   .certs thead { display: none; }
   .certs tr { display: block; padding: 0.85rem 0; border-bottom: 1px solid var(--rule); }
+  .certs tr.grp { padding: 1.25rem 0 0; }
+  .certs tr.grp th { display: block; padding: 0 0 0.5rem; }
   .certs td { display: block; padding: 0; border: 0; }
   .certs td:nth-child(2) { color: var(--muted); margin-top: 0.15rem; }
   .certs td.date, .certs td.cred { display: inline-block; margin-top: 0.35rem; margin-right: 0.75rem; }
   .certs td.empty { display: none; }
   .certs td .kind { margin-top: 0.4rem; }
-  .seg { display: flex; width: 100%; }
-  .seg label { flex: 1 1 0; }
-  .seg span { text-align: center; height: 100%; display: grid; place-items: center; }
   .out { grid-template-columns: minmax(0, 1fr); }
+  .scn { border-spacing: 0.35rem; margin: -0.35rem; width: calc(100% + 0.7rem); }
+  .scn tbody th { width: 22%; font-size: 0.75rem; line-height: 1.3; padding-right: 0.25rem; }
+  .scn thead th { font-size: 0.75rem; }
+  .scn label { padding: 0.55rem 0.5rem; }
+  .scn .v { font-size: 0.84rem; letter-spacing: -0.01em; }
+  .explorer { padding: 0.9rem 0.7rem; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 </style>
@@ -435,8 +421,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <li><a href="#about">About</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#projects">Projects</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#certifications">Certifications</a></li>
+      <li class="opt"><a href="#skills">Skills</a></li>
+      <li class="opt"><a href="#certifications">Certifications</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a class="cv-mini" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>CV</a>
@@ -445,35 +431,35 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
 <header class="hero" id="top">
   <div class="wrap">
-    <div class="hero-top">
-      <div class="id">
-        <img class="avatar" src="photo.jpg" width="112" height="112" alt="Portrait of Muhammad Arsyad As-Shadiqi Chairahman">
-        <p class="cred">Actuarial Science, IPB University<br>Class of 2026 · Cum Laude</p>
+    <div class="id">
+      <img class="avatar" src="photo.jpg" width="96" height="96" alt="Portrait of Muhammad Arsyad As-Shadiqi Chairahman">
+      <div>
+        <h1>Muhammad Arsyad <span style="white-space:nowrap">As-Shadiqi</span> Chairahman</h1>
+        <p class="cred">Actuarial Science, IPB University · Class of 2026</p>
       </div>
-      <h1><span class="l">Muhammad Arsyad</span> <span class="l"><span style="white-space:nowrap">As-Shadiqi</span> Chairahman</span></h1>
     </div>
-    <div class="hero-copy">
-      <p class="lede">Actuarial Science graduate, Cum Laude. Currently an actuarial intern at Asuransi ASEI Indonesia, working on PSAK 117 / IFRS 17 technical reserves, product profitability and cash flow projections.</p>
+    <dl class="headline" aria-label="Profile at a glance">
+      <div><dt>Actuarial Intern</dt><dd>Asuransi ASEI Indonesia, since Aug 2026</dd></div>
+      <div><dt><em>3.61</em> GPA</dt><dd>out of 4.00 · Cum Laude</dd></div>
+      <div><dt>CF3 · CF4</dt><dd>PAI professional exams passed</dd></div>
+    </dl>
+    <div class="hero-body">
+      <div>
+        <p class="lede">I work on technical reserves under <abbr title="Indonesia's adoption of IFRS 17, the insurance contracts accounting standard">PSAK 117</abbr>, product profitability and cash flow projections. Open to actuarial, risk, insurance, data analyst and financial analytics roles.</p>
+        <div class="contact">
+          <span class="item">
+            <span class="email" id="email">shadiqiarsyad@gmail.com</span>
+            <button class="btn" type="button" data-copy="email">Copy</button>
+          </span>
+          <a class="item" href="https://www.linkedin.com/in/muhammad-arsyad-as-shadiqi-chairahman-157934246/" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <span class="item place">Jakarta, Indonesia</span>
+        </div>
+      </div>
       <div class="actions">
         <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
         <a class="ghost" href="#projects">See projects ↓</a>
       </div>
-      <div class="contact">
-        <span class="item">
-          <span class="email" id="email">shadiqiarsyad@gmail.com</span>
-          <button class="btn" type="button" data-copy="email">Copy</button>
-        </span>
-        <a class="item" href="https://www.linkedin.com/in/muhammad-arsyad-as-shadiqi-chairahman-157934246/" target="_blank" rel="noopener">LinkedIn ↗</a>
-        <span class="item place">Jakarta, Indonesia</span>
-      </div>
     </div>
-    <dl class="facts" aria-label="Profile at a glance">
-      <div><dt>Now</dt><dd>Actuarial Intern, Asuransi ASEI Indonesia</dd></div>
-      <div><dt>Focus</dt><dd>PSAK 117 / IFRS 17 reserving, product pricing, risk modeling</dd></div>
-      <div><dt>GPA</dt><dd><b>3.61</b> / 4.00 · Cum Laude</dd></div>
-      <div><dt>PAI exams</dt><dd>CF3 · CF4 · Passed</dd></div>
-      <div><dt>Open to</dt><dd>Actuarial, risk management, insurance, data analyst and financial analytics roles</dd></div>
-    </dl>
   </div>
 </header>
 
@@ -485,16 +471,15 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <div class="prose">
           <p>I'm an actuarial science graduate from IPB University. My work so far sits where insurance meets data: calculating technical reserves under PSAK 117 / IFRS 17, cleaning and validating insurer financial data in Python, and turning survey results into dashboards people can act on.</p>
           <p>My thesis priced a multi-life reversionary annuity under a stochastic interest rate model, and my course projects covered Monte Carlo risk estimation and option-based hedging. I have passed the PAI CF3 and CF4 exams.</p>
-          <p>I'm looking for an actuarial, risk management, insurance, data analyst or financial analytics role.</p>
         </div>
         <table class="evidence">
           <caption>What I do, and where to see it</caption>
           <thead><tr><th scope="col">What I do</th><th scope="col">Where it shows</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Reserving and pricing</th><td><a href="#experience">ASEI internship</a> · <a href="#projects" data-open="thesis">Thesis</a></td></tr>
+            <tr><th scope="row">Reserving and pricing</th><td><a href="#exp-asei">ASEI internship</a> · <a href="#projects" data-open="thesis">Thesis</a></td></tr>
             <tr><th scope="row">Stochastic and risk modeling</th><td><a href="#projects" data-open="thesis">CIR model</a> · <a href="#projects" data-open="montecarlo">VaR / TVaR</a> · <a href="#projects" data-open="options">Option hedging</a></td></tr>
-            <tr><th scope="row">Data validation in Python</th><td><a href="#experience">LPS internship</a></td></tr>
-            <tr><th scope="row">Dashboards and reporting</th><td><a href="#experience">BRI internship</a></td></tr>
+            <tr><th scope="row">Data validation in Python</th><td><a href="#exp-lps">LPS internship</a></td></tr>
+            <tr><th scope="row">Dashboards and reporting</th><td><a href="#exp-bri">BRI internship</a></td></tr>
           </tbody>
         </table>
       </div>
@@ -523,7 +508,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <div class="wrap">
       <div class="sec-head"><h2>Experience</h2><p>Three internships across insurance, deposit insurance and banking</p></div>
       <div class="rows">
-        <article class="row">
+        <article class="row" id="exp-asei">
           <div class="period"><span class="now">Aug 2026 – now</span></div>
           <div>
             <div class="who">
@@ -539,7 +524,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             </ul>
           </div>
         </article>
-        <article class="row">
+        <article class="row" id="exp-lps">
           <div class="period">May 2026 – Aug 2026</div>
           <div>
             <div class="who">
@@ -552,10 +537,9 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
               <li>Automated Python data validation, flagging inconsistencies, missing values and anomalies.</li>
               <li>Built structured datasets and reporting files that made insurance data analysis more reliable.</li>
             </ul>
-            <div class="figure"><b>800+</b> insurer financial statements standardized</div>
           </div>
         </article>
-        <article class="row">
+        <article class="row" id="exp-bri">
           <div class="period">Oct 2025 – Apr 2026</div>
           <div>
             <div class="who">
@@ -603,61 +587,49 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <div class="wrap">
       <div class="sec-head"><h2>Research &amp; projects</h2><p>Thesis and course research, with the results from each paper</p></div>
       <div class="browser">
-        <div class="tabs" role="tablist" aria-label="Projects" aria-orientation="vertical">
-          <p class="hint">Pick a project to open it.</p>
+        <div class="tabcol">
+        <p class="hint" id="tabs-hint">4 projects. Pick one to open it.</p>
+        <div class="tabs" role="tablist" aria-label="Projects" aria-describedby="tabs-hint">
           <button class="tab" role="tab" id="tab-thesis" aria-controls="p-thesis" aria-selected="true" data-key="thesis"><b>Reversionary Annuity Pricing</b><span>Thesis · Life contingencies</span></button>
           <button class="tab" role="tab" id="tab-montecarlo" aria-controls="p-montecarlo" aria-selected="false" tabindex="-1" data-key="montecarlo"><b>Monte Carlo Variance Reduction</b><span>Team of 4 · Risk modeling</span></button>
           <button class="tab" role="tab" id="tab-options" aria-controls="p-options" aria-selected="false" tabindex="-1" data-key="options"><b>Option Spreads for Gold Futures</b><span>Team of 4 · Derivatives</span></button>
           <button class="tab" role="tab" id="tab-pca" aria-controls="p-pca" aria-selected="false" tabindex="-1" data-key="pca"><b>PCA and Machine Learning</b><span>Team of 4 · ML</span></button>
+        </div>
         </div>
 
         <div>
           <article class="panel" role="tabpanel" id="p-thesis" aria-labelledby="tab-thesis">
             <h3>Reversionary Annuity Pricing under the CIR Model</h3>
             <p class="byline">Undergraduate thesis · Nov 2025 – Jun 2026</p>
-            <p class="sum">Net monthly premium for a multi-life reversionary annuity covering two parents and two children: benefits start once both parents have died and continue while at least one child is alive. The BI 7-Day Reverse Repo Rate (Jan 2019 – Dec 2025) was modeled with a Cox–Ingersoll–Ross process estimated by OLS; survival probabilities come from the Indonesian Mortality Table 2023 under UDD. Premiums were priced for four policy scenarios over a 15-year term.</p>
+            <p class="sum">Net monthly premium for a multi-life reversionary annuity covering two parents and two children: benefits start once both parents have died and continue while at least one child is alive. Bank Indonesia's policy rate (BI 7-Day Reverse Repo Rate, Jan 2019 – Dec 2025) was modeled with a Cox–Ingersoll–Ross process estimated by ordinary least squares; survival probabilities come from the Indonesian Mortality Table 2023, assuming deaths are spread evenly within each year of age (UDD). Premiums were priced for a family aged 30, 27, 3 and 1, across four policy scenarios over a 15-year term.</p>
             <table class="ledger">
               <thead><tr><th scope="col">Result</th><th scope="col">Value</th></tr></thead>
               <tbody>
               <tr><th scope="row">MAPE of the CIR model on test data (9.75% on training)</th><td>2.88%</td></tr>
               <tr><th scope="row">Net monthly premium across the four scenarios</th><td>Rp17,925 – 18,328</td></tr>
-              <tr><th scope="row">Policy scenarios priced, family aged 30, 27, 3 and 1</th><td>4</td></tr>
+              <tr><th scope="row">Monthly premium gap, joint life vs. last survivor</th><td>Rp385</td></tr>
               </tbody>
             </table>
 
-            <p class="panel-h">Try it: how the scenario changes the premium</p>
+            <p class="panel-h">Try it: pick a scenario</p>
             <div class="explorer" id="explorer">
-              <fieldset>
-                <legend>Parents' status while premiums are paid</legend>
-                <div class="seg">
-                  <label><input type="radio" name="status" value="ls" checked><span>Last survivor</span></label>
-                  <label><input type="radio" name="status" value="jl"><span>Joint life</span></label>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend>How premiums are paid</legend>
-                <div class="seg">
-                  <label><input type="radio" name="scheme" value="c" checked><span>One combined contract</span></label>
-                  <label><input type="radio" name="scheme" value="s"><span>Separate per insured</span></label>
-                </div>
-              </fieldset>
+              <table class="scn">
+                <caption>Net monthly premium by scenario. Scenario numbers follow Table 7 of the thesis.</caption>
+                <thead><tr><td></td><th scope="col">One combined contract</th><th scope="col">Separate per insured</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Parents: last survivor</th>
+                    <td><label><input type="radio" name="scn" value="ls-c" checked><span class="n">Scenario 1</span><span class="v">Rp17,943.13</span></label></td>
+                    <td><label><input type="radio" name="scn" value="ls-s"><span class="n">Scenario 2</span><span class="v">Rp17,924.66</span></label></td></tr>
+                  <tr><th scope="row">Parents: joint life</th>
+                    <td><label><input type="radio" name="scn" value="jl-c"><span class="n">Scenario 3</span><span class="v">Rp18,328.49</span></label></td>
+                    <td><label><input type="radio" name="scn" value="jl-s"><span class="n">Scenario 4</span><span class="v">Rp18,309.63</span></label></td></tr>
+                </tbody>
+              </table>
               <div class="out" aria-live="polite">
                 <div class="big" id="ex-prem">Rp17,943<small>/ month</small></div>
-                <p id="ex-note">Scenario 1. <b>Rp18 more</b> than the cheapest scenario.</p>
+                <p id="ex-note">Scenario 1: last survivor, one combined contract. <b>Rp18 more</b> than the cheapest scenario.</p>
               </div>
             </div>
-
-            <figure class="viz">
-              <figcaption>Net monthly premium by scenario</figcaption>
-              <p class="note">Rupiah per month. Axis starts at Rp17,800 to show the gaps between scenarios. The outlined dot is the scenario picked above.</p>
-              <ul class="legend"><li><i class="l1"></i>One combined contract</li><li><i class="l2"></i>Separate contracts per insured</li></ul>
-              <div class="plot" data-chart="premium" role="img" aria-label="Dot plot of net monthly premium: last survivor 17,943 combined and 17,925 separate; joint life 18,328 combined and 18,310 separate."></div>
-              <details><summary>View data</summary>
-                <table><tr><th>Parents' status</th><th>Combined</th><th>Separate</th></tr>
-                <tr><td>Last survivor</td><td>Rp17,943.13</td><td>Rp17,924.66</td></tr>
-                <tr><td>Joint life</td><td>Rp18,328.49</td><td>Rp18,309.63</td></tr></table>
-              </details>
-            </figure>
 
             <p class="panel-h">What the thesis found</p>
             <ol class="findings">
@@ -667,8 +639,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             </ol>
             <dl class="meta">
               <div><dt>Type</dt><dd>Undergraduate thesis, IPB University</dd></div>
-              <div><dt>Data</dt><dd>BI7DRR monthly rates 2019–2025; TMI 2023</dd></div>
-              <div><dt>Method</dt><dd>CIR (Euler–Maruyama, OLS), UDD, equivalence principle, R</dd></div>
+              <div><dt>Data</dt><dd>BI 7-Day Reverse Repo Rate, monthly 2019–2025; Indonesian Mortality Table 2023</dd></div>
+              <div><dt>Method</dt><dd>CIR model (Euler–Maruyama, OLS), UDD, equivalence principle; built in R</dd></div>
             </dl>
             <ul class="tags"><li>Multi-life contingencies</li><li>CIR model</li><li>OLS</li><li>MAPE</li><li>TMI 2023</li></ul>
             <a class="ghost more" href="https://drive.google.com/file/d/1QIe2NTbcRRrfP33RXW3Hjyrlln9e9J6V/view?usp=sharing" target="_blank" rel="noopener">Read the thesis ↗</a>
@@ -682,11 +654,12 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             <table class="ledger">
               <thead><tr><th scope="col">Result</th><th scope="col">Value</th></tr></thead>
               <tbody>
-              <tr><th scope="row">Analytical 95% VaR used as the benchmark (TVaR 46,203)</th><td>41,406</td></tr>
-              <tr><th scope="row">Efficiency of stratified sampling for VaR vs. standard Monte Carlo</th><td>1.74×</td></tr>
-              <tr><th scope="row">Efficiency of importance sampling for TVaR vs. standard Monte Carlo</th><td>2.87×</td></tr>
+              <tr><th scope="row">Analytical 95% VaR of claim size, the benchmark (TVaR 46,203; dataset claim units)</th><td>41,406</td></tr>
+              <tr><th scope="row">Efficiency of stratified sampling for VaR</th><td>1.74×</td></tr>
+              <tr><th scope="row">Efficiency of importance sampling for TVaR</th><td>2.87×</td></tr>
               </tbody>
             </table>
+            <p class="ledger-note">Efficiency is the variance of standard Monte Carlo divided by the variance of the technique, over 200 replications; above 1× means more precise for the same number of simulations.</p>
             <p class="panel-h">What the paper found</p>
             <ol class="findings">
               <li><span><b>A five-lognormal mixture fits the claims.</b> The Kolmogorov–Smirnov statistic was 0.0119 against a critical value of 0.0372.</span></li>
@@ -694,7 +667,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
               <li><span><b>Importance sampling is best for TVaR,</b> but it is the slowest method and performed worse than standard Monte Carlo for VaR.</span></li>
             </ol>
             <ul class="tags"><li>Monte Carlo</li><li>EM algorithm</li><li>VaR / TVaR</li><li>Importance sampling</li><li>R</li></ul>
-            <a class="ghost more" href="https://drive.google.com/file/d/18a-5_LOVK0ySQpnOxDUiNVKjrn_YDOLW/view?usp=sharing" target="_blank" rel="noopener">Read the paper ↗</a>
+            <a class="ghost more" href="https://drive.google.com/file/d/18a-5_LOVK0ySQpnOxDUiNVKjrn_YDOLW/view?usp=sharing" target="_blank" rel="noopener">Read the draft ↗</a>
           </article>
 
           <article class="panel" role="tabpanel" id="p-options" aria-labelledby="tab-options">
@@ -755,15 +728,19 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <table class="certs">
           <thead><tr><th scope="col">Certification</th><th scope="col">Issuer</th><th scope="col">Completed</th><th scope="col">Credential</th></tr></thead>
           <tbody>
+            <tr class="grp"><th colspan="4" scope="colgroup">PAI professional exams</th></tr>
             <tr><td>CF4 · Accounting and Financial Management<span class="kind"><span class="pill pass">Exam passed</span></span></td><td>Persatuan Aktuaris Indonesia (PAI)</td><td class="date">Oct 2024</td><td class="cred">0536/KP/PAI/X/2024</td></tr>
             <tr><td>CF3 · Economics and Financial Markets<span class="kind"><span class="pill pass">Exam passed</span></span></td><td>Persatuan Aktuaris Indonesia (PAI)</td><td class="date">Mar 2025</td><td class="cred">1024/KP/PAI/III/2025</td></tr>
+          </tbody>
+          <tbody>
+            <tr class="grp"><th colspan="4" scope="colgroup">Courses and job simulations</th></tr>
             <tr><td>Mastering IFRS 17<small>Comprehensive Guide to Insurance Contract · 4.5 hours</small><span class="kind"><span class="pill">Course</span></span></td><td>Udemy · Murtaza Quaid</td><td class="date">Jun 2026</td><td class="cred"><a href="https://ude.my/UC-529fdadf-bc5e-4261-9189-a9a972419526" target="_blank" rel="noopener">UC-529fdadf ↗</a></td></tr>
             <tr><td>Actuarial Analyst Job Simulation<span class="kind"><span class="pill">Job simulation</span></span></td><td>AIG · Forage</td><td class="date empty"></td><td class="cred empty"></td></tr>
             <tr><td>Data Analytics Job Simulation<span class="kind"><span class="pill">Job simulation</span></span></td><td>Deloitte Australia · Forage</td><td class="date empty"></td><td class="cred empty"></td></tr>
             <tr><td>Excel/VBA for Creative Problem Solving, Part 1<span class="kind"><span class="pill">Course</span></span></td><td>University of Colorado Boulder · Coursera</td><td class="date empty"></td><td class="cred empty"></td></tr>
             <tr><td>Fundamental Python<span class="kind"><span class="pill">Course</span></span></td><td>Coding Studio</td><td class="date">Jan 2026</td><td class="cred empty"></td></tr>
             <tr><td>Fundamental Database MySQL<span class="kind"><span class="pill">Course</span></span></td><td>Coding Studio</td><td class="date">Jan 2026</td><td class="cred empty"></td></tr>
-          </tbody>
+</tbody>
         </table>
       </div>
     </div>
@@ -820,7 +797,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       entries.forEach(function (e) {
         if (!e.isIntersecting) return;
         Object.keys(links).forEach(function (k) { links[k].removeAttribute('aria-current'); });
-        var a = links[e.target.id]; if (a) a.setAttribute('aria-current', 'true');
+        var a = links[e.target.id]; if (!a) return;
+        a.setAttribute('aria-current', 'true');
+        var ul = a.closest('ul');
+        if (ul.scrollWidth > ul.clientWidth) ul.scrollTo({ left: Math.max(0, a.offsetLeft - 12), behavior: 'smooth' });
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
     Object.keys(links).forEach(function (k) { var s = document.getElementById(k); if (s) io.observe(s); });
@@ -836,10 +816,13 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
       if (on && focus) t.focus();
     });
-    drawCharts();
   }
   tabs.forEach(function (t, i) {
-    t.addEventListener('click', function () { openProject(t.dataset.key); });
+    t.addEventListener('click', function () {
+      openProject(t.dataset.key);
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      if (window.innerWidth <= 860 && panel.getBoundingClientRect().top < 0) panel.scrollIntoView({ block: 'start' });
+    });
     t.addEventListener('keydown', function (e) {
       var d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
       if (!d) return;
@@ -870,75 +853,21 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       if (k < 1) raf = requestAnimationFrame(step);
     })(t0);
   }
+  var LABEL = { 'ls-c': 'last survivor, one combined contract', 'ls-s': 'last survivor, separate per insured',
+                'jl-c': 'joint life, one combined contract', 'jl-s': 'joint life, separate per insured' };
   function updateExplorer() {
-    var st = document.querySelector('input[name="status"]:checked').value;
-    var sc = document.querySelector('input[name="scheme"]:checked').value;
-    picked = st + '-' + sc;
+    var r = document.querySelector('#explorer input[name="scn"]:checked');
+    picked = r.value;
+    document.querySelectorAll('#explorer label').forEach(function (l) { l.classList.toggle('on', l.contains(r)); });
     var p = PREM[picked], diff = p[1] - MIN;
     countTo(document.getElementById('ex-prem'), p[1]);
-    document.getElementById('ex-note').innerHTML = 'Scenario ' + p[0] + '. ' +
+    document.getElementById('ex-note').innerHTML = 'Scenario ' + p[0] + ': ' + LABEL[picked] + '. ' +
       (diff < 0.5 ? '<b>The cheapest</b> of the four scenarios.' : '<b>Rp' + fmt(diff, 0) + ' more</b> than the cheapest scenario.');
-    drawCharts();
   }
-  document.querySelectorAll('#explorer input').forEach(function (r) { r.addEventListener('change', updateExplorer); });
+  document.querySelectorAll('#explorer input[name="scn"]').forEach(function (r) { r.addEventListener('change', updateExplorer); });
+  document.querySelector('#explorer label').classList.add('on');
 
-  // ---------- Chart: inline SVG from the thesis figures ----------
-  var NS = 'http://www.w3.org/2000/svg';
-  function el(tag, attrs, parent) {
-    var e = document.createElementNS(NS, tag);
-    for (var k in attrs) e.setAttribute(k, attrs[k]);
-    if (parent) parent.appendChild(e);
-    return e;
-  }
-  function txt(parent, x, y, s, anchor, cls) {
-    var t = el('text', { x: x, y: y, 'text-anchor': anchor || 'start' }, parent);
-    if (cls) t.setAttribute('class', cls);
-    t.textContent = s; return t;
-  }
-  function tipFor(box) {
-    var t = box.querySelector('.tip');
-    if (!t) { t = document.createElement('div'); t.className = 'tip'; t.hidden = true; box.appendChild(t); }
-    return t;
-  }
-  function showTip(box, html, x, y) { var t = tipFor(box); t.innerHTML = html; t.style.left = x + 'px'; t.style.top = y + 'px'; t.hidden = false; }
-  function hideTip(box) { tipFor(box).hidden = true; }
-
-  function premium(box, W) {
-    var H = 150, L = 104, R = 30, T = 10, B = 34;
-    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, 'aria-hidden': 'true' }, box);
-    var x0 = 17800, x1 = 18400, sx = function (v) { return L + (v - x0) / (x1 - x0) * (W - L - R); };
-    for (var v = x0; v <= x1; v += 100) {
-      el('line', { x1: sx(v), x2: sx(v), y1: T, y2: H - B, class: 'grid' }, svg);
-      if ((v - x0) % 200 === 0) txt(svg, sx(v), H - B + 16, fmt(v, 0), 'middle');
-    }
-    var rows = [['Last survivor', 'ls'], ['Joint life', 'jl']];
-    rows.forEach(function (r, i) {
-      var y = T + 28 + i * 46, c = PREM[r[1] + '-c'][1], s = PREM[r[1] + '-s'][1];
-      txt(svg, 0, y + 4, r[0]);
-      el('line', { x1: sx(s), x2: sx(c), y1: y, y2: y, class: 'axis' }, svg);
-      [[c, 'f1', 'Combined', 'c'], [s, 'f2', 'Separate', 's']].forEach(function (d) {
-        var sel = picked === r[1] + '-' + d[3];
-        el('circle', { cx: sx(d[0]), cy: y, r: sel ? 7 : 6, class: 'dot ' + d[1] + (sel ? ' sel' : '') }, svg);
-        var hit = el('circle', { cx: sx(d[0]), cy: y, r: 14, class: 'hit' }, svg);
-        hit.addEventListener('pointerenter', function () { showTip(box, '<b>' + r[0] + ' · ' + d[2] + '</b><br>Rp' + fmt(d[0], 2) + ' / month', sx(d[0]) / W * box.clientWidth, y / H * box.clientHeight); });
-        hit.addEventListener('pointerleave', function () { hideTip(box); });
-      });
-      txt(svg, sx(c) + 10, y - 9, fmt(c, 0), 'start', 'val');
-    });
-  }
-
-  var charts = { premium: premium };
-  function drawCharts() {
-    document.querySelectorAll('.plot[data-chart]').forEach(function (box) {
-      if (!box.offsetParent) return;
-      var w = Math.max(280, Math.round(box.clientWidth));
-      var old = box.querySelector('svg'); if (old) old.remove();
-      hideTip(box);
-      charts[box.dataset.chart](box, w);
-    });
-  }
   openProject('thesis');
-  var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(drawCharts, 150); });
 })();
 </script>
 </body>

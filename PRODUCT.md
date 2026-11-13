@@ -50,7 +50,8 @@ Insurance-side actuarial experience (current actuarial intern at Asuransi ASEI w
 - Monte Carlo article draft: 1,340 claims, five-lognormal mixture (KS p = 0.99), analytical VaR95 41,406 / TVaR95 46,203, efficiency 1.74× (SS, VaR) and 2.87× (IS, TVaR).
 - Option-spread capstone: 2024 gold futures, volatility 15.14 %, probability of profit 49.8 % vs 28.3 %, max-profit range 41.8 % vs 1.9 %.
 - LPS: 800+ insurer financial statements standardized.
-- Absent and must not be fabricated: PCA project results, certificate dates and credential IDs, BI-Rate monthly series and CIR fitted path, AAID/ASSA logos, testimonials, any internship metrics beyond the CV.
+- Certificates supplied by the owner (not published): PAI CF4 = A40 Akuntansi, passed Oct 2024, letter 0536/KP/PAI/X/2024; PAI CF3 = A30 Ekonomi, passed Mar 2025, letter 1024/KP/PAI/III/2025; Udemy Mastering IFRS 17 (UC-529fdadf-bc5e-4261-9189-a9a972419526, Jun 2026, 4.5 h); Coding Studio Fundamental Python (14 Jan 2026) and Fundamental Database MySQL (15 Jan 2026).
+- Absent and must not be fabricated: PCA project results, dates/credentials for the Forage and Coursera certificates, BI-Rate monthly series and CIR fitted path, AAID/ASSA logos, testimonials, any internship metrics beyond the CV. Missing certificate fields stay blank (no dashes).
 
 ## Product Principles
 
