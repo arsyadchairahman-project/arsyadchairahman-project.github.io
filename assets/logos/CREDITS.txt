@@ -1,6 +1,7 @@
 Tool logos used in the Skills section.
 
-python.svg, r.svg, mysql.svg, tableau.svg, power-bi.svg
+python.svg, r.svg, mysql.svg, tableau.svg, power-bi.svg,
+looker-studio.svg (Looker Studio, formerly Google Data Studio), google.svg (Google Workspace)
   From gilbarbara/logos (https://github.com/gilbarbara/logos), CC0-1.0.
 
 excel.svg

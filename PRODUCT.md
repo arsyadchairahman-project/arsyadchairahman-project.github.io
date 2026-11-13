@@ -56,7 +56,7 @@ Insurance-side actuarial experience (current actuarial intern at Asuransi ASEI w
 ## Product Principles
 
 1. Every claim on the page traces to the CV or a project document; nothing is invented or inflated.
-2. Recruiter first screen: role, current job, GPA, PAI exams and CV download are visible without scrolling.
+2. Recruiter first screen: a compact get-to-know-me intro; role, current job, GPA, PAI exams, CV download and one-click email are visible without scrolling.
 3. Depth on demand: technical readers can open full results, data tables and source papers.
 4. Credit is explicit: team work is labelled, sources and licenses are recorded.
 5. Personal data stays minimal: email and LinkedIn only.

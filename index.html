@@ -40,6 +40,8 @@
   --grid: #dde3e1;
   --band: #e5edea;
   --band-surface: #d9e4e0;
+  --frame: #d3dcd9;
+  --frame-line: #a9b7b4;
   --nav-h: 56px;
 
   --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
@@ -56,12 +58,14 @@
   :root:not([data-theme="light"]) {
     --bg: #0e1519; --surface: #152027; --panel: #121c21; --ink: #e2e9e8; --muted: #8e9ca2;
     --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d; --band: #15232a; --band-surface: #1d2c34;
+    --frame: #070c0e; --frame-line: #33454d;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0e1519; --surface: #152027; --panel: #121c21; --ink: #e2e9e8; --muted: #8e9ca2;
   --rule: #26343b; --accent: #63b5c4; --mark: #d8a548; --s1: #1aa0bf; --s2: #c4841a; --grid: #1c272d; --band: #15232a; --band-surface: #1d2c34;
+  --frame: #070c0e; --frame-line: #33454d;
   color-scheme: dark;
 }
 
@@ -69,7 +73,8 @@
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 12px); }
 body {
   margin: 0;
-  background: var(--bg);
+  padding: clamp(6px, 1.4vw, 18px);
+  background: var(--frame);
   color: var(--ink);
   font-family: var(--f-body);
   font-size: var(--s-md);
@@ -77,6 +82,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; }
+/* The page sits in a ruled frame, like a bound worksheet */
+.page {
+  max-width: 84rem; margin: 0 auto;
+  background: var(--bg);
+  border: 1px solid var(--frame-line);
+  border-radius: clamp(8px, 1.2vw, 14px);
+  overflow: clip;
+  box-shadow: 0 1px 2px rgba(10, 30, 36, 0.06), 0 12px 32px -12px rgba(10, 30, 36, 0.18);
+}
 p, li, dd, td, th { text-wrap: pretty; }
 ::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); color: var(--ink); }
 html { scrollbar-color: color-mix(in srgb, var(--muted) 55%, transparent) var(--bg); accent-color: var(--accent); caret-color: var(--accent); }
@@ -119,7 +133,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* ---------- Hero ---------- */
 .hero { border-bottom: 1px solid var(--rule); }
-.hero .wrap { padding-block: clamp(2rem, 5vw, 4rem) clamp(2.5rem, 6vw, 4.5rem); }
+.hero .wrap { padding-block: clamp(1.75rem, 4vw, 3rem) clamp(2rem, 4.5vw, 3.25rem); }
 .cred { margin: 0; font-size: var(--s-sm); line-height: 1.5; color: var(--muted); }
 .eyebrow {
   font-family: var(--f-mono);
@@ -132,35 +146,31 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 h1 {
   font-family: var(--f-display);
   font-weight: 700;
-  font-size: clamp(1.6rem, 3.4vw, 2.6rem);
-  line-height: 1.05;
+  font-size: clamp(1.45rem, 2.6vw, 2.05rem);
+  line-height: 1.1;
   letter-spacing: -0.025em;
   margin: 0;
 }
 .id { display: flex; align-items: center; gap: clamp(0.9rem, 2vw, 1.5rem); }
 .id .cred { margin-top: 0.4rem; }
 .avatar {
-  width: clamp(64px, 9vw, 96px); height: clamp(64px, 9vw, 96px); flex-shrink: 0;
+  width: clamp(60px, 7vw, 80px); height: clamp(60px, 7vw, 80px); flex-shrink: 0;
   border-radius: 50%; object-fit: cover;
   border: 1px solid var(--rule); background: var(--surface);
 }
 .id .eyebrow { margin: 0; }
-/* The headline: three facts set as one worksheet row, the largest type on the page */
-.headline {
-  display: grid; grid-template-columns: 1.35fr 1fr 1fr;
-  margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
-  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
-}
-.headline div { padding: clamp(0.9rem, 2vw, 1.4rem) clamp(1rem, 2.4vw, 1.75rem); border-left: 1px solid var(--rule); min-width: 0; }
-.headline div:first-child { border-left: 0; padding-left: 0; }
-.headline dt { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.7rem, 4.4vw, 3.4rem); line-height: 1; letter-spacing: -0.03em; color: var(--ink); }
-.headline dt em { font-style: normal; color: var(--accent); }
-.headline dd { margin: 0.55rem 0 0; font-size: var(--s-sm); line-height: 1.4; color: var(--muted); }
-.hero-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.25rem 3rem; align-items: end; margin-top: clamp(1.5rem, 3.5vw, 2.25rem); }
-.lede { max-width: 38rem; margin: 0; font-size: var(--s-lg); line-height: 1.45; }
+/* Intro: a short get-to-know-me block; key facts sit in a small ledger beside it */
+.intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem); gap: 1.75rem clamp(2rem, 5vw, 4.5rem); align-items: start; }
+.hello { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--mark); margin: 0 0 0.3rem; }
+.lede { max-width: 36rem; margin: 1.35rem 0 0; font-size: var(--s-md); line-height: 1.6; }
+.facts { margin: 0; font-size: var(--s-sm); border-top: 1px solid var(--rule); }
+.facts div { display: grid; grid-template-columns: 5.75rem minmax(0, 1fr); gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--rule); }
+.facts dt { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); padding-top: 0.1rem; }
+.facts dd { margin: 0; line-height: 1.4; }
+.facts dd b { font-weight: 600; }
+.facts dd span { color: var(--muted); }
 .lede abbr { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
 .actions { display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center; margin-top: 1.5rem; }
-.hero-body .actions { margin-top: 0; justify-content: flex-end; }
 .cv {
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.7rem 1.1rem; border-radius: 4px;
@@ -268,6 +278,10 @@ h3.sub {
 .bul { margin: 0.85rem 0 0; padding-left: 1.1rem; max-width: 44rem; display: grid; gap: 0.4rem; }
 .bul li { padding-left: 0.25rem; }
 .bul li::marker { color: var(--accent); }
+.used { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.5rem; margin: 0.85rem 0 0; padding: 0; list-style: none; font-size: var(--s-xs); }
+.used::before { content: "Tools"; font-family: var(--f-mono); color: var(--muted); margin-right: 0.25rem; }
+.used li { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.15rem 0.5rem; border: 1px solid var(--rule); border-radius: 3px; }
+.used img { width: 14px; height: 14px; object-fit: contain; }
 
 /* ---------- Project browser ---------- */
 .browser { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 2.5rem; align-items: start; }
@@ -375,12 +389,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .about, .contact-sec .wrap { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 760px) {
-  .hero-body { grid-template-columns: minmax(0, 1fr); }
-  .hero-body .actions { justify-content: flex-start; order: -1; }
-  .headline { grid-template-columns: minmax(0, 1fr); }
-  .headline div { border-left: 0; padding: 0.75rem 0; border-top: 1px solid var(--rule); display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
-  .headline div:first-child { border-top: 0; }
-  .headline dd { margin: 0; text-align: right; }
+  .intro { grid-template-columns: minmax(0, 1fr); }
+  .facts div { grid-template-columns: 5.5rem minmax(0, 1fr); }
   .row, .edu { grid-template-columns: minmax(0, 1fr); }
   .period { padding-top: 0; margin-bottom: 0.35rem; }
   .brand, .nav li.opt { display: none; }
@@ -413,6 +423,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </style>
 </head>
 <body>
+<div class="page">
 
 <nav class="nav" aria-label="Sections">
   <div class="wrap">
@@ -431,34 +442,29 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
 <header class="hero" id="top">
   <div class="wrap">
-    <div class="id">
-      <img class="avatar" src="photo.jpg" width="96" height="96" alt="Portrait of Muhammad Arsyad As-Shadiqi Chairahman">
+    <div class="intro">
       <div>
-        <h1>Muhammad Arsyad <span style="white-space:nowrap">As-Shadiqi</span> Chairahman</h1>
-        <p class="cred">Actuarial Science, IPB University · Class of 2026</p>
-      </div>
-    </div>
-    <dl class="headline" aria-label="Profile at a glance">
-      <div><dt>Actuarial Intern</dt><dd>Asuransi ASEI Indonesia, since Aug 2026</dd></div>
-      <div><dt><em>3.61</em> GPA</dt><dd>out of 4.00 · Cum Laude</dd></div>
-      <div><dt>CF3 · CF4</dt><dd>PAI professional exams passed</dd></div>
-    </dl>
-    <div class="hero-body">
-      <div>
-        <p class="lede">I work on technical reserves under <abbr title="Indonesia's adoption of IFRS 17, the insurance contracts accounting standard">PSAK 117</abbr>, product profitability and cash flow projections. Open to actuarial, risk, insurance, data analyst and financial analytics roles.</p>
-        <div class="contact">
-          <span class="item">
-            <span class="email" id="email">shadiqiarsyad@gmail.com</span>
-            <button class="btn" type="button" data-copy="email">Copy</button>
-          </span>
-          <a class="item" href="https://www.linkedin.com/in/muhammad-arsyad-as-shadiqi-chairahman-157934246/" target="_blank" rel="noopener">LinkedIn ↗</a>
-          <span class="item place">Jakarta, Indonesia</span>
+        <div class="id">
+          <img class="avatar" src="photo.jpg" width="80" height="80" alt="Portrait of Muhammad Arsyad As-Shadiqi Chairahman">
+          <div>
+            <p class="hello">Hi, I'm Arsyad</p>
+            <h1>Muhammad Arsyad <span style="white-space:nowrap">As-Shadiqi</span> Chairahman</h1>
+          </div>
+        </div>
+        <p class="lede">Right now I'm an actuarial intern at Asuransi ASEI, working on technical reserves under <abbr title="Indonesia's adoption of IFRS 17, the insurance contracts accounting standard">PSAK 117</abbr>, product profitability and cash flow projections. Before that I worked with insurer financial data at LPS and survey data at BRI. Open to actuarial, risk, insurance, data analyst and financial analytics roles.</p>
+        <div class="actions">
+          <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
+          <a class="ghost" href="mailto:shadiqiarsyad@gmail.com?subject=Opportunity%20for%20Muhammad%20Arsyad%20As-Shadiqi%20Chairahman">Email me</a>
+          <a class="ghost" href="https://www.linkedin.com/in/muhammad-arsyad-as-shadiqi-chairahman-157934246/" target="_blank" rel="noopener">LinkedIn ↗</a>
         </div>
       </div>
-      <div class="actions">
-        <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
-        <a class="ghost" href="#projects">See projects ↓</a>
-      </div>
+      <dl class="facts" aria-label="Profile at a glance">
+        <div><dt>Now</dt><dd><b>Actuarial Intern</b><br><span>Asuransi ASEI Indonesia, since Aug 2026</span></dd></div>
+        <div><dt>Degree</dt><dd><b>Actuarial Science</b><br><span>IPB University, Class of 2026</span></dd></div>
+        <div><dt>GPA</dt><dd><b>3.61</b> / 4.00 <span>· Cum Laude</span></dd></div>
+        <div><dt>PAI exams</dt><dd><b>CF3 · CF4</b> <span>passed</span></dd></div>
+        <div><dt>Based in</dt><dd>Jakarta, Indonesia</dd></div>
+      </dl>
     </div>
   </div>
 </header>
@@ -537,6 +543,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
               <li>Automated Python data validation, flagging inconsistencies, missing values and anomalies.</li>
               <li>Built structured datasets and reporting files that made insurance data analysis more reliable.</li>
             </ul>
+            <ul class="used" aria-label="Tools used"><li><img src="assets/logos/python.svg" width="14" height="14" alt="">Python</li></ul>
           </div>
         </article>
         <article class="row" id="exp-bri">
@@ -552,6 +559,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
               <li>Analyzed employee engagement survey results and turned findings into actionable insights.</li>
               <li>Developed interactive Looker Studio dashboards to monitor KPIs and track performance.</li>
             </ul>
+            <ul class="used" aria-label="Tools used"><li><img src="assets/logos/python.svg" width="14" height="14" alt="">Python</li><li><img src="assets/logos/r.svg" width="14" height="14" alt="">RStudio</li><li><img src="assets/logos/excel.svg" width="14" height="14" alt="">Excel</li><li><img src="assets/logos/looker-studio.svg" width="14" height="14" alt="">Looker Studio</li></ul>
           </div>
         </article>
       </div>
@@ -714,7 +722,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <tr><th scope="row">Actuarial</th><td><ul class="chips soft"><li>Life contingencies</li><li>PSAK 117 / IFRS 17 reserving</li><li>Product pricing</li><li>Profitability and cash flow projection</li><li>Risk measures (VaR, TVaR)</li></ul></td></tr>
           <tr><th scope="row">Modeling</th><td><ul class="chips soft"><li>Stochastic interest rates (CIR)</li><li>Monte Carlo simulation</li><li>Mixture models and EM</li><li>Option pricing (Black-76)</li><li>Regression and ML</li></ul></td></tr>
           <tr><th scope="row">Programming</th><td><ul class="chips"><li><img src="assets/logos/python.svg" width="18" height="18" alt="" loading="lazy">Python <small>Intermediate</small></li><li><img src="assets/logos/r.svg" width="18" height="18" alt="" loading="lazy">R / RStudio <small>Intermediate</small></li><li><img src="assets/logos/mysql.svg" width="18" height="18" alt="" loading="lazy">MySQL <small>Intermediate</small></li></ul></td></tr>
-          <tr><th scope="row">Analytics and reporting</th><td><ul class="chips"><li>Looker Studio <small>Intermediate</small></li><li><img src="assets/logos/tableau.svg" width="18" height="18" alt="" loading="lazy">Tableau <small>Beginner</small></li><li><img src="assets/logos/power-bi.svg" width="18" height="18" alt="" loading="lazy">Power BI <small>Beginner</small></li><li><img src="assets/logos/excel.svg" width="18" height="18" alt="" loading="lazy">Excel / VBA <small>Daily use</small></li><li>Google Workspace <small>Daily use</small></li></ul></td></tr>
+          <tr><th scope="row">Analytics and reporting</th><td><ul class="chips"><li><img src="assets/logos/looker-studio.svg" width="18" height="18" alt="" loading="lazy">Looker Studio <small>Intermediate</small></li><li><img src="assets/logos/tableau.svg" width="18" height="18" alt="" loading="lazy">Tableau <small>Beginner</small></li><li><img src="assets/logos/power-bi.svg" width="18" height="18" alt="" loading="lazy">Power BI <small>Beginner</small></li><li><img src="assets/logos/excel.svg" width="18" height="18" alt="" loading="lazy">Excel / VBA <small>Daily use</small></li><li><img src="assets/logos/google.svg" width="18" height="18" alt="" loading="lazy">Google Workspace <small>Daily use</small></li></ul></td></tr>
           <tr><th scope="row">Languages</th><td><ul class="chips"><li>Indonesian <small>Native</small></li><li>English <small>Working proficiency</small></li></ul></td></tr>
         </tbody>
       </table>
@@ -752,7 +760,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <h2 class="cta">Hiring for an actuarial, risk or data analyst role? Let's talk.</h2>
         <p class="cta-sub">Email is the fastest way to reach me. My CV has the full details.</p>
         <div class="actions">
-          <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
+          <a class="cv" href="mailto:shadiqiarsyad@gmail.com?subject=Opportunity%20for%20Muhammad%20Arsyad%20As-Shadiqi%20Chairahman">Email me</a>
+          <a class="ghost" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV (PDF)</a>
         </div>
       </div>
       <dl class="channels">
@@ -770,6 +779,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <a href="#top">Back to top ↑</a>
   </div>
 </footer>
+</div>
 
 <script>
 (function () {
