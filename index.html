@@ -162,14 +162,14 @@ h1 {
 /* Intro: a short get-to-know-me block; key facts sit in a small ledger beside it */
 .intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem); gap: 1.75rem clamp(2rem, 5vw, 4.5rem); align-items: start; }
 .hello { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--mark); margin: 0 0 0.3rem; }
-.lede { max-width: 36rem; margin: 1.35rem 0 0; font-size: var(--s-md); line-height: 1.6; }
+.lede { max-width: 34rem; margin: 1.35rem 0 0; font-size: var(--s-lg); line-height: 1.45; text-wrap: pretty; }
 .facts { margin: 0; font-size: var(--s-sm); border-top: 1px solid var(--rule); }
 .facts div { display: grid; grid-template-columns: 5.75rem minmax(0, 1fr); gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--rule); }
 .facts dt { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); padding-top: 0.1rem; }
 .facts dd { margin: 0; line-height: 1.4; }
 .facts dd b { font-weight: 600; }
 .facts dd span { color: var(--muted); }
-.lede abbr { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+.lede abbr { white-space: nowrap; text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
 .actions { display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center; margin-top: 1.5rem; }
 .cv {
   display: inline-flex; align-items: center; gap: 0.5rem;
@@ -252,6 +252,7 @@ h3.sub {
 .evidence thead th { font-family: var(--f-mono); font-size: var(--s-xs); font-weight: 400; color: var(--muted); border-top: 0; padding-top: 0; }
 .evidence tbody th { font-weight: 600; padding-right: 1.25rem; width: 42%; }
 .evidence td a { white-space: nowrap; }
+.team { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); }
 
 .edu { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 0 2rem; }
 .edu-name { font-family: var(--f-display); font-weight: 500; font-size: var(--s-lg); margin: 0; }
@@ -451,7 +452,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             <h1>Muhammad Arsyad <span style="white-space:nowrap">As-Shadiqi</span> Chairahman</h1>
           </div>
         </div>
-        <p class="lede">Right now I'm an actuarial intern at Asuransi ASEI, working on technical reserves under <abbr title="Indonesia's adoption of IFRS 17, the insurance contracts accounting standard">PSAK 117</abbr>, product profitability and cash flow projections. Before that I worked with insurer financial data at LPS and survey data at BRI. Open to actuarial, risk, insurance, data analyst and financial analytics roles.</p>
+        <p class="lede">Actuarial intern at Asuransi ASEI, working on <abbr title="Indonesia's adoption of IFRS 17, the insurance contracts accounting standard">PSAK 117</abbr> reserves and cash flow projections. Open to actuarial, risk, insurance and data analyst roles.</p>
         <div class="actions">
           <a class="cv" href="Muhammad-Arsyad-As-Shadiqi-Chairahman-CV.pdf" download>Download CV <small>PDF · 2 pages</small></a>
           <a class="ghost" href="mailto:shadiqiarsyad@gmail.com?subject=Opportunity%20for%20Muhammad%20Arsyad%20As-Shadiqi%20Chairahman">Email me</a>
@@ -475,15 +476,15 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <div class="sec-head"><h2>About</h2></div>
       <div class="about">
         <div class="prose">
-          <p>I'm an actuarial science graduate from IPB University. My work so far sits where insurance meets data: calculating technical reserves under PSAK 117 / IFRS 17, cleaning and validating insurer financial data in Python, and turning survey results into dashboards people can act on.</p>
-          <p>My thesis priced a multi-life reversionary annuity under a stochastic interest rate model, and my course projects covered Monte Carlo risk estimation and option-based hedging. I have passed the PAI CF3 and CF4 exams.</p>
+          <p>Actuarial science graduate from IPB University (Cum Laude, PAI CF3 and CF4 passed) with three internships in insurance, deposit insurance and banking.</p>
+          <p>My thesis on annuity pricing is solo work. The other projects on this page were done in teams of four.</p>
         </div>
         <table class="evidence">
           <caption>What I do, and where to see it</caption>
           <thead><tr><th scope="col">What I do</th><th scope="col">Where it shows</th></tr></thead>
           <tbody>
             <tr><th scope="row">Reserving and pricing</th><td><a href="#exp-asei">ASEI internship</a> · <a href="#projects" data-open="thesis">Thesis</a></td></tr>
-            <tr><th scope="row">Stochastic and risk modeling</th><td><a href="#projects" data-open="thesis">CIR model</a> · <a href="#projects" data-open="montecarlo">VaR / TVaR</a> · <a href="#projects" data-open="options">Option hedging</a></td></tr>
+            <tr><th scope="row">Stochastic and risk modeling</th><td><a href="#projects" data-open="thesis">CIR model</a> · <a href="#projects" data-open="montecarlo">VaR / TVaR</a> <span class="team">team</span> · <a href="#projects" data-open="options">Option hedging</a> <span class="team">team</span></td></tr>
             <tr><th scope="row">Data validation in Python</th><td><a href="#exp-lps">LPS internship</a></td></tr>
             <tr><th scope="row">Dashboards and reporting</th><td><a href="#exp-bri">BRI internship</a></td></tr>
           </tbody>
@@ -528,6 +529,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
               <li>Prepare actuarial reports and analyses for internal management and regulatory reporting.</li>
               <li>Perform product profitability analysis and long-term cash flow projections.</li>
             </ul>
+            <ul class="used" aria-label="Tools used"><li><img src="assets/logos/excel.svg" width="14" height="14" alt="">Excel</li></ul>
           </div>
         </article>
         <article class="row" id="exp-lps">
@@ -593,7 +595,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
   <section id="projects" class="band">
     <div class="wrap">
-      <div class="sec-head"><h2>Research &amp; projects</h2><p>Thesis and course research, with the results from each paper</p></div>
+      <div class="sec-head"><h2>Research &amp; projects</h2><p>One solo thesis and three course projects done in teams of four</p></div>
       <div class="browser">
         <div class="tabcol">
         <p class="hint" id="tabs-hint">4 projects. Pick one to open it.</p>

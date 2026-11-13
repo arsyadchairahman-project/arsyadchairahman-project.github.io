@@ -37,6 +37,8 @@ Insurance-side actuarial experience (current actuarial intern at Asuransi ASEI w
 - No replica dashboards from internships (owner decision: confidentiality and no invented numbers).
 - All projects other than the thesis are team work by 4 students (Monte Carlo and option-spread papers also list a faculty supervisor as fifth author) and must stay labelled as such. The Monte Carlo paper is a draft, not published.
 - Thesis code publication is on hold (IPB holds thesis copyright).
+- Owner wants intro and About kept short and unembellished; the thesis is the only solo project and team projects must not be presented as individual skills (About table marks them "team").
+- ASEI internship tools: mostly Excel (owner statement).
 
 ## Brand Commitments
 
