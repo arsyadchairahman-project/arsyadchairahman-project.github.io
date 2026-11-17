@@ -209,7 +209,7 @@
   tabs.forEach(function(t){ t.onclick = function(){
     tabs.forEach(function(x){ x.setAttribute('aria-selected', String(x === t)); $(x.getAttribute('aria-controls')).hidden = x !== t; });
     $('bar').hidden = t.id !== 't-quiz';
-    if (t.id === 't-ana') math($('p-ana'));
+    if (t.id !== 't-quiz') { var pn = $(t.getAttribute('aria-controls')); if (!pn.dataset.math) { math(pn); pn.dataset.math = '1'; } }
   }; });
 
   function start(){

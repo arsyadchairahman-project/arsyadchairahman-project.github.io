@@ -237,3 +237,20 @@ td:last-child{color:var(--muted)}
   .calc-k:not(:has(small))::before{min-height:.6rem}
   body.calc-open .wrap{padding-bottom:calc(var(--bar-h) + 66vh + var(--s5))}
 }
+
+/* Cheat sheet */
+.cs .cs-title{font-size:1.25rem;margin:0 0 var(--s1)}
+.cs-toc{display:flex;flex-wrap:wrap;gap:var(--s2);margin:var(--s4) 0 var(--s2)}
+.cs-toc a{display:inline-flex;align-items:center;min-height:36px;padding:0 var(--s3);border-radius:999px;background:var(--sunken);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:.875rem;font-weight:600}
+.cs-toc a:hover{border-color:var(--line-strong)}
+.cs h3{font-size:1.1875rem;margin:var(--s6) 0 var(--s3);padding-top:var(--s4);border-top:1px solid var(--line);scroll-margin-top:var(--s4)}
+.cs h4{font-size:1rem;margin:var(--s5) 0 var(--s2);color:var(--accent)}
+.cs p,.cs li{max-width:72ch}
+.cs ul,.cs ol{padding-left:22px;margin:0 0 var(--s3)}
+.cs li{margin:var(--s1) 0}
+.cs-tex{background:var(--surface);border:1px solid var(--line);border-radius:var(--r1);padding:var(--s2) var(--s3);margin:var(--s2) 0 var(--s3);overflow-x:auto;overflow-y:hidden}
+.cs-tex .katex-display{margin:.25em 0}
+.cs-tbl{margin:var(--s2) 0 var(--s4);overflow-x:auto}
+.cs-tbl td:last-child{color:var(--ink)}
+.cs-tbl th{background:var(--sunken)}
+@media (max-width:600px){ .cs-tbl{overflow-x:auto} .cs-tbl table{min-width:520px} }
