@@ -89,6 +89,7 @@ details.jump[open] summary::after{transform:rotate(225deg) translateY(-2px)}
 .conf::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--line-strong)}
 .conf.hi{color:var(--warn)}
 .conf.hi::before{background:var(--warn)}
+.note{font-size:.875rem;color:var(--muted)}
 .qtopic{font-size:.875rem;color:var(--muted);margin:2px 0 var(--s4)}
 .qtext{margin:0 0 var(--s4);overflow-wrap:anywhere;max-width:70ch}
 .katex{font-size:1.05em}
@@ -192,7 +193,7 @@ td:last-child{color:var(--muted)}
 <div class="wrap">
   <header>
     <h1>Prediksi Soal CF2: Probabilitas dan Statistika</h1>
-    <p class="sub">30 soal prediksi yang disusun dari pola 8 ujian PAI (Mei 2023 sampai Mei 2026). Setiap paket memakai angka yang berbeda, sedangkan pola soalnya tetap sama. Kunci dan pembahasan dihitung otomatis.</p>
+    <p class="sub">30 soal prediksi yang disusun dari pola 8 ujian PAI (Mei 2023 sampai Mei 2026) dan komposisinya disesuaikan dengan bobot Silabus PAI 2024 (berlaku sejak 21 Oktober 2024). Setiap paket memakai angka yang berbeda, sedangkan pola soalnya tetap sama. Kunci dan pembahasan dihitung otomatis.</p>
   </header>
 
   <div class="tabs" role="tablist">
@@ -233,6 +234,23 @@ td:last-child{color:var(--muted)}
   </section>
 
   <section class="panel" id="p-ana" role="tabpanel" aria-labelledby="t-ana" hidden>
+    <h2>Kesesuaian dengan Silabus PAI 2024</h2>
+    <p>Silabus CF2 (Kurikulum Pendidikan PAI 2024, berlaku sejak 21 Oktober 2024) menetapkan ujian 3 jam dengan 30 soal pilihan ganda dan bobot berikut. Komposisi setiap paket di halaman ini mengikuti bobot tersebut.</p>
+    <div class="tbl stack"><table>
+      <thead><tr><th>Bagian silabus</th><th>Bobot silabus · soal per paket</th></tr></thead>
+      <tbody>
+        <tr><td>1. Dasar-dasar probabilitas: aksioma, enumerasi, peluang bersyarat, independensi, Bayes</td><td>15–25% · 6 soal (20%)</td></tr>
+        <tr><td>2. Variabel acak univariat: PMF/PDF/CDF, momen, PGF/MGF, transformasi, distribusi baku</td><td>25–35% · 9 soal (30%)</td></tr>
+        <tr><td>3. Variabel acak multivariat: distribusi gabungan, marginal &amp; bersyarat, kovarians, matriks varians-kovarians, distribusi majemuk</td><td>20–30% · 7 soal (23%)</td></tr>
+        <tr><td>4. Inferensi statistik: distribusi sampel, TLP, hukum bilangan besar, MLE/momen/Bayes, sifat estimator, selang kepercayaan, uji hipotesis</td><td>20–30% · 8 soal (27%)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout">
+      <p><b>Ada selisih antara silabus dan naskah lama.</b> Menurut silabus, inferensi statistik berbobot 20–30%, atau 6 sampai 9 soal. Namun di 8 naskah yang dianalisis, soal inferensi hanya sekitar 1 sampai 3 per naskah, dan sebagian besar berupa TLP/aproksimasi normal. Selang kepercayaan, uji hipotesis, estimasi Bayes, dan sifat estimator belum pernah keluar. Mei 2026 menjadi naskah pertama yang memuat MLE dan metode momen.</p>
+      <p>Paket di sini mengikuti batas bawah silabus untuk inferensi (8 soal). Soal dengan label <b>Topik silabus, belum pernah keluar</b> adalah materi resmi yang belum teruji di ujian sebelumnya. Pelajari materinya, tapi jangan sampai menggeser waktu untuk topik berlabel <b>tinggi</b>.</p>
+    </div>
+    <p class="note">Referensi silabus: Hogg, Tanis &amp; Zimmerman, <i>Probability and Statistical Inference</i> (ed. 9); Hogg, McKean &amp; Craig, <i>Introduction to Mathematical Statistics</i> (ed. 8); Miller &amp; Miller, <i>John E. Freund's Mathematical Statistics with Applications</i>; Walpole, <i>Probability and Statistics for Engineers and Scientists</i> (ed. 9).</p>
+
     <h2>Data yang dianalisis</h2>
     <p>Ada 8 naskah ujian dengan 30 soal pilihan ganda per naskah, jadi totalnya 240 soal: A20 Mei 2023, Agu 2023, Apr 2024, Jul 2024; CF2 Okt 2024, Agu 2025, Nov 2025, Mei 2026.</p>
 
@@ -241,7 +259,7 @@ td:last-child{color:var(--muted)}
       <li><b>Soal sangat sering didaur ulang.</b> Banyak soal muncul lagi di sesi berikutnya dengan teks yang sama dan hanya angkanya yang diganti. Contoh paling kuat: soal dana bonus C untuk 20 karyawan keluar 3 kali, dan soal lonjakan daya Poisson juga 3 kali dengan soal yang identik.</li>
       <li><b>Sumber soalnya bisa ditebak.</b> Sebagian besar soal identik dengan <i>SOA Exam P Sample Questions</i> yang diterjemahkan, misalnya soal mobil sport, pasien UGD, dana bonus, Cov(C₁, C₂), penawaran 2000–2200, penyewa rumah/apartemen, dan polis suami-istri. Ini sinyal paling berguna dari seluruh analisis.</li>
       <li><b>Ada dua era penyusun.</b> Naskah 2023 sampai Juli 2024 saling mendaur ulang antar sesi. Naskah Agu 2025 sampai Mei 2026 lebih banyak mengambil soal SOA yang belum pernah keluar.</li>
-      <li><b>Ada topik baru di Mei 2026:</b> estimasi parameter (MLE dan metode momen, soal #21 dan #22). Topik ini belum pernah muncul sebelumnya, jadi kemungkinan silabus CF2 mulai mencakup statistika inferensial.</li>
+      <li><b>Ada topik baru di Mei 2026:</b> estimasi parameter (MLE dan metode momen, soal #21 dan #22). Topik ini sudah tercantum di silabus sejak Oktober 2024, tapi baru muncul di naskah Mei 2026. Ini tanda bahwa naskah mulai mengejar bobot inferensi di silabus.</li>
       <li><b>Topik yang selalu ada:</b> Bayes/peluang total (2 sampai 3 soal per naskah), densitas bersama (3 sampai 4 soal), Poisson/binomial (3 sampai 5 soal), aproksimasi normal/TLP (1 sampai 3 soal), fungsi pembangkit (1 sampai 2 soal), dan transformasi variabel (1 sampai 3 soal).</li>
     </ul>
 
@@ -277,13 +295,13 @@ td:last-child{color:var(--muted)}
     <h2>Cara membaca prediksi ini</h2>
     <div class="callout">
       <p><b>Ini estimasi, bukan bocoran.</b> Peluang soal yang <i>persis sama</i> dengan paket di sini keluar memang kecil. Yang bisa diprediksi dengan cukup andal adalah <i>pola</i> soalnya: topik, cara bertanya, dan jebakannya. Karena itu setiap paket memakai angka berbeda. Tujuannya melatih metode, bukan menghafal jawaban.</p>
-      <p>Label <b>Tinggi</b> berarti pola tersebut keluar minimal 2 kali atau muncul di 2 sesi terakhir. Label <b>Sedang</b> berarti pola tersebut keluar 1 sampai 2 kali, atau topiknya baru.</p>
+      <p>Label <b>tinggi</b> berarti pola tersebut keluar minimal 2 kali atau muncul di 2 sesi terakhir. Label <b>sedang</b> berarti pola tersebut keluar 1 sampai 2 kali. Label <b>topik silabus, belum pernah keluar</b> berarti materinya tercantum di silabus tapi belum pernah muncul di 8 naskah.</p>
     </div>
     <h3>Rekomendasi belajar, berurutan menurut dampaknya</h3>
     <ul>
       <li>Kerjakan semua paket di sini sampai nilai Anda konsisten di atas 80%. Setiap soal yang salah, kerjakan ulang tanpa melihat pembahasan.</li>
       <li>Kerjakan <i>SOA Exam P Sample Questions</i>. Karena naskah PAI terbaru banyak mengambil dari sana, latihan dari sumber ini memberi hasil terbesar dibanding sumber lain.</li>
-      <li>Pelajari dasar MLE dan metode momen. Topik ini baru dan kemungkinan masih akan muncul.</li>
+      <li>Pelajari bagian inferensi statistik dari silabus: MLE, metode momen, estimasi Bayes, selang kepercayaan, dan uji hipotesis. Bobotnya 20–30%, sedangkan naskah lama hampir tidak menyentuhnya, jadi ini celah terbesar dalam persiapan dari soal lama saja.</li>
       <li>Simulasikan ujian 180 menit penuh minimal sekali. Dengan 30 soal, Anda punya sekitar 6 menit per soal. Kalau sebuah soal sudah memakan lebih dari 8 menit, lewati dulu.</li>
     </ul>
   </section>
@@ -376,8 +394,8 @@ td:last-child{color:var(--muted)}
       var card = document.createElement('article'); card.className = 'q'; card.id = 'q' + q.no;
       card.setAttribute('aria-labelledby', 'h' + q.no);
       var h = '<div class="qhead"><span class="qno" id="h' + q.no + '">Soal ' + (idx+1) + '</span>' +
-        '<span class="conf' + (q.conf === 'Tinggi' ? ' hi' : '') + '">Peluang keluar ' + q.conf.toLowerCase() + '</span></div>' +
-        '<div class="qtopic">' + q.topic + '</div>' +
+        '<span class="conf' + (q.conf === 'Tinggi' ? ' hi' : '') + '">' + (q.conf === 'Baru' ? 'Topik silabus, belum pernah keluar' : 'Peluang keluar ' + q.conf.toLowerCase()) + '</span></div>' +
+        '<div class="qtopic">Silabus ' + q.syl + ' · ' + q.topic + '</div>' +
         '<div class="qtext">' + q.q + '</div><div class="opts" role="radiogroup" aria-labelledby="h' + q.no + '">';
       q.options.forEach(function(o, i){
         var cls = 'opt' + (a === i ? ' sel' : '') + (show ? ' locked' : '');
@@ -432,11 +450,15 @@ td:last-child{color:var(--muted)}
       by[q.topic] = by[q.topic] || {r:0,t:0}; by[q.topic].t++; if (ok) by[q.topic].r++;
     });
     var weak = Object.keys(by).filter(function(k){ return by[k].r < by[k].t; });
+    var sec = B.sections.map(function(sc){ var qs = paper.filter(function(q){ return q.sec === sc.no; }); return {sc: sc, t: qs.length, r: qs.filter(function(q){ return state.answers[q.no] === q.answer; }).length}; });
     var pctv = Math.round(right/30*100);
     var h = '<section class="result" id="res" aria-labelledby="resTitle"><h2 id="resTitle">Nilai Anda</h2><div class="score">' + right + '/30 <small>(' + pctv + '%)</small></div>' +
       '<p>' + (pctv >= 80 ? 'Sudah di zona aman. Lanjut ke paket lain untuk memastikan hasil ini konsisten, bukan kebetulan.' :
                pctv >= 60 ? 'Masih di batas aman. Fokuskan latihan pada topik yang salah di bawah sebelum pindah ke paket lain.' :
                'Masih jauh dari aman. Pelajari ulang konsep tiap topik yang salah, jangan hanya mencocokkan pembahasan.') + '</p>';
+    h += '<h3>Per bagian silabus</h3><div class="tbl"><table><thead><tr><th>Bagian</th><th>Bobot silabus</th><th>Benar</th></tr></thead><tbody>';
+    sec.forEach(function(x){ h += '<tr><td>' + x.sc.no + '. ' + x.sc.name + '</td><td>' + x.sc.range + '</td><td>' + x.r + '/' + x.t + '</td></tr>'; });
+    h += '</tbody></table></div>';
     if (weak.length) {
       h += '<h3>Topik yang perlu diperbaiki</h3><div class="tbl"><table><thead><tr><th>Topik</th><th>Benar</th></tr></thead><tbody>';
       weak.forEach(function(k){ h += '<tr><td>' + k + '</td><td>' + by[k].r + '/' + by[k].t + '</td></tr>'; });

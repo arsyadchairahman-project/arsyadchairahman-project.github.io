@@ -554,7 +554,17 @@
   T.push({ id: 'events', topic: 'Aksioma & aljabar kejadian', conf: 'Tinggi',
     src: 'Nov 2025 #24, Agu 2025 #30, Mei 2026 #17, Apr 2024 #2',
     gen: function (r) {
-      var v = r() < 0.5 ? 'U' : 'ind', q, sol, ans, w;
+      var x0 = r(), v = x0 < 0.34 ? 'U' : (x0 < 0.67 ? 'ind' : 'comb'), q, sol, ans, w;
+      if (v === 'comb') {
+        var Bc = r.pick([6, 7, 8, 9]), Gc = r.pick([5, 6, 7]), tot = C(Bc + Gc, 3);
+        var two = C(Bc, 2) * C(Gc, 1), three = C(Bc, 3);
+        ans = (two + three) / tot;
+        q = 'Suatu kelas terdiri dari ' + Bc + ' laki-laki dan ' + Gc + ' perempuan. Guru memilih 3 siswa secara acak tanpa pengembalian. Hitung peluang banyaknya laki-laki yang terpilih <b>melebihi</b> banyaknya perempuan yang terpilih.';
+        sol = 'Laki-laki > perempuan ⇔ 2 atau 3 laki-laki. [C(' + Bc + ',2)·C(' + Gc + ',1) + C(' + Bc + ',3)] / C(' + (Bc + Gc) + ',3) = (' + two + ' + ' + three + ')/' + tot + ' = <b>' + n(ans, 4) + '</b>.';
+        var pb2 = Bc / (Bc + Gc);
+        w = [two / tot, three / tot, 3 * pb2 * pb2 * (1 - pb2) + pb2 * pb2 * pb2, Bc / (Bc + Gc)];
+        return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 3));
+      }
       if (v === 'U') {
         var u = r.pick([0.6, 0.7, 0.75, 0.8]), vv = r.pick([0.85, 0.9, 0.95]);
         ans = u + vv - 1;
@@ -601,7 +611,18 @@
   T.push({ id: 'cov', topic: 'Kovarians & kombinasi linear', conf: 'Tinggi',
     src: 'Mei 2026 #11, Agu 2025 #21, Agu 2023 #13 & #16',
     gen: function (r) {
-      var v = r() < 0.5 ? 'C' : 'U', q, sol, ans, w;
+      var x0 = r(), v = x0 < 0.34 ? 'C' : (x0 < 0.67 ? 'U' : 'mat'), q, sol, ans, w;
+      if (v === 'mat') {
+        var S = r.pick([[[4, 1, -1], [1, 2, 0.5], [-1, 0.5, 3]], [[1.5, 1, 0.5], [1, 2, 0.5], [0.5, 0.5, 1]], [[9, 2, 1], [2, 4, -1], [1, -1, 2]]]);
+        var a = r.pick([1, 2]), b = r.pick([1, 2, 3]), c = r.pick([1, 2]);
+        ans = a * a * S[0][0] + b * b * S[1][1] + c * c * S[2][2] + 2 * a * b * S[0][1] - 2 * a * c * S[0][2] - 2 * b * c * S[1][2];
+        var mtx = '\\begin{pmatrix}' + S.map(function (row) { return row.map(function (x) { return t(x, x % 1 ? 1 : 0); }).join(' & '); }).join(' \\\\ ') + '\\end{pmatrix}';
+        var cf = function (k) { return k === 1 ? '' : k; };
+        q = 'Vektor acak \\((X_1, X_2, X_3)\\) memiliki matriks varians-kovarians \\(\\Sigma = ' + mtx + '\\). Hitung \\(\\mathrm{Var}(' + cf(a) + 'X_1 + ' + cf(b) + 'X_2 - ' + cf(c) + 'X_3)\\).';
+        sol = 'Var(aX₁ + bX₂ − cX₃) = a²σ₁₁ + b²σ₂₂ + c²σ₃₃ + 2abσ₁₂ − 2acσ₁₃ − 2bcσ₂₃ dengan a = ' + a + ', b = ' + b + ', c = ' + c + '. Hasil = <b>' + n(ans, 2) + '</b>.';
+        w = [a * a * S[0][0] + b * b * S[1][1] + c * c * S[2][2], ans + 4 * a * c * S[0][2], a * S[0][0] + b * S[1][1] + c * S[2][2], ans - 2 * a * b * S[0][1]];
+        return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 2));
+      }
       if (v === 'U') {
         var L = r.pick([6, 12, 18, 24]);
         ans = L * L / 24;
@@ -620,19 +641,194 @@
       return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 2));
     } });
 
+  // ---------- Inferensi statistik (Silabus PAI 2024 bagian 4) ----------
+  var NEVER = 'Belum pernah keluar di 8 naskah 2023–2026; wajib menurut silabus';
+
+  // Distribusi sampel rata-rata / selisih rata-rata
+  T.push({ id: 'sampmean', topic: 'Distribusi sampel rata-rata', conf: 'Sedang',
+    src: 'Okt 2024 #12, Agu 2025 #20',
+    gen: function (r) {
+      var q, sol, ans, w;
+      if (r() < 0.55) {
+        var mu = r.pick([71700, 50000, 60000]), sd = r.pick([18000, 12000, 15000]), nn = r.pick([25, 36, 64, 100]);
+        var se = sd / Math.sqrt(nn), c = Math.round((mu + r.pick([0.1, 0.5, 1, 1.5]) * se) / 100) * 100, z = (c - mu) / se;
+        ans = 1 - Phi(z);
+        q = 'Besar klaim polis asuransi mobil berdistribusi normal dengan rata-rata ' + n(mu, 0) + ' dan deviasi standar ' + n(sd, 0) + '. Hitung peluang rata-rata dari ' + nn + ' klaim yang dipilih acak <b>melebihi ' + n(c, 0) + '</b>.';
+        sol = 'X̄ ~ Normal(' + n(mu, 0) + '; σ/√n = ' + n(sd, 0) + '/' + Math.sqrt(nn) + ' = ' + n(se, 0) + '). z = (' + n(c, 0) + ' − ' + n(mu, 0) + ')/' + n(se, 0) + ' = ' + n(z, 4) + '. P = 1 − Φ(z) = <b>' + n(ans, 4) + '</b>.';
+        w = [1 - Phi((c - mu) / sd), Phi(z), 1 - Phi(z * Math.sqrt(nn) / 2), 1 - Phi((c - mu) / (sd / nn))];
+      } else {
+        var m1 = r.pick([52, 60, 75]), dm = r.pick([2, 3, 4]), s1 = r.pick([8, 10, 12]), s2 = r.pick([6, 9, 10]), n1 = r.pick([25, 36, 50]), n2 = r.pick([30, 40, 50]), d = r.pick([0, 1, 5]);
+        var se2 = Math.sqrt(s1 * s1 / n1 + s2 * s2 / n2), z2 = (d - dm) / se2;
+        ans = 1 - Phi(z2);
+        q = 'Dua populasi saling bebas berdistribusi normal: populasi 1 dengan rata-rata ' + (m1 + dm) + ' dan deviasi standar ' + s1 + ', populasi 2 dengan rata-rata ' + m1 + ' dan deviasi standar ' + s2 + '. Diambil sampel acak berukuran ' + n1 + ' dari populasi 1 dan ' + n2 + ' dari populasi 2. Hitung \\(P(\\bar X_1 - \\bar X_2 > ' + d + ')\\).';
+        sol = 'X̄₁ − X̄₂ ~ Normal(' + dm + '; σ² = ' + s1 + '²/' + n1 + ' + ' + s2 + '²/' + n2 + ' = ' + n(se2 * se2, 4) + '). z = (' + d + ' − ' + dm + ')/' + n(se2, 4) + ' = ' + n(z2, 4) + '. P = 1 − Φ(z) = <b>' + n(ans, 4) + '</b>.';
+        w = [1 - Phi((d - dm) / (s1 / Math.sqrt(n1) + s2 / Math.sqrt(n2))), Phi(z2), 1 - Phi((d - dm) / Math.sqrt(s1 * s1 + s2 * s2)), 1 - Phi((d - dm) / Math.sqrt(s1 * s1 / n1 - s2 * s2 / n2 + 0.5))];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  // Selang kepercayaan
+  T.push({ id: 'ci', topic: 'Selang kepercayaan', conf: 'Baru', src: NEVER,
+    gen: function (r) {
+      var L = r.pick([0.9, 0.95, 0.99]), z = invPhi(1 - (1 - L) / 2), zOne = invPhi(L), q, sol, lo, hi, wr;
+      var fmtI = function (a, b, d) { return '(' + n(a, d) + ' ; ' + n(b, d) + ')'; };
+      var v = r.pick(['mean', 'prop', 'dprop']);
+      if (v === 'mean') {
+        var xb = r.pick([24.8, 102.5, 58.3, 12.6]), sd = r.pick([3, 5, 8, 12]), nn = r.pick([16, 25, 36, 64]), se = sd / Math.sqrt(nn);
+        lo = xb - z * se; hi = xb + z * se;
+        q = 'Sampel acak ' + nn + ' klaim dari populasi normal dengan deviasi standar diketahui σ = ' + sd + ' menghasilkan rata-rata ' + n(xb, 1) + '. Tentukan selang kepercayaan ' + Math.round(L * 100) + '% untuk rata-rata populasi μ.';
+        sol = 'x̄ ± z<sub>' + n((1 - L) / 2, 3) + '</sub>·σ/√n = ' + n(xb, 1) + ' ± ' + n(z, 3) + '·' + sd + '/' + Math.sqrt(nn) + ' = ' + n(xb, 1) + ' ± ' + n(z * se, 3) + ' ⇒ <b>' + fmtI(lo, hi, 2) + '</b>.';
+        wr = [fmtI(xb - z * sd, xb + z * sd, 2), fmtI(xb - zOne * se, xb + zOne * se, 2), fmtI(xb - z * sd / nn, xb + z * sd / nn, 2), fmtI(xb - 2 * z * se, xb + 2 * z * se, 2)];
+        return Object.assign({ q: q, sol: sol }, strOpts(fmtI(lo, hi, 2), wr));
+      }
+      if (v === 'prop') {
+        var N = r.pick([200, 400, 500]), x = Math.round(N * r.pick([0.12, 0.18, 0.25, 0.3])), p = x / N, s = Math.sqrt(p * (1 - p) / N);
+        lo = p - z * s; hi = p + z * s;
+        q = 'Dari ' + N + ' pemegang polis yang dipilih acak, ' + x + ' orang mengajukan klaim dalam setahun. Tentukan selang kepercayaan ' + Math.round(L * 100) + '% (aproksimasi normal) untuk proporsi pemegang polis yang mengajukan klaim.';
+        sol = 'p̂ = ' + x + '/' + N + ' = ' + n(p, 3) + '. p̂ ± z·√(p̂(1 − p̂)/n) = ' + n(p, 3) + ' ± ' + n(z, 3) + '·' + n(s, 4) + ' ⇒ <b>' + fmtI(lo, hi, 3) + '</b>.';
+        wr = [fmtI(p - zOne * s, p + zOne * s, 3), fmtI(p - z * Math.sqrt(0.25 / N), p + z * Math.sqrt(0.25 / N), 3), fmtI(p - z * Math.sqrt(p / N), p + z * Math.sqrt(p / N), 3), fmtI(p - z * p * (1 - p) / Math.sqrt(N), p + z * p * (1 - p) / Math.sqrt(N), 3), fmtI(p - 2 * z * s, p + 2 * z * s, 3), fmtI(p - z * s / 2, p + z * s / 2, 3)];
+        return Object.assign({ q: q, sol: sol }, strOpts(fmtI(lo, hi, 3), wr));
+      }
+      var Na = r.pick([200, 300]), Nb = r.pick([250, 400]), xa = Math.round(Na * r.pick([0.2, 0.25])), xb2 = Math.round(Nb * r.pick([0.12, 0.15]));
+      var pa = xa / Na, pb = xb2 / Nb, sd2 = Math.sqrt(pa * (1 - pa) / Na + pb * (1 - pb) / Nb), d = pa - pb;
+      lo = d - z * sd2; hi = d + z * sd2;
+      q = 'Di wilayah A, ' + xa + ' dari ' + Na + ' pemegang polis mengajukan klaim; di wilayah B, ' + xb2 + ' dari ' + Nb + '. Tentukan selang kepercayaan ' + Math.round(L * 100) + '% untuk selisih proporsi \\(p_A - p_B\\).';
+      sol = 'p̂_A = ' + n(pa, 4) + ', p̂_B = ' + n(pb, 4) + '. SE = √(p̂_A(1−p̂_A)/n_A + p̂_B(1−p̂_B)/n_B) = ' + n(sd2, 4) + '. ' + n(d, 4) + ' ± ' + n(z, 3) + '·' + n(sd2, 4) + ' ⇒ <b>' + fmtI(lo, hi, 3) + '</b>.';
+      wr = [fmtI(d - zOne * sd2, d + zOne * sd2, 3), fmtI(d - z * (Math.sqrt(pa * (1 - pa) / Na) + Math.sqrt(pb * (1 - pb) / Nb)), d + z * (Math.sqrt(pa * (1 - pa) / Na) + Math.sqrt(pb * (1 - pb) / Nb)), 3), fmtI(d - z * Math.sqrt(pa * (1 - pa) / Na), d + z * Math.sqrt(pa * (1 - pa) / Na), 3), fmtI(d - z * Math.abs(Math.sqrt(pa * (1 - pa) / Na - pb * (1 - pb) / Nb)), d + z * Math.abs(Math.sqrt(pa * (1 - pa) / Na - pb * (1 - pb) / Nb)), 3), fmtI(d - 2 * z * sd2, d + 2 * z * sd2, 3), fmtI(d - z * sd2 / 2, d + z * sd2 / 2, 3)];
+      return Object.assign({ q: q, sol: sol }, strOpts(fmtI(lo, hi, 3), wr));
+    } });
+
+  // Uji hipotesis
+  T.push({ id: 'htest', topic: 'Uji hipotesis (galat tipe I/II, kuasa uji)', conf: 'Baru', src: NEVER,
+    gen: function (r) {
+      var mu0 = r.pick([100, 50, 200]), sd = r.pick([10, 15, 20]), nn = r.pick([16, 25, 36]), se = sd / Math.sqrt(nn);
+      var v = r.pick(['alpha', 'power', 'crit', 'pval']), q, sol, ans, w;
+      var head = 'Besar klaim berdistribusi normal dengan deviasi standar σ = ' + sd + '. Untuk menguji \\(H_0: \\mu = ' + mu0 + '\\) melawan \\(H_1: \\mu > ' + mu0 + '\\) digunakan sampel acak berukuran ' + nn + '. ';
+      if (v === 'crit') {
+        var al = r.pick([0.05, 0.01, 0.1]), za = invPhi(1 - al);
+        ans = mu0 + za * se;
+        q = head + 'Tentukan nilai kritis c sehingga \\(H_0\\) ditolak jika \\(\\bar X \\ge c\\) pada taraf signifikansi ' + pct(al) + '.';
+        sol = 'c = μ₀ + z<sub>' + n(al, 2) + '</sub>·σ/√n = ' + mu0 + ' + ' + n(za, 4) + '·' + n(se, 3) + ' = <b>' + n(ans, 2) + '</b>.';
+        w = [mu0 + invPhi(1 - al / 2) * se, mu0 + za * sd, mu0 + za * se / 2, mu0 - za * se];
+        return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 2));
+      }
+      var c = +(mu0 + r.pick([1.5, 1.645, 2]) * se).toFixed(1);
+      if (v === 'alpha') {
+        ans = 1 - Phi((c - mu0) / se);
+        q = head + 'Aturan uji: tolak \\(H_0\\) jika \\(\\bar X \\ge ' + t(c, 1) + '\\). Hitung peluang galat tipe I.';
+        sol = 'α = P(X̄ ≥ ' + n(c, 1) + ' | μ = ' + mu0 + ') = 1 − Φ((' + n(c, 1) + ' − ' + mu0 + ')/' + n(se, 3) + ') = 1 − Φ(' + n((c - mu0) / se, 4) + ') = <b>' + n(ans, 4) + '</b>.';
+        w = [1 - Phi((c - mu0) / sd), Phi((c - mu0) / se), 2 * (1 - Phi((c - mu0) / se)), 1 - Phi((c - mu0) / (se * 2))];
+      } else if (v === 'power') {
+        var mu1 = mu0 + r.pick([0.5, 1, 1.5]) * sd / 2;
+        ans = 1 - Phi((c - mu1) / se);
+        q = head + 'Aturan uji: tolak \\(H_0\\) jika \\(\\bar X \\ge ' + t(c, 1) + '\\). Hitung <b>kuasa uji</b> jika nilai sebenarnya \\(\\mu = ' + t(mu1, 1) + '\\).';
+        sol = 'Kuasa = P(X̄ ≥ ' + n(c, 1) + ' | μ = ' + n(mu1, 1) + ') = 1 − Φ((' + n(c, 1) + ' − ' + n(mu1, 1) + ')/' + n(se, 3) + ') = 1 − Φ(' + n((c - mu1) / se, 4) + ') = <b>' + n(ans, 4) + '</b>. (β = 1 − kuasa = ' + n(1 - ans, 4) + '.)';
+        w = [1 - ans, 1 - Phi((c - mu0) / se), 1 - Phi((c - mu1) / sd), Phi((c - mu1) / se) * 0.5 + 0.3];
+      } else {
+        var xb = +(mu0 + r.pick([1.2, 1.8, 2.3]) * se).toFixed(1);
+        ans = 1 - Phi((xb - mu0) / se);
+        q = head + 'Rata-rata sampel yang teramati adalah ' + n(xb, 1) + '. Hitung p-value uji ini.';
+        sol = 'p-value = P(X̄ ≥ ' + n(xb, 1) + ' | H₀) = 1 − Φ((' + n(xb, 1) + ' − ' + mu0 + ')/' + n(se, 3) + ') = 1 − Φ(' + n((xb - mu0) / se, 4) + ') = <b>' + n(ans, 4) + '</b>.';
+        w = [2 * ans, 1 - Phi((xb - mu0) / sd), Phi((xb - mu0) / se), ans / 2];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  // Estimasi Bayes
+  T.push({ id: 'bayesest', topic: 'Estimasi Bayes (posterior)', conf: 'Baru', src: NEVER,
+    gen: function (r) {
+      var q, sol, ans, w;
+      if (r() < 0.5) {
+        var al = r.pick([2, 3, 5]), be = r.pick([1, 2, 4]), yrs = r.pick([3, 4, 5]), S = r.pick([4, 6, 9, 12]);
+        ans = (al + S) / (be + yrs);
+        q = 'Banyaknya klaim per tahun seorang pemegang polis berdistribusi Poisson dengan rataan λ. Distribusi prior λ adalah Gamma dengan α = ' + al + ' dan laju (rate) β = ' + be + ' (rataan prior α/β). Selama ' + yrs + ' tahun teramati total ' + S + ' klaim. Hitung estimasi Bayes λ di bawah fungsi kerugian kuadrat (rataan posterior).';
+        sol = 'Posterior: Gamma(α + Σx = ' + (al + S) + ', β + n = ' + (be + yrs) + '). Rataan posterior = ' + (al + S) + '/' + (be + yrs) + ' = <b>' + n(ans, 4) + '</b>.';
+        w = [S / yrs, al / be, (al + S) / (be + yrs + 1), (al + S - 1) / (be + yrs)];
+      } else {
+        var a = r.pick([2, 3, 4]), b = r.pick([6, 8, 10]), N = r.pick([10, 20, 25]), x = r.pick([2, 3, 5, 6]);
+        ans = (a + x) / (a + b + N);
+        q = 'Peluang klaim p sebuah polis memiliki prior Beta(' + a + ', ' + b + '). Dari ' + N + ' polis yang saling bebas, ' + x + ' mengajukan klaim. Hitung estimasi Bayes p di bawah fungsi kerugian kuadrat.';
+        sol = 'Posterior: Beta(' + a + ' + ' + x + ', ' + b + ' + ' + N + ' − ' + x + ') = Beta(' + (a + x) + ', ' + (b + N - x) + '). Rataan = ' + (a + x) + '/' + (a + b + N) + ' = <b>' + n(ans, 4) + '</b>.';
+        w = [x / N, a / (a + b), (a + x) / (a + b + N + 1), (a + x - 1) / (a + b + N - 2)];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  // Sifat estimator & hukum bilangan besar
+  T.push({ id: 'estprop', topic: 'Sifat estimator & hukum bilangan besar', conf: 'Baru', src: NEVER,
+    gen: function (r) {
+      var v = r.pick(['unb', 'bias', 'cheb']), q, sol;
+      if (v === 'unb') {
+        var N = r.pick([4, 5, 6, 9]);
+        var ans = M(frac(N + 1, N));
+        q = '\\(X_1, \\dots, X_{' + N + '}\\) sampel acak dari distribusi seragam pada \\((0, \\theta)\\). Tentukan konstanta c sehingga \\(c \\cdot \\max(X_1, \\dots, X_{' + N + '})\\) merupakan estimator <b>tak bias</b> bagi θ.';
+        sol = 'Y = max memiliki f(y) = n y<sup>n−1</sup>/θ<sup>n</sup>, sehingga E[Y] = nθ/(n + 1) = ' + N + 'θ/' + (N + 1) + '. Agar E[cY] = θ: c = <b>' + ans + '</b>.';
+        return Object.assign({ q: q, sol: sol }, strOpts(ans, [M(frac(N, N + 1)), M('2'), M(frac(N + 2, N + 1)), M(frac(N + 1, N - 1))]));
+      }
+      if (v === 'bias') {
+        var s2 = r.pick([4, 9, 16, 25]), N2 = r.pick([5, 8, 10, 20]);
+        var b = -s2 / N2;
+        q = '\\(X_1, \\dots, X_{' + N2 + '}\\) sampel acak dari populasi dengan varians σ² = ' + s2 + '. Variansi diestimasi dengan \\(\\hat\\sigma^2 = \\frac{1}{n}\\sum (X_i - \\bar X)^2\\). Hitung bias estimator ini, \\(E[\\hat\\sigma^2] - \\sigma^2\\).';
+        sol = 'E[(1/n)Σ(Xᵢ − X̄)²] = (n − 1)σ²/n. Bias = −σ²/n = −' + s2 + '/' + N2 + ' = <b>' + n(b, 2) + '</b>.';
+        return Object.assign({ q: q, sol: sol }, numOpts(r, b, [0, s2 / N2, -s2 / (N2 - 1), -s2 / (N2 * N2)], 2));
+      }
+      var sd = r.pick([2, 3, 4]), N3 = r.pick([50, 100, 200]), k = r.pick([0.5, 0.75, 1]);
+      var bound = 1 - sd * sd / (N3 * k * k);
+      q = 'Klaim saling bebas dengan rataan μ dan deviasi standar ' + sd + '. Menurut ketaksamaan Chebyshev, berapa batas bawah \\(P(|\\bar X - \\mu| < ' + t(k, k % 1 ? 2 : 0) + ')\\) untuk rata-rata ' + N3 + ' klaim?';
+      sol = 'Var(X̄) = σ²/n = ' + sd * sd + '/' + N3 + '. Chebyshev: P(|X̄ − μ| ≥ k) ≤ Var(X̄)/k², sehingga P(|X̄ − μ| < ' + n(k, 2) + ') ≥ 1 − ' + sd * sd + '/(' + N3 + '·' + n(k * k, 4) + ') = <b>' + n(bound, 4) + '</b>. (Dasar hukum bilangan besar: batas ini → 1 saat n → ∞.)';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, bound, [1 - sd / (N3 * k * k), 1 - sd * sd / (N3 * k), 1 - sd * sd / (k * k * Math.sqrt(N3)), 2 * Phi(k * Math.sqrt(N3) / sd) - 1], 4));
+    } });
+
+  // ---------- Komposisi paket sesuai Silabus PAI 2024 ----------
+  // Bobot silabus CF2: 1) Dasar probabilitas 15–25%, 2) Univariat 25–35%,
+  // 3) Multivariat 20–30%, 4) Inferensi statistik 20–30%.
+  // Paket: 6 / 9 / 7 / 8 soal = 20% / 30% / 23% / 27%.
+  var byId = {}; T.forEach(function (x) { byId[x.id] = x; });
+  function merge(id, topic, conf, src, ids) {
+    return { id: id, topic: topic, conf: conf, src: src, variants: ids,
+      gen: function (r) { return byId[ids[Math.floor(r() * ids.length)]].gen(r); } };
+  }
+  function use(id, syl, topic) { var b = byId[id]; return { id: id, topic: topic || b.topic, conf: b.conf, src: b.src, syl: syl, gen: b.gen }; }
+  function useM(m, syl) { m.syl = syl; return m; }
+  var SECTIONS = [
+    { no: 1, name: 'Dasar-dasar probabilitas', range: '15–25%' },
+    { no: 2, name: 'Variabel acak univariat', range: '25–35%' },
+    { no: 3, name: 'Variabel acak multivariat', range: '20–30%' },
+    { no: 4, name: 'Inferensi statistik', range: '20–30%' }
+  ];
+  var P = [
+    use('bayes3', '1.e'), use('renters', '1.e'), use('region', '1.e'), use('cars', '1.a'),
+    use('events', '1.a, 1.b, 1.d', 'Aksioma, enumerasi & kejadian saling bebas'), use('couple', '1.c'),
+
+    useM(merge('discrete', 'Distribusi diskrit (geometrik, PMF khusus)', 'Tinggi', byId.pmf.src + '; ' + byId.geomtest.src, ['pmf', 'geomtest']), '2.a, 2.c, 2.g'),
+    useM(merge('binomial', 'Distribusi binomial', 'Tinggi', byId.fundC.src + '; ' + byId.quake.src, ['fundC', 'quake']), '2.g'),
+    useM(merge('poisson', 'Distribusi Poisson', 'Tinggi', byId.poisrate.src + '; ' + byId.poisratio.src, ['poisrate', 'poisratio']), '2.g'),
+    use('poiscap', '2.c'), use('pgf3', '2.e'), use('mixed', '2.b, 2.d'),
+    useM(merge('quantile', 'Persentil, median & distribusi normal', 'Tinggi', byId.mixmed.src + '; ' + byId.normpct.src, ['mixmed', 'normpct']), '2.d, 2.g'),
+    use('transform', '2.f'),
+    useM(merge('payment', 'Ekspektasi pembayaran (deductible, batas, bonus)', 'Tinggi', byId.deduct.src + '; ' + byId.bonus.src, ['deduct', 'bonus']), '2.d'),
+
+    use('jointcond', '3.a, 3.b'), use('triangle', '3.b'), use('bids', '3.a'),
+    use('totvar', '3.d, 3.g', 'Ekspektasi & varians bersyarat, distribusi majemuk'), use('jointmgf', '3.e'),
+    use('cov', '3.e, 3.f', 'Kovarians & matriks varians-kovarians'), use('order', '3.h'),
+
+    use('sampmean', '4.b'), use('cltpct', '4.c'), use('twolines', '4.c'), use('ci', '4.g'), use('htest', '4.h'),
+    use('estim', '4.e'), use('bayesest', '4.e'), use('estprop', '4.d, 4.f')
+  ];
+
   // ---------- Perakitan paket ----------
   var LETTERS = ['a', 'b', 'c', 'd', 'e'];
   function buildPaper(seed) {
     var out = [];
-    for (var i = 0; i < T.length; i++) {
+    for (var i = 0; i < P.length; i++) {
       var r = makeR((seed * 7919 + i * 104729) >>> 0);
-      var g = T[i].gen(r);
+      var g = P[i].gen(r);
       var opts = shuffle([{ s: g.correct, ok: true }].concat(g.wrong.map(function (w) { return { s: w, ok: false }; })), r);
-      out.push({ no: i + 1, id: T[i].id, topic: T[i].topic, conf: T[i].conf, src: T[i].src, q: g.q, sol: g.sol,
+      out.push({ no: i + 1, id: P[i].id, topic: P[i].topic, conf: P[i].conf, src: P[i].src, syl: P[i].syl, sec: +P[i].syl.charAt(0), q: g.q, sol: g.sol,
         options: opts.map(function (o) { return o.s; }), answer: opts.findIndex(function (o) { return o.ok; }) });
     }
     return out;
   }
-  var api = { buildPaper: buildPaper, templates: T, LETTERS: LETTERS, _n: n };
+  var api = { buildPaper: buildPaper, templates: T, paper: P, sections: SECTIONS, LETTERS: LETTERS, _n: n };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CF2Bank = api;
 })(this);
