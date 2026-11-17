@@ -70,6 +70,9 @@ button:focus-visible,input:focus-visible+span,.opt:focus-within{outline:2px soli
 .verdict.ok{color:var(--ok)} .verdict.no{color:var(--bad)}
 .bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px;z-index:5}
 .bar .in{max-width:860px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.clear{appearance:none;background:none;border:0;padding:6px 0;margin-top:4px;font:inherit;font-size:.85rem;color:var(--accent);text-decoration:underline;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:8px;font-size:.9rem;display:flex;gap:12px;align-items:center;z-index:6;max-width:calc(100% - 32px)}
+.toast button{appearance:none;border:0;background:none;color:inherit;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:4px}
 .timer{font-variant-numeric:tabular-nums;font-weight:700}
 .result{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin:16px 0}
 .score{font-size:2rem;font-weight:800}
@@ -177,7 +180,7 @@ ul{padding-left:20px;margin:0 0 12px} li{margin:4px 0}
   <div class="in">
     <span id="progress">0/30 dijawab</span>
     <span class="timer" id="timer" aria-live="off">180:00</span>
-    <button class="btn" id="submit">Selesai &amp; nilai</button>
+    <span class="row"><button class="btn secondary" id="cancel" hidden>Batalkan</button><button class="btn" id="submit">Selesai &amp; nilai</button></span>
   </div>
 </div>
 
@@ -257,6 +260,7 @@ ul{padding-left:20px;margin:0 0 12px} li{margin:4px 0}
           '<span class="let">' + L[i] + '.</span><span>' + o + '</span></label>';
       });
       h += '</div>';
+      if (a !== undefined && !show) h += '<button class="clear" type="button">Hapus jawaban</button>';
       if (show) {
         h += '<div class="verdict ' + (a === q.answer ? 'ok">Benar' : 'no">' + (a === undefined ? 'Tidak dijawab' : 'Salah') + '; jawaban: ' + L[q.answer]) + '</div>' +
           '<div class="sol"><b>Pembahasan.</b> ' + prettify(q.sol) + '</div>';
@@ -268,9 +272,11 @@ ul{padding-left:20px;margin:0 0 12px} li{margin:4px 0}
           state.answers[q.no] = +inp.value; if (!state.start && state.mode === 'ujian') state.start = Date.now();
           save();
           if (state.mode === 'latihan') { renderList(); var el = document.getElementById('q' + q.no); if (el) el.scrollIntoView({block:'nearest'}); }
-          else { card.querySelectorAll('.opt').forEach(function(l, j){ l.classList.toggle('sel', j === +inp.value); }); renderNav(); }
+          else { renderList(); }
         });
       });
+      var clr = card.querySelector('.clear');
+      if (clr) clr.onclick = function(){ delete state.answers[q.no]; save(); renderList(); };
       list.appendChild(card);
     });
     math(list); renderNav();
@@ -287,6 +293,7 @@ ul{padding-left:20px;margin:0 0 12px} li{margin:4px 0}
     });
     document.getElementById('progress').textContent = done + '/30 dijawab';
     document.getElementById('submit').textContent = state.submitted ? 'Lihat nilai' : 'Selesai & nilai';
+    document.getElementById('cancel').hidden = state.submitted || (done === 0 && !state.start);
   }
 
   function renderResult(){
@@ -315,7 +322,26 @@ ul{padding-left:20px;margin:0 0 12px} li{margin:4px 0}
 
   function resetPaper(){
     if (!confirm('Hapus semua jawaban di paket ini dan mulai ulang?')) return;
+    clearAttempt();
+  }
+  function clearAttempt(){
     store.del(key()); state.answers = {}; state.submitted = false; state.start = null; renderList(); renderResult(); tick(); window.scrollTo({top:0});
+  }
+  // Batalkan pengerjaan: hapus jawaban & hentikan timer, dengan opsi urungkan 8 detik
+  var undoTimer = null;
+  function cancelAttempt(){
+    var n = Object.keys(state.answers).length;
+    if (!confirm('Batalkan pengerjaan? ' + n + ' jawaban dan timer akan dihapus.')) return;
+    var backup = {answers: Object.assign({}, state.answers), start: state.start};
+    clearAttempt();
+    var old = document.querySelector('.toast'); if (old) old.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status');
+    t.innerHTML = '<span>Pengerjaan dibatalkan.</span><button type="button">Urungkan</button>';
+    t.querySelector('button').onclick = function(){
+      state.answers = backup.answers; state.start = backup.start; save(); renderList(); tick(); t.remove(); clearTimeout(undoTimer);
+    };
+    document.body.appendChild(t);
+    clearTimeout(undoTimer); undoTimer = setTimeout(function(){ t.remove(); }, 8000);
   }
 
   function tick(){
@@ -330,6 +356,7 @@ ul{padding-left:20px;margin:0 0 12px} li{margin:4px 0}
   document.querySelectorAll('[data-mode]').forEach(function(b){ b.onclick = function(){ state.mode = b.dataset.mode; save(); renderControls(); renderList(); tick(); }; });
   document.querySelectorAll('[data-order]').forEach(function(b){ b.onclick = function(){ state.order = b.dataset.order; load(); }; });
   document.getElementById('reset').onclick = resetPaper;
+  document.getElementById('cancel').onclick = cancelAttempt;
   document.getElementById('submit').onclick = function(){
     if (!state.submitted) {
       var left = 30 - Object.keys(state.answers).length;
