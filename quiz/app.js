@@ -189,6 +189,7 @@
   document.querySelectorAll('[data-src]').forEach(function(b){ b.onclick = function(){ if (b.dataset.src === 'soa' && !B.buildSoaPaper) { alert('Versi halaman ini belum termuat penuh. Muat ulang halaman (tarik ke bawah di HP, atau Ctrl+Shift+R di laptop), lalu coba lagi.'); return; } state.src = b.dataset.src; history.replaceState(null, '', urlFor()); load(); window.scrollTo({top:0}); }; });
   $('reset').onclick = resetPaper;
   $('cancel').onclick = cancelAttempt;
+  $('calcBtn').onclick = function(){ if (window.QuizCalc && QuizCalc.toggle) QuizCalc.toggle(); };
   $('copy').onclick = function(){
     var url = link();
     var done = function(){ toast('Tautan paket disalin.'); };

@@ -10,12 +10,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-<link rel="stylesheet" href="../quiz/style.css?v=202611171002">
+<link rel="stylesheet" href="../quiz/style.css?v=202611171022">
 </head>
 <body>
 <div class="wrap">
   <header>
-    <nav class="examnav" aria-label="Pilih ujian"><a href="../cf1/" aria-current="page">CF1<span class="xname"> Matematika Keuangan</span></a><a href="../cf2/">CF2<span class="xname"> Probabilitas &amp; Statistika</span></a></nav>
+    <nav class="examnav" aria-label="Pilih ujian"><a href="../cf1/" aria-current="page">CF1<span class="xname">Matematika Keuangan</span></a><a href="../cf2/">CF2<span class="xname">Probabilitas &amp; Statistika</span></a></nav>
     <h1>Prediksi Soal CF1: Matematika Keuangan</h1>
     <p class="sub">30 soal prediksi yang disusun dari pola 5 ujian PAI (Juli 2024 sampai Mei 2026), dengan komposisi yang mengikuti bobot Silabus PAI 2024 (berlaku sejak 21 Oktober 2024). Setiap paket memakai angka yang berbeda, sedangkan pola soalnya tetap sama. Kunci, pembahasan, dan cara cepat dihitung otomatis.</p>
   </header>
@@ -140,14 +140,15 @@
       <span class="timer" id="timer" title="Timer mulai saat soal pertama dijawab">Sisa 180:00</span>
     </div>
     <div class="actions">
-      <button class="btn ghost" id="cancel" hidden>Batalkan</button>
+      <button class="btn ghost icon" id="calcBtn" type="button" aria-controls="calc" aria-expanded="false" title="Kalkulator scientific"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M8.5 6.5h7M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5v3M8.5 18h.01M12 18h.01"/></svg><span class="lbl">Kalkulator</span></button><button class="btn ghost" id="cancel" hidden>Batalkan</button>
       <button class="btn" id="submit"><span class="long">Selesai &amp; nilai</span><span class="short">Selesai</span></button>
     </div>
   </div>
 </div>
 
-<script src="bank.js?v=202611171002"></script>
+<script src="bank.js?v=202611171022"></script>
 <script>window.QUIZ = { bank: window.CF1Bank, key: 'cf1' };</script>
-<script src="../quiz/app.js?v=202611171002"></script>
+<script src="../quiz/app.js?v=202611171022"></script>
+<script src="../quiz/calc.js?v=202611171022"></script>
 </body>
 </html>

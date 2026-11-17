@@ -184,3 +184,56 @@ td:last-child{color:var(--muted)}
 .examnav a:hover{color:var(--ink);border-color:var(--ink)}
 .examnav a[aria-current="page"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 @media (max-width:600px){ .examnav .xname{display:none} .examnav a{padding:0 var(--s5)} }
+
+/* Kalkulator scientific */
+.btn.icon{display:inline-flex;align-items:center;gap:6px}
+.btn.icon svg{width:18px;height:18px;flex:none}
+.calc{position:fixed;right:var(--s4);bottom:calc(var(--bar-h) + 3px + var(--s3) + env(safe-area-inset-bottom));width:344px;z-index:7;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r2);box-shadow:0 12px 40px rgba(0,0,0,.22);padding:var(--s3);display:flex;flex-direction:column;gap:var(--s2)}
+.calc[hidden]{display:none}
+.calc-head{display:flex;align-items:center;gap:var(--s2)}
+.calc-head strong{font-size:.9375rem}
+.calc-note{font-size:.75rem;color:var(--muted);flex:1}
+.calc-x{appearance:none;border:0;background:var(--sunken);color:var(--ink);width:32px;height:32px;border-radius:50%;font-size:1.25rem;line-height:1;cursor:pointer}
+.calc-screen{background:var(--sunken);border:1px solid var(--line);border-radius:var(--r1);padding:var(--s2) var(--s3);min-height:76px;display:flex;flex-direction:column;justify-content:flex-end;font-variant-numeric:tabular-nums}
+.calc-expr{font-size:.9375rem;color:var(--muted);word-break:break-all;min-height:1.4em;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.calc-res{font-size:1.625rem;font-weight:700;text-align:right;word-break:break-all;line-height:1.2}
+.calc-res.err{font-size:.9375rem;color:var(--bad);font-weight:600}
+.calc-flags{font-size:.6875rem;color:var(--accent);min-height:1em;font-weight:600;white-space:pre}
+.calc-keys{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.calc-keys[hidden]{display:none}
+.calc-k{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:7px;min-height:42px;padding:2px 0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;font-size:.9375rem;font-weight:600;transition:background-color .1s ease-out}
+.calc-k:hover{background:var(--sunken)}
+.calc-k:active{transform:translateY(1px)}
+.calc-k small{font-size:.625rem;color:var(--warn);font-weight:600;min-height:.75rem}
+.calc-k:not(:has(small))::before{content:"";display:block;min-height:.75rem}
+.calc-k.k-fn{background:var(--sunken);font-size:.8125rem}
+.calc-k.k-op{background:var(--accent-soft);color:var(--accent);font-size:1.0625rem}
+.calc-k.k-eq{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-size:1.125rem}
+.calc-k.k-warn{background:var(--bad-bg);color:var(--bad)}
+.calc.is-shift .calc-k small{color:var(--accent-ink);background:var(--warn);border-radius:3px;padding:0 3px}
+.calc.is-shift [data-k="shift"]{background:var(--warn);color:var(--surface)}
+.calc-hist{max-height:300px;overflow:auto;display:grid;gap:4px}
+.calc-hist[hidden]{display:none}
+.calc-h{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:6px 10px;display:flex;justify-content:space-between;gap:8px;cursor:pointer;font-size:.8125rem;text-align:left}
+.calc-h span{color:var(--muted);word-break:break-all}
+.calc-empty{font-size:.8125rem;color:var(--muted);margin:var(--s2) 0}
+@media (max-width:600px){
+  .calc{left:0;right:0;width:auto;bottom:calc(var(--bar-h) + 3px + env(safe-area-inset-bottom));border-radius:var(--r2) var(--r2) 0 0;border-left:0;border-right:0;max-height:56vh;overflow:auto;padding:var(--s2) var(--s3)}
+  body.calc-open .wrap{padding-bottom:calc(var(--bar-h) + 56vh + var(--s5))}
+  .calc-k{min-height:40px}
+  .btn.icon .lbl{display:none}
+  .btn.icon{padding:0 var(--s3)}
+}
+.examnav .xname{margin-left:.3em}
+.calc-head{position:sticky;top:0;background:var(--surface);z-index:1}
+@media (max-width:600px){
+  .calc{max-height:66vh;gap:6px}
+  .calc-note{display:none}
+  .calc-screen{min-height:62px;padding:6px 10px}
+  .calc-res{font-size:1.375rem}
+  .calc-keys{gap:4px}
+  .calc-k{min-height:37px}
+  .calc-k small{min-height:.6rem;font-size:.5625rem}
+  .calc-k:not(:has(small))::before{min-height:.6rem}
+  body.calc-open .wrap{padding-bottom:calc(var(--bar-h) + 66vh + var(--s5))}
+}
