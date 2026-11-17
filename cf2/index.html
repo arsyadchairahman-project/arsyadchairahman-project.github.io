@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prediksi Soal CF2</title>
+<meta name="description" content="30 soal prediksi ujian PAI CF2 Probabilitas dan Statistika, dengan beberapa paket kombinasi, kunci jawaban, dan pembahasan.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#ffffff; --surface-2:#efede7; --ink:#1c1b19; --muted:#5f5c55; --line:#dcd8cf;
+  --accent:#1f5f8b; --accent-ink:#ffffff; --ok:#1d7a46; --ok-bg:#e3f3e9; --bad:#b4342b; --bad-bg:#fbe7e5;
+  --warn:#8a5a00; --warn-bg:#fdf1d8; --focus:#1f5f8b;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141413; --surface:#1d1c1a; --surface-2:#262522; --ink:#ecebe6; --muted:#a7a49b; --line:#363430;
+    --accent:#6fb0dc; --accent-ink:#0d1a24; --ok:#62c48b; --ok-bg:#16301f; --bad:#ef8077; --bad-bg:#3a1c19;
+    --warn:#e6b65c; --warn-bg:#3a2d12; --focus:#6fb0dc;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141413; --surface:#1d1c1a; --surface-2:#262522; --ink:#ecebe6; --muted:#a7a49b; --line:#363430;
+  --accent:#6fb0dc; --accent-ink:#0d1a24; --ok:#62c48b; --ok-bg:#16301f; --bad:#ef8077; --bad-bg:#3a1c19;
+  --warn:#e6b65c; --warn-bg:#3a2d12; --focus:#6fb0dc;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:24px 16px 120px}
+h1{font-size:1.6rem;line-height:1.25;margin:0 0 6px;letter-spacing:-.01em}
+h2{font-size:1.2rem;margin:28px 0 10px}
+h3{font-size:1rem;margin:18px 0 6px}
+p{margin:0 0 12px}
+.lede{color:var(--muted);margin-bottom:18px}
+a{color:var(--accent)}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin:18px 0 18px}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;padding:10px 12px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+.controls{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.label{font-size:.85rem;color:var(--muted);min-width:64px}
+.chip-btn{appearance:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:7px 14px;font:inherit;font-size:.92rem;cursor:pointer;min-height:38px}
+.chip-btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn{appearance:none;border:0;background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;min-height:42px}
+.btn.secondary{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible+span,.opt:focus-within{outline:2px solid var(--focus);outline-offset:2px}
+.note{font-size:.88rem;color:var(--muted)}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0}
+.qhead{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-bottom:8px}
+.qno{font-weight:700}
+.tag{font-size:.75rem;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.tag.hi{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.qtext{margin-bottom:10px;overflow-wrap:anywhere}
+.qtext .katex-display,.sol .katex-display{overflow-x:auto;overflow-y:hidden}
+.opts{display:grid;gap:6px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer;background:var(--surface)}
+.opt input{margin-top:5px;accent-color:var(--accent)}
+.opt .let{font-weight:600;min-width:1.2em}
+.opt.sel{border-color:var(--accent)}
+.opt.right{background:var(--ok-bg);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.src{font-size:.8rem;color:var(--muted);margin-top:8px}
+.sol{margin-top:10px;padding:10px 12px;border-left:3px solid var(--accent);background:var(--surface-2);border-radius:0 8px 8px 0;font-size:.95rem;overflow-wrap:anywhere}
+.verdict{font-weight:700;margin-top:8px}
+.verdict.ok{color:var(--ok)} .verdict.no{color:var(--bad)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px;z-index:5}
+.bar .in{max-width:860px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.timer{font-variant-numeric:tabular-nums;font-weight:700}
+.result{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin:16px 0}
+.score{font-size:2rem;font-weight:800}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.tbl{overflow-x:auto}
+.grid-nav{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:10px}
+.grid-nav a{display:block;text-align:center;padding:5px 0;border-radius:6px;background:var(--surface-2);color:var(--ink);text-decoration:none;font-size:.85rem;border:1px solid var(--line)}
+.grid-nav a.done{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.grid-nav a.r{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.grid-nav a.w{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.callout{background:var(--warn-bg);color:var(--ink);border-radius:8px;padding:12px 14px;margin:12px 0}
+ul{padding-left:20px;margin:0 0 12px} li{margin:4px 0}
+@media (max-width:520px){.grid-nav{grid-template-columns:repeat(6,1fr)}h1{font-size:1.35rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Prediksi Soal CF2: Probabilitas dan Statistika</h1>
+  <p class="lede">30 soal prediksi yang disusun dari pola 8 ujian PAI (Mei 2023 sampai Mei 2026). Setiap paket memakai angka yang berbeda, sedangkan pola soalnya tetap sama. Kunci dan pembahasan dihitung otomatis.</p>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="t-quiz" aria-controls="p-quiz" aria-selected="true">Kerjakan soal</button>
+    <button class="tab" role="tab" id="t-ana" aria-controls="p-ana" aria-selected="false">Analisis pola</button>
+  </div>
+
+  <section class="panel" id="p-quiz" role="tabpanel" aria-labelledby="t-quiz">
+    <div class="controls">
+      <div class="row"><span class="label">Paket</span><div class="row" id="paket"></div></div>
+      <div class="row"><span class="label">Mode</span>
+        <button class="chip-btn" data-mode="ujian" aria-pressed="true">Ujian (180 menit, nilai di akhir)</button>
+        <button class="chip-btn" data-mode="latihan" aria-pressed="false">Latihan (langsung dikoreksi)</button>
+      </div>
+      <div class="row"><span class="label">Urutan</span>
+        <button class="chip-btn" data-order="topik" aria-pressed="true">Sesuai topik</button>
+        <button class="chip-btn" data-order="acak" aria-pressed="false">Diacak</button>
+        <button class="btn secondary" id="reset">Ulang paket ini</button>
+      </div>
+      <p class="note" id="paketInfo"></p>
+      <nav class="grid-nav" id="nav" aria-label="Nomor soal"></nav>
+    </div>
+    <div id="result"></div>
+    <div id="list"></div>
+  </section>
+
+  <section class="panel" id="p-ana" role="tabpanel" aria-labelledby="t-ana" hidden>
+    <h2>Data yang dianalisis</h2>
+    <p>Ada 8 naskah ujian dengan 30 soal pilihan ganda per naskah, jadi totalnya 240 soal: A20 Mei 2023, Agu 2023, Apr 2024, Jul 2024; CF2 Okt 2024, Agu 2025, Nov 2025, Mei 2026.</p>
+
+    <h2>Temuan utama</h2>
+    <ul>
+      <li><b>Soal sangat sering didaur ulang.</b> Banyak soal muncul lagi di sesi berikutnya dengan teks yang sama dan hanya angkanya yang diganti. Contoh paling kuat: soal dana bonus C untuk 20 karyawan keluar 3 kali, dan soal lonjakan daya Poisson juga 3 kali dengan soal yang identik.</li>
+      <li><b>Sumber soalnya bisa ditebak.</b> Sebagian besar soal identik dengan <i>SOA Exam P Sample Questions</i> yang diterjemahkan, misalnya soal mobil sport, pasien UGD, dana bonus, Cov(C₁, C₂), penawaran 2000–2200, penyewa rumah/apartemen, dan polis suami-istri. Ini sinyal paling berguna dari seluruh analisis.</li>
+      <li><b>Ada dua era penyusun.</b> Naskah 2023 sampai Juli 2024 saling mendaur ulang antar sesi. Naskah Agu 2025 sampai Mei 2026 lebih banyak mengambil soal SOA yang belum pernah keluar.</li>
+      <li><b>Ada topik baru di Mei 2026:</b> estimasi parameter (MLE dan metode momen, soal #21 dan #22). Topik ini belum pernah muncul sebelumnya, jadi kemungkinan silabus CF2 mulai mencakup statistika inferensial.</li>
+      <li><b>Topik yang selalu ada:</b> Bayes/peluang total (2 sampai 3 soal per naskah), densitas bersama (3 sampai 4 soal), Poisson/binomial (3 sampai 5 soal), aproksimasi normal/TLP (1 sampai 3 soal), fungsi pembangkit (1 sampai 2 soal), dan transformasi variabel (1 sampai 3 soal).</li>
+    </ul>
+
+    <h2>Soal yang terbukti berulang</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Pola soal</th><th>Muncul di</th></tr></thead>
+      <tbody>
+        <tr><td>Dana bonus C, 20 karyawan (binomial)</td><td>Jul 2024 #15, Okt 2024 #15, Mei 2026 #8</td></tr>
+        <tr><td>Lonjakan daya Poisson, 1 per 12 jam</td><td>Agu 2025 #28, Nov 2025 #30, Mei 2026 #27</td></tr>
+        <tr><td>Distribusi campuran (massa di 0 dan 1)</td><td>Agu 2023 #10, Apr 2024 #24, Okt 2024 #11</td></tr>
+        <tr><td>Densitas \((2x+y)/12\), \(P(X+Y\ge 2\mid X\le 1)\)</td><td>Jul 2024 #16, Okt 2024 #16 dan #19</td></tr>
+        <tr><td>\(f(x)=\tfrac{\theta}{2}x+\tfrac32\theta^2x^2\), hitung E[X]</td><td>Agu 2025 #27, Mei 2026 #26</td></tr>
+        <tr><td>Densitas \(|x|/10\) pada [−2, 4]</td><td>Agu 2025 #4 (mean), Nov 2025 #3 (varians)</td></tr>
+        <tr><td>Asuransi hujan pertandingan bisbol (Poisson)</td><td>Okt 2024 #18, Agu 2025 #5</td></tr>
+        <tr><td>Gempa/badai binomial per tahun</td><td>Okt 2024 #28, Nov 2025 #21</td></tr>
+        <tr><td>Densitas \(c(y-x)\), mean marginal X</td><td>Agu 2023 #21, Okt 2024 #10</td></tr>
+        <tr><td>Penyewa rumah/apartemen (Bayes + eksponensial)</td><td>Jul 2024 #27, Okt 2024 #27</td></tr>
+        <tr><td>Dua lini bisnis, \(P(|N_1-N_2|&gt;3)\)</td><td>Jul 2024 #29, Okt 2024 #29</td></tr>
+        <tr><td>Polis suami-istri, kelebihan premi</td><td>Jul 2024 #24, Okt 2024 #24</td></tr>
+        <tr><td>Wilayah X/Y tanpa klaim</td><td>Jul 2024 #14, Okt 2024 #14</td></tr>
+        <tr><td>Tes diabetes (geometrik)</td><td>Apr 2024 #3, Jul 2024 #3</td></tr>
+        <tr><td>PGF binomial, E[X³]</td><td>Apr 2024 #4, Jul 2024 #4</td></tr>
+        <tr><td>Median campuran eksponensial</td><td>Apr 2024 #6, Jul 2024 #6</td></tr>
+        <tr><td>Bonus manajer risiko (seragam)</td><td>Apr 2024 #13, Jul 2024 #13</td></tr>
+        <tr><td>Pasien dokter gigi (binomial campuran)</td><td>Apr 2024 #22, Jul 2024 #22</td></tr>
+        <tr><td>\(M_X(t)\pm M_Y(t)\) diketahui, cari P(X = k)</td><td>Apr 2024 #26, Jul 2024 #26</td></tr>
+        <tr><td>Var(Y₂) statistik terurut seragam</td><td>Agu 2023 #20, Apr 2024 #20</td></tr>
+        <tr><td>Donasi home run / gol Messi (Poisson terpotong)</td><td>Mei 2023 #22, Agu 2023 #18 dan #22, Jul 2024 #19</td></tr>
+        <tr><td>Gol geometrik tim A vs B; koin gambar ke-3; pelari maraton</td><td>Mei 2023 dan Agu 2023 (masing-masing 2 kali)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Cara membaca prediksi ini</h2>
+    <div class="callout">
+      <p><b>Ini estimasi, bukan bocoran.</b> Peluang soal yang <i>persis sama</i> dengan paket di sini keluar memang kecil. Yang bisa diprediksi dengan cukup andal adalah <i>pola</i> soalnya: topik, cara bertanya, dan jebakannya. Karena itu setiap paket memakai angka berbeda. Tujuannya melatih metode, bukan menghafal jawaban.</p>
+      <p>Label <b>Tinggi</b> berarti pola tersebut keluar minimal 2 kali atau muncul di 2 sesi terakhir. Label <b>Sedang</b> berarti pola tersebut keluar 1 sampai 2 kali, atau topiknya baru.</p>
+    </div>
+    <h3>Rekomendasi belajar, berurutan menurut dampaknya</h3>
+    <ul>
+      <li>Kerjakan semua paket di sini sampai nilai Anda konsisten di atas 80%. Setiap soal yang salah, kerjakan ulang tanpa melihat pembahasan.</li>
+      <li>Kerjakan <i>SOA Exam P Sample Questions</i>. Karena naskah PAI terbaru banyak mengambil dari sana, latihan dari sumber ini memberi hasil terbesar dibanding sumber lain.</li>
+      <li>Pelajari dasar MLE dan metode momen. Topik ini baru dan kemungkinan masih akan muncul.</li>
+      <li>Simulasikan ujian 180 menit penuh minimal sekali. Dengan 30 soal, Anda punya sekitar 6 menit per soal. Kalau sebuah soal sudah memakan lebih dari 8 menit, lewati dulu.</li>
+    </ul>
+  </section>
+</div>
+
+<div class="bar" id="bar">
+  <div class="in">
+    <span id="progress">0/30 dijawab</span>
+    <span class="timer" id="timer" aria-live="off">180:00</span>
+    <button class="btn" id="submit">Selesai &amp; nilai</button>
+  </div>
+</div>
+
+<script src="bank.js"></script>
+<script>
+(function(){
+  'use strict';
+  var B = window.CF2Bank, L = B.LETTERS;
+  var PAKET = [['A',101],['B',202],['C',303],['D',404],['E',505]];
+  var store = {
+    get: function(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } },
+    set: function(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} },
+    del: function(k){ try { localStorage.removeItem(k); } catch(e){} }
+  };
+  var params = new URLSearchParams(location.search);
+  var state = { seed: +(params.get('paket')) || 101, mode: 'ujian', order: 'topik', answers: {}, submitted: false, start: null };
+  var paper = [], view = [];
+
+  function key(){ return 'cf2:' + state.seed; }
+  // ubah ^{..} dan _{..} di teks biasa (di luar \( \)) menjadi sup/sub
+  function prettify(s){
+    return s.split(/(\\\(.*?\\\))/).map(function(part){
+      if (part.indexOf('\\(') === 0) return part;
+      return part.replace(/\^\{([^{}]*)\}/g, '<sup>$1</sup>').replace(/_\{([^{}]*)\}/g, '<sub>$1</sub>');
+    }).join('');
+  }
+  function math(el){ if (window.renderMathInElement) renderMathInElement(el, {delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}], throwOnError:false}); }
+
+  function load(){
+    paper = B.buildPaper(state.seed);
+    var saved = store.get(key()) || {};
+    state.answers = saved.answers || {};
+    state.submitted = !!saved.submitted;
+    state.start = saved.start || null;
+    state.mode = saved.mode || state.mode;
+    view = paper.slice();
+    if (state.order === 'acak') {
+      var s = state.seed; view.sort(function(a,b){ return ((a.no*9301+s*49297)%233280) - ((b.no*9301+s*49297)%233280); });
+    }
+    renderControls(); renderList(); renderResult(); tick();
+  }
+  function save(){ store.set(key(), {answers: state.answers, submitted: state.submitted, start: state.start, mode: state.mode}); }
+
+  function renderControls(){
+    var box = document.getElementById('paket'); box.innerHTML = '';
+    var isPreset = PAKET.some(function(p){ return p[1] === state.seed; });
+    PAKET.forEach(function(p){
+      var b = document.createElement('button'); b.className = 'chip-btn'; b.textContent = 'Paket ' + p[0];
+      b.setAttribute('aria-pressed', String(p[1] === state.seed));
+      b.onclick = function(){ setSeed(p[1]); }; box.appendChild(b);
+    });
+    var r = document.createElement('button'); r.className = 'chip-btn'; r.textContent = isPreset ? 'Paket acak baru' : 'Acak #' + state.seed;
+    r.setAttribute('aria-pressed', String(!isPreset));
+    r.onclick = function(){ setSeed(1000 + Math.floor(Math.random()*900000)); }; box.appendChild(r);
+    document.querySelectorAll('[data-mode]').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.mode === state.mode)); });
+    document.querySelectorAll('[data-order]').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.order === state.order)); });
+    var link = location.origin + location.pathname + '?paket=' + state.seed;
+    document.getElementById('paketInfo').innerHTML = 'Kode paket: <b>' + state.seed + '</b>. Bagikan paket yang sama ke teman dengan tautan <a href="' + link + '">' + link.replace(/^https?:\/\//,'') + '</a>.';
+    document.getElementById('timer').hidden = state.mode !== 'ujian';
+  }
+  function setSeed(s){
+    state.seed = s; history.replaceState(null, '', '?paket=' + s); load(); window.scrollTo({top:0});
+  }
+
+  function renderList(){
+    var list = document.getElementById('list'); list.innerHTML = '';
+    view.forEach(function(q, idx){
+      var a = state.answers[q.no], show = state.submitted || (state.mode === 'latihan' && a !== undefined);
+      var card = document.createElement('article'); card.className = 'q'; card.id = 'q' + q.no;
+      var h = '<div class="qhead"><span class="qno">Soal ' + (idx+1) + '</span><span class="tag">' + q.topic + '</span>' +
+        '<span class="tag' + (q.conf === 'Tinggi' ? ' hi' : '') + '">Peluang keluar: ' + q.conf + '</span></div>' +
+        '<div class="qtext">' + q.q + '</div><div class="opts" role="radiogroup" aria-label="Pilihan soal ' + (idx+1) + '">';
+      q.options.forEach(function(o, i){
+        var cls = 'opt' + (a === i ? ' sel' : '');
+        if (show) { if (i === q.answer) cls += ' right'; else if (a === i) cls += ' wrong'; }
+        h += '<label class="' + cls + '"><input type="radio" name="q' + q.no + '" value="' + i + '"' + (a === i ? ' checked' : '') + (show ? ' disabled' : '') + '>' +
+          '<span class="let">' + L[i] + '.</span><span>' + o + '</span></label>';
+      });
+      h += '</div>';
+      if (show) {
+        h += '<div class="verdict ' + (a === q.answer ? 'ok">Benar' : 'no">' + (a === undefined ? 'Tidak dijawab' : 'Salah') + '; jawaban: ' + L[q.answer]) + '</div>' +
+          '<div class="sol"><b>Pembahasan.</b> ' + prettify(q.sol) + '</div>';
+      }
+      h += '<div class="src">Pola serupa: ' + q.src + '</div>';
+      card.innerHTML = h;
+      card.querySelectorAll('input').forEach(function(inp){
+        inp.addEventListener('change', function(){
+          state.answers[q.no] = +inp.value; if (!state.start && state.mode === 'ujian') state.start = Date.now();
+          save();
+          if (state.mode === 'latihan') { renderList(); var el = document.getElementById('q' + q.no); if (el) el.scrollIntoView({block:'nearest'}); }
+          else { card.querySelectorAll('.opt').forEach(function(l, j){ l.classList.toggle('sel', j === +inp.value); }); renderNav(); }
+        });
+      });
+      list.appendChild(card);
+    });
+    math(list); renderNav();
+  }
+
+  function renderNav(){
+    var nav = document.getElementById('nav'); nav.innerHTML = '';
+    var done = 0;
+    view.forEach(function(q, idx){
+      var a = state.answers[q.no], el = document.createElement('a');
+      el.href = '#q' + q.no; el.textContent = idx + 1;
+      if (a !== undefined) { done++; el.className = (state.submitted || state.mode === 'latihan') ? (a === q.answer ? 'r' : 'w') : 'done'; }
+      nav.appendChild(el);
+    });
+    document.getElementById('progress').textContent = done + '/30 dijawab';
+    document.getElementById('submit').textContent = state.submitted ? 'Lihat nilai' : 'Selesai & nilai';
+  }
+
+  function renderResult(){
+    var box = document.getElementById('result');
+    if (!state.submitted) { box.innerHTML = ''; return; }
+    var right = 0, by = {};
+    paper.forEach(function(q){
+      var ok = state.answers[q.no] === q.answer; if (ok) right++;
+      by[q.topic] = by[q.topic] || {r:0,t:0,nos:[]}; by[q.topic].t++; if (ok) by[q.topic].r++; else by[q.topic].nos.push(q.no);
+    });
+    var weak = Object.keys(by).filter(function(k){ return by[k].r < by[k].t; });
+    var pctv = Math.round(right/30*100);
+    var h = '<div class="result" id="res"><div class="score">' + right + '/30 (' + pctv + '%)</div>' +
+      '<p>' + (pctv >= 80 ? 'Sudah di zona aman. Lanjut ke paket lain untuk memastikan hasil ini konsisten, bukan kebetulan.' :
+               pctv >= 60 ? 'Masih di batas aman. Fokuskan latihan pada topik yang salah di bawah sebelum pindah ke paket lain.' :
+               'Masih jauh dari aman. Pelajari ulang konsep tiap topik yang salah, jangan hanya mencocokkan pembahasan.') + '</p>';
+    if (weak.length) {
+      h += '<h3>Topik yang perlu diperbaiki</h3><div class="tbl"><table><thead><tr><th>Topik</th><th>Benar</th></tr></thead><tbody>';
+      weak.forEach(function(k){ h += '<tr><td>' + k + '</td><td>' + by[k].r + '/' + by[k].t + '</td></tr>'; });
+      h += '</tbody></table></div>';
+    }
+    h += '<div class="row" style="margin-top:12px"><button class="btn secondary" id="again">Ulang paket ini</button></div></div>';
+    box.innerHTML = h;
+    document.getElementById('again').onclick = resetPaper;
+  }
+
+  function resetPaper(){
+    if (!confirm('Hapus semua jawaban di paket ini dan mulai ulang?')) return;
+    store.del(key()); state.answers = {}; state.submitted = false; state.start = null; renderList(); renderResult(); tick(); window.scrollTo({top:0});
+  }
+
+  function tick(){
+    var el = document.getElementById('timer');
+    if (state.mode !== 'ujian') return;
+    var total = 180*60, used = state.start ? Math.floor((Date.now() - state.start)/1000) : 0, left = Math.max(0, total - used);
+    el.textContent = (state.submitted ? 'Selesai · ' : '') + String(Math.floor(left/60)).padStart(2,'0') + ':' + String(left%60).padStart(2,'0');
+    if (left === 0 && !state.submitted && state.start) { state.submitted = true; save(); renderList(); renderResult(); }
+  }
+  setInterval(tick, 1000);
+
+  document.querySelectorAll('[data-mode]').forEach(function(b){ b.onclick = function(){ state.mode = b.dataset.mode; save(); renderControls(); renderList(); tick(); }; });
+  document.querySelectorAll('[data-order]').forEach(function(b){ b.onclick = function(){ state.order = b.dataset.order; load(); }; });
+  document.getElementById('reset').onclick = resetPaper;
+  document.getElementById('submit').onclick = function(){
+    if (!state.submitted) {
+      var left = 30 - Object.keys(state.answers).length;
+      if (left > 0 && !confirm(left + ' soal belum dijawab. Tetap selesai dan nilai?')) return;
+      state.submitted = true; save(); renderList(); renderResult();
+    }
+    document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  };
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function(t){ t.onclick = function(){
+    tabs.forEach(function(x){ x.setAttribute('aria-selected', String(x === t)); document.getElementById(x.getAttribute('aria-controls')).hidden = x !== t; });
+    document.getElementById('bar').hidden = t.id !== 't-quiz';
+    if (t.id === 't-ana') math(document.getElementById('p-ana'));
+  }; });
+
+  function start(){ load(); }
+  if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
+})();
+</script>
+</body>
+</html>
