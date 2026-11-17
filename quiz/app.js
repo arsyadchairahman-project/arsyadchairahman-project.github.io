@@ -186,7 +186,7 @@
 
   document.querySelectorAll('[data-mode]').forEach(function(b){ b.onclick = function(){ state.mode = b.dataset.mode; save(); renderControls(); renderList(); tick(); }; });
   document.querySelectorAll('[data-order]').forEach(function(b){ b.onclick = function(){ state.order = b.dataset.order; load(); }; });
-  document.querySelectorAll('[data-src]').forEach(function(b){ b.onclick = function(){ state.src = b.dataset.src; history.replaceState(null, '', urlFor()); load(); window.scrollTo({top:0}); }; });
+  document.querySelectorAll('[data-src]').forEach(function(b){ b.onclick = function(){ if (b.dataset.src === 'soa' && !B.buildSoaPaper) { alert('Versi halaman ini belum termuat penuh. Muat ulang halaman (tarik ke bawah di HP, atau Ctrl+Shift+R di laptop), lalu coba lagi.'); return; } state.src = b.dataset.src; history.replaceState(null, '', urlFor()); load(); window.scrollTo({top:0}); }; });
   $('reset').onclick = resetPaper;
   $('cancel').onclick = cancelAttempt;
   $('copy').onclick = function(){
