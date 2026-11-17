@@ -445,7 +445,7 @@
     gen: function (r) {
       var a = r.pick([2, 3]), b = r.pick([2, 3, 4]);
       var ab = Math.pow(a, b);
-      function dens(coefN, coefD, pw) { var g = gcd(coefN, coefD); coefN /= g; coefD /= g; return M((coefD === 1 ? '\\dfrac{' + coefN + '}{' : '\\dfrac{' + coefN + '}{' + coefD) + 'y^{' + pw + '}}'); }
+      function dens(coefN, coefD, pw) { var g = gcd(coefN, coefD); coefN /= g; coefD /= g; if (pw === '1') return M(coefD === 1 ? '\\dfrac{' + coefN + '}{y}' : '\\dfrac{' + coefN + '}{' + coefD + 'y}'); return M((coefD === 1 ? '\\dfrac{' + coefN + '}{' : '\\dfrac{' + coefN + '}{' + coefD) + 'y^{' + pw + '}}'); }
       var pw = b / 2 + 1, pwS = (b % 2 === 0) ? String(pw) : (b + 2) + '/2';
       var correct = dens(b * ab, 2, pwS);
       var w = [dens(b * ab, 1, String(b + 1)), dens(b * ab, 2, (b % 2 === 0) ? String(b / 2) : b + '/2'), dens(b * ab, 1, pwS), dens(ab, 2, pwS)];
