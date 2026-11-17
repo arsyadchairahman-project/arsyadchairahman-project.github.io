@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prediksi Soal CF1</title>
+<meta name="description" content="30 soal prediksi ujian PAI CF1 Matematika Keuangan, dengan beberapa paket kombinasi, kunci jawaban, dan pembahasan.">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../quiz/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <nav class="examnav" aria-label="Pilih ujian"><a href="../cf1/" aria-current="page">CF1<span class="xname"> Matematika Keuangan</span></a><a href="../cf2/">CF2<span class="xname"> Probabilitas &amp; Statistika</span></a></nav>
+    <h1>Prediksi Soal CF1: Matematika Keuangan</h1>
+    <p class="sub">30 soal prediksi yang disusun dari pola 5 ujian PAI (Juli 2024 sampai Mei 2026), dengan komposisi yang mengikuti bobot Silabus PAI 2024 (berlaku sejak 21 Oktober 2024). Setiap paket memakai angka yang berbeda, sedangkan pola soalnya tetap sama. Kunci, pembahasan, dan cara cepat dihitung otomatis.</p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="t-quiz" aria-controls="p-quiz" aria-selected="true">Kerjakan soal</button>
+    <button class="tab" role="tab" id="t-ana" aria-controls="p-ana" aria-selected="false">Analisis pola</button>
+  </div>
+
+  <section class="panel" id="p-quiz" role="tabpanel" aria-labelledby="t-quiz">
+    <div class="setup">
+      <div class="setup-grid">
+        <span class="setup-label" id="lbl-paket">Paket</span>
+        <div class="seg paket" id="paket" role="group" aria-labelledby="lbl-paket"></div>
+        <span class="setup-label" id="lbl-mode">Mode</span>
+        <div class="seg" role="group" aria-labelledby="lbl-mode">
+          <button data-mode="ujian" aria-pressed="true">Ujian · 180 menit</button>
+          <button data-mode="latihan" aria-pressed="false">Latihan</button>
+        </div>
+        <span class="setup-label" id="lbl-order">Urutan</span>
+        <div class="seg" role="group" aria-labelledby="lbl-order">
+          <button data-order="topik" aria-pressed="true">Sesuai topik</button>
+          <button data-order="acak" aria-pressed="false">Diacak</button>
+        </div>
+      </div>
+      <div class="setup-foot">
+        <span class="code" id="paketInfo"></span>
+        <span class="foot-actions">
+          <button class="linkbtn" id="copy" type="button">Salin tautan paket</button>
+          <button class="linkbtn" id="reset" type="button">Ulang paket</button>
+        </span>
+      </div>
+      <details class="jump" id="jump">
+        <summary>Lompat ke soal</summary>
+        <nav class="grid-nav" id="nav" aria-label="Nomor soal"></nav>
+      </details>
+    </div>
+    <div id="result"></div>
+    <div id="list"></div>
+  </section>
+
+  <section class="panel" id="p-ana" role="tabpanel" aria-labelledby="t-ana" hidden>
+    <h2>Kesesuaian dengan Silabus PAI 2024</h2>
+    <p>Silabus CF1 (Kurikulum Pendidikan PAI 2024, berlaku sejak 21 Oktober 2024) menetapkan ujian 3 jam dengan 30 soal pilihan ganda. Setiap paket di halaman ini mengikuti bobot berikut.</p>
+    <div class="tbl stack"><table>
+      <thead><tr><th>Bagian silabus</th><th>Bobot silabus · soal per paket</th></tr></thead>
+      <tbody>
+        <tr><td>1. Nilai waktu dari uang: bunga, diskonto, force of interest, persamaan nilai, NPV/IRR, dollar- &amp; time-weighted return</td><td>10–20% · 4 soal (13%)</td></tr>
+        <tr><td>2. Anuitas &amp; nilai arus kas: level, aritmetika, geometrik, perpetuitas, tertunda, kontinu</td><td>20–30% · 7 soal (23%)</td></tr>
+        <tr><td>3. Struktur jangka waktu suku bunga: spot/forward, kurva imbal hasil, durasi, konveksitas, imunisasi</td><td>20–30% · 6 soal (20%)</td></tr>
+        <tr><td>4. Pengembalian pinjaman: amortisasi &amp; sinking fund</td><td>5–15% · 3 soal (10%)</td></tr>
+        <tr><td>5. Model penentuan harga obligasi: harga, nilai buku, amortisasi premi, callable</td><td>10–20% · 4 soal (13%)</td></tr>
+        <tr><td>6. Produk derivatif: opsi, forward, futures, strategi opsi</td><td>5–15% · 3 soal (10%)</td></tr>
+        <tr><td>7. Matematika keuangan untuk portofolio: CAPM, model faktor, mean-variance</td><td>5–15% · 3 soal (10%)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Data yang dianalisis</h2>
+    <p>Ada 5 naskah dengan 30 soal per naskah, jadi totalnya 150 soal: A10 Juli 2024, CF1 Mei 2025, Agustus 2025, November 2025, dan Mei 2026.</p>
+
+    <h2>Temuan utama</h2>
+    <ul>
+      <li><b>Sebagian besar soal berasal dari SOA Exam FM.</b> Banyak soal 2025 identik dengan soal latihan SOA Exam FM yang diterjemahkan, misalnya soal Hollice (475/570), dana pensiun Christie, dan obligasi Violet. Latihan dari sumber ini memberi hasil terbesar.</li>
+      <li><b>Anuitas mendominasi.</b> Setiap naskah memuat 7 sampai 10 soal anuitas (geometrik, aritmetika, perpetuitas), sedikit di atas bobot silabus. Bagian ini paling layak dikuasai lebih dulu.</li>
+      <li><b>Ada soal yang diulang dengan angka berbeda.</b> Beta portofolio “Amel” keluar di Agu 2025 #30 dan Nov 2025 #30. Durasi modifikasi portofolio keluar di Mei 2025 #21 dan Agu 2025 #22. Obligasi callable muncul 3 kali berturut-turut.</li>
+      <li><b>Mei 2026 berubah gaya.</b> Naskah ini lebih banyak memuat soal konsep berbentuk pernyataan benar/salah (misalnya urutan coupon rate, current yield, dan YTM; pernyataan tentang futures; asumsi CAPM). Bank soal di halaman ini fokus pada soal hitungan, jadi siapkan juga pemahaman konsepnya.</li>
+      <li><b>Kalkulator diatur sejak Mei 2026:</b> hanya kalkulator scientific non-programmable (seri Casio fx-991, fx-350, fx-570, fx-82). Kalkulator finansial dilarang. Bagian “Cara cepat” di setiap soal sudah memakai fitur yang ada di fx-991 (SOLVE, MODE EQN, STAT).</li>
+    </ul>
+
+    <h2>Soal yang terbukti berulang</h2>
+    <div class="tbl stack"><table>
+      <thead><tr><th>Pola soal</th><th>Muncul di</th></tr></thead>
+      <tbody>
+        <tr><td>Anuitas aritmetika naik/turun (termasuk “naik lalu datar”)</td><td>Jul 2024 #12 &amp; #14, Mei 2025 #12, Agu 2025 #11 &amp; #12, Nov 2025 #12 &amp; #14, Mei 2026 #8 &amp; #10</td></tr>
+        <tr><td>Anuitas geometrik (level dulu lalu naik g%)</td><td>Mei 2025 #8 &amp; #13, Agu 2025 #9 &amp; #14, Nov 2025 #8 &amp; #13</td></tr>
+        <tr><td>Perpetuitas (berkala, naik, tumbuh)</td><td>Jul 2024 #15, Mei 2025 #19, Agu 2025 #19, Nov 2025 #19, Mei 2026 #6 &amp; #10</td></tr>
+        <tr><td>Dollar-weighted &amp; time-weighted yield</td><td>Mei 2025 #5 &amp; #6, Agu 2025 #5 &amp; #6, Nov 2025 #5, Mei 2026 #5</td></tr>
+        <tr><td>Porsi pokok/bunga cicilan amortisasi</td><td>Jul 2024 #18 &amp; #21, Mei 2025 #15–#17, Agu 2025 #15 &amp; #16, Nov 2025 #10 &amp; #16, Mei 2026 #19</td></tr>
+        <tr><td>Durasi Macaulay</td><td>Mei 2025 #22, Agu 2025 #21, Nov 2025 #22, Mei 2026 #16</td></tr>
+        <tr><td>Durasi termodifikasi portofolio</td><td>Mei 2025 #21, Agu 2025 #22</td></tr>
+        <tr><td>Spot rate &amp; forward rate</td><td>Jul 2024 #25 &amp; #26, Agu 2025 #4 &amp; #24, Nov 2025 #1 &amp; #2, Mei 2026 #15</td></tr>
+        <tr><td>Obligasi callable (yield minimum)</td><td>Mei 2025 #26, Agu 2025 #26, Nov 2025 #26</td></tr>
+        <tr><td>Imbal hasil dengan reinvestasi kupon</td><td>Mei 2025 #23 &amp; #24, Agu 2025 #7 &amp; #10, Mei 2026 #24</td></tr>
+        <tr><td>Put-call parity</td><td>Mei 2025 #28 &amp; #29, Nov 2025 #28, Mei 2026 #25</td></tr>
+        <tr><td>Beta portofolio “Amel”</td><td>Agu 2025 #30, Nov 2025 #30</td></tr>
+        <tr><td>Sinking fund</td><td>Jul 2024 #19 &amp; #20, Agu 2025 #13, Mei 2026 #21</td></tr>
+        <tr><td>Exact matching dengan obligasi zero-coupon</td><td>Agu 2025 #3 &amp; #23, Nov 2025 #25</td></tr>
+        <tr><td>Swap suku bunga</td><td>Agu 2025 #27 &amp; #28, Nov 2025 #27</td></tr>
+        <tr><td>Model diskonto dividen</td><td>Mei 2025 #20, Agu 2025 #20</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Cara membaca prediksi ini</h2>
+    <div class="callout">
+      <p><b>Ini estimasi, bukan bocoran.</b> Yang bisa diprediksi adalah <i>pola</i> soalnya, bukan angkanya. Karena itu setiap paket memakai angka berbeda. Kunci setiap template sudah saya uji ulang dengan parameter soal asli dan hasilnya cocok dengan opsi jawaban resmi, misalnya durasi portofolio 13,5, harga callable 999, dan bull spread $135.</p>
+      <p>Label <b>tinggi</b> berarti pola tersebut keluar minimal 2 kali. Label <b>sedang</b> berarti pola tersebut baru keluar 1 sampai 2 kali.</p>
+    </div>
+    <h3>Rekomendasi belajar, berurutan menurut dampaknya</h3>
+    <ul>
+      <li>Kuasai anuitas (geometrik, aritmetika, perpetuitas) sampai lancar. Bagian ini mencakup sepertiga naskah.</li>
+      <li>Hafalkan rumus satu baris dari bagian “Cara cepat”: Pₖ = P₁(1 + i)ᵏ⁻¹, a₂ₙ = aₙ(1 + vⁿ), D portofolio = rata-rata tertimbang, dan put-call parity. Ini menghemat banyak waktu.</li>
+      <li>Kerjakan soal latihan SOA Exam FM untuk bagian obligasi dan struktur suku bunga.</li>
+      <li>Simulasikan ujian 180 menit penuh dengan fx-991, minimal sekali, sebelum hari ujian.</li>
+    </ul>
+    <p class="note">Referensi silabus: Vaaler, Vaaler &amp; Daniel, <i>Mathematical Interest Theory</i> (ed. 2); Kellison, <i>The Theory of Interest</i> (ed. 3); McDonald, <i>Derivatives Markets</i>.</p>
+  </section>
+</div>
+
+<div class="bar" id="bar">
+  <div class="track" aria-hidden="true"><i id="trackFill"></i></div>
+  <div class="in">
+    <div class="stat">
+      <span class="count" id="progress">0/30 dijawab</span>
+      <span class="timer" id="timer" title="Timer mulai saat soal pertama dijawab">Sisa 180:00</span>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="cancel" hidden>Batalkan</button>
+      <button class="btn" id="submit"><span class="long">Selesai &amp; nilai</span><span class="short">Selesai</span></button>
+    </div>
+  </div>
+</div>
+
+<script src="bank.js"></script>
+<script>window.QUIZ = { bank: window.CF1Bank, key: 'cf1' };</script>
+<script src="../quiz/app.js"></script>
+</body>
+</html>

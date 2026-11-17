@@ -779,6 +779,46 @@
       return Object.assign({ q: q, sol: sol }, numOpts(r, bound, [1 - sd / (N3 * k * k), 1 - sd * sd / (N3 * k), 1 - sd * sd / (k * k * Math.sqrt(N3)), 2 * Phi(k * Math.sqrt(N3) / sd) - 1], 4));
     } });
 
+  // ---------- Cara cepat per template ----------
+  var FAST = {
+    bayes3: 'Buat tabel 2 kolom (selamat/meninggal) × 3 baris kategori, isi hasil kali proporsi × peluang. Jawaban = sel yang ditanya ÷ total kolomnya. Untuk “selamat”, pakai 1 − peluang meninggal per baris supaya tidak salah kolom.',
+    cars: 'Gambar diagram 2×2: baris “1 mobil / >1 mobil”, kolom “sport / bukan sport”. Isi sel yang diketahui (sport ∩ >1 = % bersyarat × P(>1)), sisanya tinggal dikurangkan. Jangan perlakukan “15% di antara nasabah >1 mobil” sebagai 15% dari total.',
+    region: 'Peluang total linear: total = x·w + y·(1 − w), jadi w = (y − total)/(y − x). Ini rumus “lever”: w adalah jarak total ke y dibagi jarak x ke y. Kalau ditanya P(X | tanpa klaim), kalikan w·x lalu bagi total.',
+    events: 'Aljabar: (A ∪ B) dan (A ∪ Bᶜ) beririsan tepat di A dan gabungannya Ω, jadi P(A) = jumlah keduanya − 1. Saling lepas dengan B berarti C ⊂ Bᶜ. Untuk enumerasi “lebih banyak laki-laki”, cukup hitung kasus 2L1P dan 3L lalu bagi C(N,3).',
+    renters: 'Ini Bayes dengan “likelihood” survival: S(t) = e^{−t/θ}. Hitung a·e^{−t/θ₁} dan (1 − a)·e^{−t/θ₂} di kalkulator, lalu bagian pertama ÷ jumlah. Jebakan umum: memakai e^{−θt} (rataan dikira laju).',
+    couple: 'Syaratnya “suami hidup”, jadi semesta = {keduanya hidup, hanya suami hidup}. Untung = 1.000 jika keduanya hidup, −9.000 jika istri meninggal. E = 1.000 − 10.000 × P(istri meninggal | suami hidup).',
+    pmf: 'P(N=n) = 1/((n+1)(n+2)) = 1/(n+1) − 1/(n+2): jumlahnya teleskopik, P(N ≤ K) = 1 − 1/(K+2). Untuk 1/2^{n+1} dua minggu: jumlah dua geometrik identik → P(S=k) = (k+1)/2^{k+2}, tak perlu konvolusi panjang.',
+    geomtest: 'Tanpa memori: P(≥ j dites) = q^{j−1}. Rasio P(≥k)/P(≥m) = q^{k−m}, lalu ganti q = r^{1/(m−1)}. Pangkat jawaban = (k − m)/(m − 1); cocokkan langsung ke opsi.',
+    fundC: 'Tabulasikan P(N ≤ k) binomial di fx-991 (MENU Distribution → Binomial CD) sampai > 0,99. k pertama yang lolos → C = dana/k. Biasanya k = 2 atau 3, jadi cukup hitung 3–4 suku.',
+    quake: '“Kurang dari k” = P(N ≤ k − 1); “paling sedikit k” = 1 − P(N ≤ k − 1). Pakai Binomial CD di kalkulator. Opsi pengecoh biasanya memakai P(N ≤ k) atau aproksimasi Poisson, jadi bedakan tanda ketaksamaan dulu.',
+    poisrate: 'Skalakan λ ke panjang interval yang ditanya (1 per 12 jam → λ = 2 untuk 24 jam). P(N ≤ 1) = e^{−λ}(1 + λ), P(N ≤ 2) = e^{−λ}(1 + λ + λ²/2). Hafalkan 3e^{−2} ≈ 0,406 karena soal ini sudah keluar 3 kali.',
+    poisratio: 'Rasio Poisson P(a)/P(a+2) = (a+1)(a+2)/λ², sedangkan P(a)/P(a+1) = (a+1)/λ. Selesaikan λ, dan untuk Poisson varians = λ.',
+    poiscap: 'Untuk min(N, m) hitung saja tabel kecil: nilai 0..m−1 dengan peluang Poisson dan nilai m dengan sisa peluang. E[(N − k)⁺] = λ − E[min(N, k)]. Untuk SD, E[Y²] dari tabel yang sama lalu kurangi E[Y]².',
+    pgf3: 'Jangan turunkan PGF tiga kali secara simbolik. E[X³] = n(n−1)(n−2)p³ + 3n(n−1)p² + np (momen faktorial). Atau di fx-991 buat tabel x, x³·P(X=x) dan jumlahkan untuk n ≤ 6.',
+    mixed: 'Cek total massa dulu, karena konstanta densitas biasanya sudah konsisten. E[X] = Σ massa titik × nilai + ∫ x f(x) dx. Untuk f = cx pada (0,1): ∫x·cx = c/3 dan ∫x²·cx = c/4.',
+    mixmed: 'Median campuran: selesaikan a·e^{−m/θ₁} + (1 − a)·e^{−m/θ₂} = 0,5. Dengan θ₂ = 2θ₁ jadikan kuadrat dalam u = e^{−m/2}. Lebih cepat lagi: pakai SOLVE di fx-991 dengan tebakan awal 1.',
+    normpct: 'Modus normal = rataan. Dari persentil p: σ = (μ − x_p)/|z_p| dengan z₀,₄₀ = −0,2533 dan z₀,₃₀ = −0,5244. Lalu Φ((x − μ)/σ) memakai Normal CD di kalkulator.',
+    transform: 'Metode CDF: F_Y(y) = P(T ≤ √y) = F_T(√y), lalu turunkan. Untuk F(t) = 1 − (a/t)^b: F_Y = 1 − a^b y^{−b/2}, jadi f_Y = (b/2)a^b y^{−b/2−1}. Cek cepat: pangkat y di jawaban harus −(b/2 + 1).',
+    deduct: 'Seragam [0, M]: E[(X − D)⁺] = (M − D)²/(2M). Rasio terhadap E[X] = ((M − D)/M)², jadi D = M(1 − √k). Untuk eksponensial dengan batas u: E[min(X, u)] = θ(1 − e^{−u/θ}).',
+    bonus: 'Untuk seragam [0, L]: E[(P − X)⁺] = P²/(2L) (luas segitiga ÷ L). Bonus = persentase × P²/(2L), dua langkah saja.',
+    jointcond: 'Kerjakan pembilang dan penyebut terpisah. Penyebut P(X ≤ 1) = integral marginal X. Pembilang: gambar daerah x ≤ 1, x + y ≥ s, lalu integrasikan y dulu. Polinom linear bisa dicek dengan TABLE/∫dx di fx-991.',
+    triangle: 'Pada 0 < x < y < L dengan f = c(y − x): ∫∫(y − x) = L³/6, jadi c = 6/L³. Polanya simetri: E[X] = L/4 dan E[Y] = 3L/4. Hafalkan untuk L = 1: c = 6, E[X] = 1/4.',
+    bids: 'Seragam bivariat → peluang = luas. P(|X − Y| ≥ d) = (1 − d/R)² (dua segitiga). Jawaban “mempertimbangkan lebih lanjut” = 1 − (1 − d/R)². Geser intervalnya ke [0, R] dulu.',
+    totvar: 'Var(Y) = E[Var(Y|X)] + Var(E[Y|X]). Untuk Y|X ~ Poisson(X): Var(Y) = E[X] + Var(X). Untuk rataan x dan varians x²: Var(Y) = E[X²] + Var(X). Tulis dua suku ini dulu sebelum menghitung.',
+    jointmgf: 'Untuk MGF bersama diskrit, koefisien e^{t₁} membawa X₁ = 1. E[X₁] = jumlah koefisien suku yang mengandung t₁, E[X₂] = jumlah koefisien yang mengandung t₂. Tidak perlu turunan.',
+    cov: 'Linearitas: Cov(X + Y, X + kY) = Var X + (1 + k)Cov + k Var Y. Untuk X ~ U[0, L], Y|X ~ U[0, X]: Cov = Var(X)/2 = L²/24. Untuk matriks: Var(aᵀX) = Σ a_i² σ_ii + 2Σ a_i a_j σ_ij, dan perhatikan tanda koefisien negatif.',
+    order: 'Rumus siap pakai: min dua U(a, b) → a + (b − a)/3, maks dua → a + 2(b − a)/3. E[max] eksponensial = E[X₁] + E[X₂] − E[min], dengan E[min] = 1/(laju₁ + laju₂). Y₂ dari 3 U(0, L) ~ L·Beta(2, 2), varians L²/20.',
+    sampmean: 'X̄ ~ N(μ, σ²/n). Langsung z = (c − μ)/(σ/√n) dengan Normal CD. Untuk selisih rata-rata, varians dijumlahkan: σ₁²/n₁ + σ₂²/n₂, bukan σ yang dijumlahkan.',
+    cltpct: 'Persentil total = nμ + z_p·σ√n. z₀,₉₀ = 1,2816, z₀,₉₅ = 1,6449. Jebakan: menulis σ·n atau σ saja.',
+    twolines: 'Selisih N₁ − N₂: rataan 0, varians λ + np(1 − p). “> 3” untuk bilangan bulat berarti ≥ 4, dengan koreksi kontinuitas 3,5. Jawaban = 2[1 − Φ(3,5/σ)].',
+    ci: 'Selang z: x̄ ± z_{α/2}·σ/√n, dan proporsi p̂ ± z√(p̂q̂/n). Cari titik tengah opsi (harus = x̄ atau p̂) lalu cocokkan setengah lebarnya. Opsi dengan z satu sisi (1,645 untuk 95%) adalah pengecoh.',
+    htest: 'α = P(tolak | H₀), kuasa = P(tolak | H₁); keduanya 1 − Φ((c − μ)/(σ/√n)) dengan μ berbeda. Nilai kritis uji kanan = μ₀ + z_α σ/√n. p-value uji satu sisi tidak dikali 2.',
+    estim: 'MLE: tulis ln L, turunkan, = 0. Untuk (p + 1)x^p: p̂ = −n/Σln x − 1. Metode momen: samakan E[X] dan Var(X) dengan momen sampel yang dibagi n (bukan n − 1), lalu selesaikan.',
+    bayesest: 'Konjugat: Gamma(α, β)–Poisson → (α + Σx)/(β + n); Beta(a, b)–Binomial → (a + x)/(a + b + n). Cara ingat: tambah “jumlah kejadian” ke atas dan “jumlah percobaan/periode” ke bawah.',
+    estprop: 'Maks dari n U(0, θ): E = nθ/(n + 1), jadi c = (n + 1)/n. Varians sampel dengan pembagi n berbias −σ²/n. Chebyshev untuk X̄: P(|X̄ − μ| < k) ≥ 1 − σ²/(nk²).'
+  };
+  T.forEach(function (x) { x.fast = FAST[x.id]; });
+
   // ---------- Komposisi paket sesuai Silabus PAI 2024 ----------
   // Bobot silabus CF2: 1) Dasar probabilitas 15–25%, 2) Univariat 25–35%,
   // 3) Multivariat 20–30%, 4) Inferensi statistik 20–30%.
@@ -786,9 +826,9 @@
   var byId = {}; T.forEach(function (x) { byId[x.id] = x; });
   function merge(id, topic, conf, src, ids) {
     return { id: id, topic: topic, conf: conf, src: src, variants: ids,
-      gen: function (r) { return byId[ids[Math.floor(r() * ids.length)]].gen(r); } };
+      gen: function (r) { var b = byId[ids[Math.floor(r() * ids.length)]], g = b.gen(r); g.fast = b.fast; return g; } };
   }
-  function use(id, syl, topic) { var b = byId[id]; return { id: id, topic: topic || b.topic, conf: b.conf, src: b.src, syl: syl, gen: b.gen }; }
+  function use(id, syl, topic) { var b = byId[id]; return { id: id, topic: topic || b.topic, conf: b.conf, src: b.src, syl: syl, gen: b.gen, fast: b.fast }; }
   function useM(m, syl) { m.syl = syl; return m; }
   var SECTIONS = [
     { no: 1, name: 'Dasar-dasar probabilitas', range: '15–25%' },
@@ -824,7 +864,7 @@
       var r = makeR((seed * 7919 + i * 104729) >>> 0);
       var g = P[i].gen(r);
       var opts = shuffle([{ s: g.correct, ok: true }].concat(g.wrong.map(function (w) { return { s: w, ok: false }; })), r);
-      out.push({ no: i + 1, id: P[i].id, topic: P[i].topic, conf: P[i].conf, src: P[i].src, syl: P[i].syl, sec: +P[i].syl.charAt(0), q: g.q, sol: g.sol,
+      out.push({ no: i + 1, id: P[i].id, topic: P[i].topic, conf: P[i].conf, src: P[i].src, syl: P[i].syl, sec: +P[i].syl.charAt(0), q: g.q, sol: g.sol, fast: g.fast || P[i].fast,
         options: opts.map(function (o) { return o.s; }), answer: opts.findIndex(function (o) { return o.ok; }) });
     }
     return out;
