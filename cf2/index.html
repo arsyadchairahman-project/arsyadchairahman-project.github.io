@@ -28,6 +28,11 @@
   <section class="panel" id="p-quiz" role="tabpanel" aria-labelledby="t-quiz">
     <div class="setup">
       <div class="setup-grid">
+        <span class="setup-label" id="lbl-src">Sumber</span>
+        <div class="seg" role="group" aria-labelledby="lbl-src">
+          <button data-src="pai" aria-pressed="true">Pola PAI</button>
+          <button data-src="soa" aria-pressed="false">Pola SOA (baru)</button>
+        </div>
         <span class="setup-label" id="lbl-paket">Paket</span>
         <div class="seg paket" id="paket" role="group" aria-labelledby="lbl-paket"></div>
         <span class="setup-label" id="lbl-mode">Mode</span>
@@ -74,6 +79,9 @@
       <p>Paket di sini mengikuti batas bawah silabus untuk inferensi (8 soal). Soal dengan label <b>Topik silabus, belum pernah keluar</b> adalah materi resmi yang belum teruji di ujian sebelumnya. Pelajari materinya, tapi jangan sampai menggeser waktu untuk topik berlabel <b>tinggi</b>.</p>
     </div>
     <p class="note">Referensi silabus: Hogg, Tanis &amp; Zimmerman, <i>Probability and Statistical Inference</i> (ed. 9); Hogg, McKean &amp; Craig, <i>Introduction to Mathematical Statistics</i> (ed. 8); Miller &amp; Miller, <i>John E. Freund's Mathematical Statistics with Applications</i>; Walpole, <i>Probability and Statistics for Engineers and Scientists</i> (ed. 9).</p>
+
+    <h2>Mode Pola SOA</h2>
+    <p>Mode <b>Pola SOA (baru)</b> berisi 15 soal dari pola SOA Exam P yang belum pernah dipakai di naskah PAI, misalnya inklusi-eksklusi tiga kejadian, deductible dan batas manfaat, hipergeometrik, binomial negatif, hazard rate, korelasi, dan MGF. Alasannya: naskah PAI terbaru banyak menerjemahkan soal latihan SOA, jadi pola SOA yang belum terpakai adalah kandidat kuat untuk naskah berikutnya. Angkanya diubah, tapi kuncinya sudah diuji dengan angka asli SOA #1, #49, #50, #101, #106, #115, dan #128 dan cocok dengan kunci resmi (52%, 0,031, 1,9, 1%, 0,2857, dan 0,333).</p>
 
     <h2>Data yang dianalisis</h2>
     <p>Ada 8 naskah ujian dengan 30 soal pilihan ganda per naskah, jadi totalnya 240 soal: A20 Mei 2023, Agu 2023, Apr 2024, Jul 2024; CF2 Okt 2024, Agu 2025, Nov 2025, Mei 2026.</p>

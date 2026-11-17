@@ -868,6 +868,188 @@
   ];
   var P = T; // urutan template = urutan bagian silabus (4/7/6/3/4/3/3 soal)
 
+  // ---------- Pola SOA Exam FM yang belum dipakai PAI ----------
+  var S = [];
+  function soa(o) { o.conf = 'SOA'; S.push(o); }
+  soa({ id: 'f_infl', sec: 1, syl: '1.d', topic: 'Bunga riil & inflasi', src: 'Pola SOA Exam FM (inflasi)',
+    fast: 'Bunga riil: 1 + i_riil = (1 + i)/(1 + r). Jangan pakai i − r (hanya aproksimasi). Arus kas yang naik mengikuti inflasi dan didiskontokan dengan bunga nominal = arus kas tetap yang didiskontokan dengan bunga riil.',
+    gen: function (r) {
+      var i = r.pick([0.08, 0.1, 0.07]), inf = r.pick([0.03, 0.04, 0.05]), N = r.pick([10, 15, 20]), P = r.pick([1000, 500]);
+      var j = (1 + i) / (1 + inf) - 1, ans = P * an(j, N);
+      var q = 'Pembayaran tahunan dimulai ' + P + ' di akhir tahun pertama dan naik mengikuti inflasi ' + pc(inf, 0) + ' per tahun, selama ' + N + ' tahun. Bunga nominal efektif ' + pc(i, 0) + '. Hitung nilai sekarangnya.';
+      var sol = 'Pembayaran ke-k = ' + P + '(1 + r)^{k−1}. PV = [' + P + '/(1 + r)]·a_{' + N + '|j} dengan 1 + j = ' + n(1 + i, 2) + '/' + n(1 + inf, 2) + ' ⇒ ini sama dengan rumus anuitas geometrik: <b>' + n(geoPV(P, inf, i, N), 2) + '</b>.';
+      ans = geoPV(P, inf, i, N);
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [P * an(i - inf, N), P * an(i, N), P * an(j, N), P * an(j, N) * (1 + inf)], 2));
+    } });
+  soa({ id: 'f_force', sec: 1, syl: '1.b, 1.e', topic: 'Force of interest yang berubah', src: 'Pola SOA Exam FM (δₜ = k/(a + t))',
+    fast: 'Untuk δₜ = k/(a + t): faktor akumulasi dari t₁ ke t₂ = ((a + t₂)/(a + t₁))ᵏ, karena ∫ k/(a + t) dt = k ln(a + t). Ini menghindari integral eksponensial.',
+    gen: function (r) {
+      var k = r.pick([2, 3]), a = r.pick([10, 20]), t1 = r.pick([0, 2, 5]), t2 = t1 + r.pick([5, 10]), X = r.pick([100, 1000]);
+      var ans = X * Math.pow((a + t2) / (a + t1), k);
+      var q = 'Dana berakumulasi dengan force of interest \\(\\delta_t = \\dfrac{' + k + '}{' + a + ' + t}\\). Sebesar ' + X + ' disetor pada t = ' + t1 + '. Hitung nilai dana pada t = ' + t2 + '.';
+      var sol = 'Faktor = exp∫_{' + t1 + '}^{' + t2 + '} ' + k + '/(' + a + ' + t) dt = ((' + a + ' + ' + t2 + ')/(' + a + ' + ' + t1 + '))^' + k + '. Nilai = <b>' + n(ans, 2) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [X * Math.exp(k * (t2 - t1) / (a + t1)), X * (a + t2) / (a + t1), X * Math.pow((a + t2) / (a + t1), k + 1), X * Math.exp(k * (t2 - t1) / (a + t2))], 2));
+    } });
+  soa({ id: 'f_simp', sec: 1, syl: '1.e', topic: 'Bunga sederhana vs majemuk', src: 'Pola SOA Exam FM (perbandingan akumulasi)',
+    fast: 'Samakan 1 + s·t dengan (1 + i)ᵗ lalu SOLVE dengan tebakan awal besar (akar t = 0 selalu ada). Untuk “bunga tahun ke-k”: majemuk = i(1 + i)^{k−1}, sederhana selalu = s.',
+    gen: function (r) {
+      var s = r.pick([0.08, 0.1, 0.06]), i = r.pick([0.05, 0.06, 0.04]); if (i >= s) i = s - 0.02;
+      var ans = solve(function (x) { return 1 + s * x - Math.pow(1 + i, x); }, 1, 200);
+      var q = 'Dana A berakumulasi dengan bunga sederhana ' + pc(s, 0) + ' dan dana B dengan bunga majemuk efektif ' + pc(i, 0) + '. Jumlah yang sama disetor ke keduanya pada t = 0. Setelah berapa tahun nilai keduanya kembali sama?';
+      var sol = '1 + ' + n(s, 2) + 't = ' + n(1 + i, 2) + 'ᵗ, cari akar t > 0 dengan SOLVE: t = <b>' + n(ans, 2) + '</b> tahun.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [Math.log(1 + s) / Math.log(1 + i) * 10, s / (s - i) * 5, ans * 0.8, Math.log(2) / Math.log(1 + i)], 2));
+    } });
+  soa({ id: 'f_perpsplit', sec: 2, syl: '2.b', topic: 'Pembagian perpetuitas antar penerima', src: 'Pola SOA Exam FM (Brian, Colleen, badan amal)',
+    fast: 'Bagian n pembayaran pertama = 1 − vⁿ dari PV total. Jadi vⁿ = 1 − bagian pertama, dan penerima setelah 2n pembayaran mendapat v²ⁿ = (1 − bagian pertama)². Tidak perlu tahu i.',
+    gen: function (r) {
+      var b = r.pick([0.4, 0.3, 0.5, 0.36]), v = 1 - b, ans = v * v;
+      var q = 'Perpetuitas-immediate membayar X per tahun. Brian menerima n pembayaran pertama, Colleen n pembayaran berikutnya, dan badan amal sisanya. Bagian Brian dari nilai sekarang perpetuitas adalah ' + pct(b) + '. Hitung bagian badan amal.';
+      var sol = 'Brian: aₙ/a∞ = 1 − vⁿ = ' + n(b, 2) + ' ⇒ vⁿ = ' + n(v, 2) + '. Badan amal: v²ⁿ = ' + n(v, 2) + '² = <b>' + pct(ans) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans * 100, [v * b * 100, (1 - 2 * b) * 100, v * 100, b * b * 100], 1, function (s) { return s + '%'; }));
+    } });
+  soa({ id: 'f_annk', sec: 2, syl: '2.b', topic: 'Anuitas dengan pembayaran tiap k tahun', src: 'Pola SOA Exam FM (pembayaran berkala jarang)',
+    fast: 'Anuitas-immediate yang membayar setiap k tahun selama n tahun: PV = aₙ/sₖ (tiap pembayaran = 1). Versi due: aₙ/aₖ. Atau konversi ke bunga per k tahun: j = (1 + i)ᵏ − 1.',
+    gen: function (r) {
+      var k = r.pick([2, 3, 4]), N = k * r.pick([5, 6, 8]), i = r.pick([0.05, 0.06]), R = r.pick([100, 1000]), due = r() < 0.4;
+      var ans = R * an(i, N) / (due ? an(i, k) : sn(i, k));
+      var q = 'Anuitas ' + (due ? '-due' : '-immediate') + ' membayar ' + R + ' setiap ' + k + ' tahun selama ' + N + ' tahun' + (due ? ', pembayaran pertama sekarang' : ', pembayaran pertama di akhir tahun ke-' + k) + '. Dengan bunga efektif ' + pc(i, 0) + ', hitung nilai sekarangnya.';
+      var sol = 'PV = ' + R + '·a_{' + N + '}/' + (due ? 'a' : 's') + '_{' + k + '} = ' + R + '·' + n(an(i, N), 4) + '/' + n(due ? an(i, k) : sn(i, k), 4) + ' = <b>' + n(ans, 2) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [R * an(i, N) / k, R * an(i, N) / (due ? sn(i, k) : an(i, k)), R * an(Math.pow(1 + i, k) - 1, N / k) * (due ? 1 : Math.pow(1 + i, k)), R * an(i * k, N / k)], 2));
+    } });
+  soa({ id: 'f_drop', sec: 4, syl: '4.a, 4.b', topic: 'Drop payment (pembayaran terakhir lebih kecil)', src: 'Pola SOA Exam FM (pembayaran akhir yang dikurangi)',
+    fast: 'Cari n terbesar dengan R·aₙ ≤ L. Pembayaran terakhir (drop) di t = n + 1 = (L − R·aₙ)(1 + i)^{n+1}. Gunakan TABLE di fx-991 untuk aₙ.',
+    gen: function (r) {
+      var L = r.pick([10000, 5000, 20000]), i = r.pick([0.06, 0.08, 0.05]), R = r.pick([1000, 1200, 1500]) * L / 10000;
+      var nn = 0; while (R * an(i, nn + 1) <= L && nn < 200) nn++;
+      var ans = (L - R * an(i, nn)) * Math.pow(1 + i, nn + 1);
+      var q = 'Pinjaman ' + n(L, 0) + ' pada bunga efektif ' + pc(i, 0) + ' dilunasi dengan pembayaran ' + n(R, 0) + ' di akhir setiap tahun selama mungkin, ditambah satu pembayaran akhir yang lebih kecil setahun setelah pembayaran penuh terakhir. Hitung pembayaran akhir tersebut.';
+      var sol = 'n terbesar dengan ' + n(R, 0) + '·aₙ ≤ ' + n(L, 0) + ' adalah n = ' + nn + ' (' + n(R * an(i, nn), 2) + '). Drop payment = (' + n(L, 0) + ' − ' + n(R * an(i, nn), 2) + ')·' + n(1 + i, 2) + '^{' + (nn + 1) + '} = <b>' + n(ans, 2) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [(L - R * an(i, nn)) * Math.pow(1 + i, nn), L - R * an(i, nn), (L - R * an(i, nn)) * Math.pow(1 + i, nn + 1) + R, L - R * nn], 2));
+    } });
+  soa({ id: 'f_loansum', sec: 4, syl: '4.b', topic: 'Total pokok & bunga beberapa cicilan', src: 'Pola SOA Exam FM (jumlah pokok/bunga)',
+    fast: 'Total pokok cicilan a sampai b = sisa pinjaman setelah cicilan a − 1 dikurangi sisa setelah cicilan b. Total bunga seluruh pinjaman = nR − L. Tidak perlu membuat jadwal amortisasi.',
+    gen: function (r) {
+      var L = r.pick([10000, 50000, 25000]), i = r.pick([0.06, 0.07, 0.08]), N = r.pick([10, 15, 20]), a = r.pick([3, 5]), b = a + r.pick([3, 4]);
+      var R = L / an(i, N), ans = R * an(i, N - a + 1) - R * an(i, N - b);
+      var q = 'Pinjaman ' + n(L, 0) + ' dilunasi dengan ' + N + ' cicilan tahunan tetap di akhir tahun pada bunga ' + pc(i, 0) + '. Hitung total pokok yang dilunasi pada cicilan ke-' + a + ' sampai ke-' + b + '.';
+      var sol = 'R = ' + n(R, 2) + '. Total = B_{' + (a - 1) + '} − B_{' + b + '} = R(a_{' + (N - a + 1) + '} − a_{' + (N - b) + '}) = <b>' + n(ans, 2) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [R * (b - a + 1), R * an(i, N - a) - R * an(i, N - b), R * (b - a + 1) - ans, L * (b - a + 1) / N], 2));
+    } });
+  soa({ id: 'f_ytm', sec: 5, syl: '5.a, 5.d', topic: 'Yield to maturity dari harga', src: 'Pola SOA Exam FM (mencari yield obligasi)',
+    fast: 'Harga > par berarti yield < kupon, dan sebaliknya; buang opsi yang melanggar ini lebih dulu. Lalu substitusikan opsi yang tersisa ke rumus harga, atau pakai SOLVE.',
+    gen: function (r) {
+      var cp = r.pick([0.06, 0.08, 0.05]), Y = r.pick([10, 8, 12]), yt = r.pick([0.05, 0.07, 0.065]), j0 = yt / 2;
+      var P = +(1000 * cp / 2 * an(j0, 2 * Y) + 1000 * vv(j0, 2 * Y)).toFixed(2);
+      var ans = 2 * solve(function (x) { return 1000 * cp / 2 * an(x, 2 * Y) + 1000 * vv(x, 2 * Y) - P; }, 0.0001, 0.2);
+      var q = 'Obligasi tenor ' + Y + ' tahun, nominal 1000, kupon semesteran ' + pc(cp, 0) + ' per tahun, dijual seharga ' + n(P, 2) + '. Tentukan yield to maturity sebagai bunga nominal dikonversi semesteran.';
+      var sol = 'Selesaikan ' + n(1000 * cp / 2, 0) + '·a_{' + 2 * Y + '|j} + 1000v^{' + 2 * Y + '} = ' + n(P, 2) + ' ⇒ j = ' + pc(ans / 2, 3) + ' per semester ⇒ <b>' + pc(ans, 2) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, pcOpts(r, ans, [cp, Math.pow(1 + ans / 2, 2) - 1, (1000 * cp + (1000 - P) / Y) / ((1000 + P) / 2), ans + 0.005], 2));
+    } });
+  soa({ id: 'f_bookval', sec: 5, syl: '5.a, 5.e', topic: 'Nilai buku & total bunga obligasi', src: 'Pola SOA Exam FM (nilai buku)',
+    fast: 'Nilai buku di t = harga obligasi dengan sisa n − t kupon. Total bunga yang diakui selama masa obligasi = total kupon + nilai tebus − harga beli.',
+    gen: function (r) {
+      var cp = r.pick([0.08, 0.06]), y = r.pick([0.06, 0.07, 0.05]), N = r.pick([10, 15]), tq = r.pick([4, 5, 6]), q, sol, ans, w;
+      var P = 1000 * cp * an(y, N) + 1000 * vv(y, N);
+      if (r() < 0.5) {
+        ans = 1000 * cp * an(y, N - tq) + 1000 * vv(y, N - tq);
+        q = 'Obligasi ' + N + ' tahun, nominal 1000, kupon tahunan ' + pc(cp, 0) + ', dibeli dengan yield efektif ' + pc(y, 0) + '. Hitung nilai bukunya segera setelah kupon ke-' + tq + '.';
+        sol = 'B_{' + tq + '} = ' + n(1000 * cp, 0) + '·a_{' + (N - tq) + '} + 1000·v^{' + (N - tq) + '} = <b>' + n(ans, 2) + '</b>.';
+        w = [P, P - (P - 1000) * tq / N, 1000 * cp * an(y, tq) + 1000 * vv(y, tq), ans * (1 + y)];
+      } else {
+        ans = N * 1000 * cp + 1000 - P;
+        q = 'Obligasi ' + N + ' tahun, nominal 1000, kupon tahunan ' + pc(cp, 0) + ', dibeli dengan yield efektif ' + pc(y, 0) + ' dan dipegang hingga jatuh tempo. Hitung total bunga (pendapatan investasi) yang diakui selama masa obligasi.';
+        sol = 'Harga = ' + n(P, 2) + '. Total bunga = ' + N + '·' + n(1000 * cp, 0) + ' + 1000 − ' + n(P, 2) + ' = <b>' + n(ans, 2) + '</b>.';
+        w = [N * 1000 * cp, N * 1000 * y, N * 1000 * cp + P - 1000, P * y * N];
+      }
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
+    } });
+  soa({ id: 'f_redington', sec: 3, syl: '3.e', topic: 'Imunisasi dengan dua obligasi zero-coupon', src: 'Pola SOA Exam FM (imunisasi Redington)',
+    fast: 'Dua syarat linear pada nilai sekarang x₁, x₂: x₁ + x₂ = PV_L dan t₁x₁ + t₂x₂ = t_L·PV_L. Jadi x₂ = PV_L(t_L − t₁)/(t₂ − t₁). Nilai nominal = x·(1 + i)ᵗ.',
+    gen: function (r) {
+      var L = r.pick([10000, 50000, 100000]), tL = r.pick([5, 6, 7]), t1 = r.pick([2, 3]), t2 = r.pick([10, 9, 8]), i = r.pick([0.05, 0.06, 0.04]);
+      var PVL = L * vv(i, tL), x2 = PVL * (tL - t1) / (t2 - t1), x1 = PVL - x2, ask2 = r() < 0.5, ans = ask2 ? x2 * Math.pow(1 + i, t2) : x1 * Math.pow(1 + i, t1);
+      var q = 'Kewajiban ' + n(L, 0) + ' jatuh tempo dalam ' + tL + ' tahun diimunisasi dengan obligasi zero-coupon ' + t1 + ' tahun dan ' + t2 + ' tahun, sehingga nilai sekarang dan durasi aset sama dengan kewajiban pada bunga efektif ' + pc(i, 0) + '. Hitung nilai nominal obligasi ' + (ask2 ? t2 : t1) + ' tahun.';
+      var sol = 'PV_L = ' + n(PVL, 2) + '. x₂ = PV_L(' + tL + ' − ' + t1 + ')/(' + t2 + ' − ' + t1 + ') = ' + n(x2, 2) + ', x₁ = ' + n(x1, 2) + '. Nominal = x·(1 + i)ᵗ = <b>' + n(ans, 2) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [ask2 ? x2 : x1, ask2 ? x1 * Math.pow(1 + i, t2) : x2 * Math.pow(1 + i, t1), L / 2, ans * 0.95], 2));
+    } });
+  soa({ id: 'f_durperp', sec: 3, syl: '3.d', topic: 'Durasi perpetuitas & anuitas', src: 'Pola SOA Exam FM (durasi bentuk tertutup)',
+    fast: 'Perpetuitas-immediate: D_Mac = (1 + i)/i dan D_mod = 1/i. Anuitas level n tahun: D_Mac = (Ia)ₙ/aₙ. Hafalkan bentuk tertutup ini supaya tidak menjumlah panjang.',
+    gen: function (r) {
+      var i = r.pick([0.05, 0.04, 0.08, 0.1]), v = r.pick(['mac', 'mod', 'solve']), q, sol, ans, w;
+      if (v === 'solve') {
+        var D = r.pick([21, 26, 13.5, 11]);
+        ans = 1 / (D - 1);
+        q = 'Durasi Macaulay sebuah perpetuitas-immediate level adalah ' + n(D, 1) + '. Tentukan tingkat bunga efektif yang dipakai.';
+        sol = 'D = (1 + i)/i = 1 + 1/i ⇒ i = 1/(D − 1) = <b>' + pc(ans, 2) + '</b>.';
+        w = [1 / D, 1 / (D + 1), 2 / D, 1 / (D - 2)];
+        return Object.assign({ q: q, sol: sol }, pcOpts(r, ans, w, 2));
+      }
+      ans = v === 'mac' ? (1 + i) / i : 1 / i;
+      q = 'Hitung durasi ' + (v === 'mac' ? 'Macaulay' : 'termodifikasi') + ' perpetuitas-immediate level pada bunga efektif ' + pc(i, 0) + '.';
+      sol = (v === 'mac' ? 'D_Mac = (1 + i)/i' : 'D_mod = D_Mac/(1 + i) = 1/i') + ' = <b>' + n(ans, 2) + '</b>.';
+      w = v === 'mac' ? [1 / i, (1 + i) / (i * i), 1 / (i * (1 + i)), 2 / i] : [(1 + i) / i, 1 / (i * (1 + i)), (1 + i) / (i * i), 1 / i / 2];
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
+    } });
+  soa({ id: 'f_contann', sec: 2, syl: '2.c', topic: 'Anuitas kontinu', src: 'Pola SOA Exam FM (pembayaran kontinu)',
+    fast: 'āₙ = (1 − e^{−δn})/δ dengan δ = ln(1 + i). Untuk laju pembayaran t pada waktu t: (Īā)ₙ = (āₙ − n vⁿ)/δ. Hitung δ sekali dan simpan.',
+    gen: function (r) {
+      var i = r.pick([0.05, 0.06, 0.08]), N = r.pick([10, 5, 20]), d = Math.log(1 + i), inc = r() < 0.5;
+      var ab = (1 - vv(i, N)) / d, ans = inc ? (ab - N * vv(i, N)) / d : 100 * ab;
+      var q = inc ? 'Anuitas dibayar secara kontinu dengan laju t per tahun pada waktu t, selama ' + N + ' tahun. Dengan bunga efektif ' + pc(i, 0) + ', hitung nilai sekarangnya.'
+        : 'Anuitas dibayar secara kontinu dengan laju 100 per tahun selama ' + N + ' tahun. Dengan bunga efektif ' + pc(i, 0) + ', hitung nilai sekarangnya.';
+      var sol = 'δ = ln(' + n(1 + i, 2) + ') = ' + n(d, 6) + '. ā_{' + N + '} = ' + n(ab, 4) + (inc ? '. (Īā) = (ā − n vⁿ)/δ = <b>' + n(ans, 3) + '</b>.' : '. PV = 100·ā = <b>' + n(ans, 2) + '</b>.');
+      var w = inc ? [Ia(i, N), (ab - N * vv(i, N)) / i, ab * N / 2, (ad(i, N) - N * vv(i, N)) / d] : [100 * an(i, N), 100 * ad(i, N), 100 * (1 - vv(i, N)) / i * (1 + i / 2), 100 * ab * (1 + i)];
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, inc ? 3 : 2));
+    } });
+  soa({ id: 'f_covcall', sec: 6, syl: '6.a, 6.e', topic: 'Covered call & protective put', src: 'Pola SOA Exam FM (strategi opsi dengan saham)',
+    fast: 'Covered call = long saham + short call: profit = S_T − min(S_T, K) + … ringkasnya min(S_T, K) − S₀e^{rT} + C·e^{rT}. Protective put = long saham + long put: max(S_T, K) − (S₀ + P)e^{rT}.',
+    gen: function (r) {
+      var S0 = r.pick([100, 50]), K = S0 + r.pick([5, 10]), c = r.pick([4, 6]), p = r.pick([3, 5]), rr = 0.05, T2 = 1, ST = S0 + r.pick([-15, 2, 20]), v = r() < 0.5 ? 'cc' : 'pp';
+      var g = Math.exp(rr * T2), ans, q, sol, w;
+      if (v === 'cc') {
+        ans = Math.min(ST, K) - (S0 - c) * g;
+        q = 'Investor membeli saham seharga ' + S0 + ' dan menjual call 1 tahun strike ' + K + ' seharga ' + c + ' (covered call). Bunga bebas risiko kontinu 5%. Harga saham setelah 1 tahun ' + ST + '. Hitung profitnya.';
+        sol = 'Payoff = min(S_T, K) = ' + Math.min(ST, K) + '. Biaya bersih diakumulasi = (' + S0 + ' − ' + c + ')e^{0,05} = ' + n((S0 - c) * g, 4) + '. Profit = <b>' + n(ans, 3) + '</b>.';
+        w = [Math.min(ST, K) - (S0 - c), ST - (S0 - c) * g, Math.min(ST, K) - (S0 + c) * g, Math.max(ST, K) - (S0 - c) * g];
+      } else {
+        ans = Math.max(ST, K - 10) - (S0 + p) * g;
+        q = 'Investor membeli saham seharga ' + S0 + ' dan membeli put 1 tahun strike ' + (K - 10) + ' seharga ' + p + ' (protective put). Bunga bebas risiko kontinu 5%. Harga saham setelah 1 tahun ' + ST + '. Hitung profitnya.';
+        sol = 'Payoff = max(S_T, K) = ' + Math.max(ST, K - 10) + '. Biaya diakumulasi = (' + S0 + ' + ' + p + ')e^{0,05} = ' + n((S0 + p) * g, 4) + '. Profit = <b>' + n(ans, 3) + '</b>.';
+        w = [Math.max(ST, K - 10) - (S0 + p), ST - (S0 + p) * g, Math.max(ST, K - 10) - (S0 - p) * g, Math.min(ST, K - 10) - (S0 + p) * g];
+      }
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 3));
+    } });
+  soa({ id: 'f_swapnet', sec: 3, syl: '3.b', topic: 'Pembayaran bersih swap', src: 'Pola SOA Exam FM (settlement swap)',
+    fast: 'Pembayar tetap (pay-fixed) menerima bersih = Notional × (bunga mengambang − swap rate) per periode. Tanda negatif berarti ia membayar. Untuk swap komoditas: (harga spot − harga swap) × jumlah.',
+    gen: function (r) {
+      var Nn = r.pick([1e6, 5e5, 2e6]), R = r.pick([0.05, 0.045, 0.055]), fl = r.pick([0.04, 0.06, 0.052, 0.035]), payFixed = r() < 0.5;
+      var ans = Nn * (payFixed ? fl - R : R - fl);
+      var q = 'Dalam interest rate swap tahunan dengan notional ' + n(Nn, 0) + ' dan swap rate tetap ' + pc(R, 1) + ', bunga mengambang tahun ini ' + pc(fl, 1) + '. Hitung pembayaran bersih yang <b>diterima</b> pihak yang ' + (payFixed ? 'membayar bunga tetap' : 'menerima bunga tetap') + ' (negatif berarti membayar).';
+      var sol = 'Bersih = ' + n(Nn, 0) + ' × (' + (payFixed ? pc(fl, 1) + ' − ' + pc(R, 1) : pc(R, 1) + ' − ' + pc(fl, 1)) + ') = <b>' + n(ans, 0) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [-ans, Nn * R, Nn * fl, Math.abs(ans) * 2], 0));
+    } });
+  soa({ id: 'f_sinkcmp', sec: 4, syl: '4.c', topic: 'Sinking fund vs amortisasi', src: 'Pola SOA Exam FM (perbandingan metode pelunasan)',
+    fast: 'Sinking fund dengan j = i persis sama dengan amortisasi. Bila j < i, total pembayaran sinking fund L·i + L/s_{n|j} lebih besar daripada L/a_{n|i}. Selisih per tahun dihitung langsung dari dua rumus ini.',
+    gen: function (r) {
+      var L = r.pick([100000, 50000]), i = r.pick([0.08, 0.07]), j = r.pick([0.05, 0.06, 0.04]), N = r.pick([10, 15, 20]);
+      var sf = L * i + L / sn(j, N), am = L / an(i, N), ans = sf - am;
+      var q = 'Pinjaman ' + n(L, 0) + ' selama ' + N + ' tahun pada bunga ' + pc(i, 0) + '. Pilihan A: amortisasi dengan cicilan tahunan tetap. Pilihan B: bayar bunga tahunan ditambah setoran sinking fund berbunga ' + pc(j, 0) + '. Berapa selisih pembayaran tahunan (B − A)?';
+      var sol = 'A = L/a_{' + N + '|' + pc(i, 0) + '} = ' + n(am, 2) + '. B = L·i + L/s_{' + N + '|' + pc(j, 0) + '} = ' + n(sf, 2) + '. Selisih = <b>' + n(ans, 2) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [L * i + L / sn(i, N) - am, L / sn(j, N) - L / sn(i, N) + 10, L / an(j, N) - am, (i - j) * L], 2));
+    } });
+
+  function buildSoaPaper(seed) {
+    var out = [];
+    for (var i = 0; i < S.length; i++) {
+      var r = makeR((seed * 6007 + i * 15485863) >>> 0);
+      var g = S[i].gen(r);
+      var opts = shuffle([{ s: g.correct, ok: true }].concat(g.wrong.map(function (w) { return { s: w, ok: false }; })), r);
+      out.push({ no: i + 1, id: S[i].id, topic: S[i].topic, conf: 'SOA', src: S[i].src, syl: S[i].syl, sec: S[i].sec, q: g.q, sol: g.sol, fast: S[i].fast,
+        options: opts.map(function (o) { return o.s; }), answer: opts.findIndex(function (o) { return o.ok; }) });
+    }
+    return out.sort(function (a, b) { return a.sec - b.sec; }).map(function (q, k) { q.no = k + 1; return q; });
+  }
+
   var LETTERS = ['a', 'b', 'c', 'd', 'e'];
   function buildPaper(seed) {
     var out = [];
@@ -880,6 +1062,6 @@
     }
     return out;
   }
-  var api = { buildPaper: buildPaper, templates: T, paper: P, sections: SECTIONS, LETTERS: LETTERS, _n: n };
+  var api = { buildPaper: buildPaper, buildSoaPaper: buildSoaPaper, soaTemplates: S, templates: T, paper: P, sections: SECTIONS, LETTERS: LETTERS, _n: n };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CF1Bank = api;
 })(this);

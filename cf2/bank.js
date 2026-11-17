@@ -856,6 +856,181 @@
     use('estim', '4.e'), use('bayesest', '4.e'), use('estprop', '4.d, 4.f')
   ];
 
+  // ---------- Pola SOA Exam P yang belum dipakai PAI ----------
+  var S = [];
+  function soa(o) { o.conf = 'SOA'; S.push(o); }
+  soa({ id: 's_incl3', sec: 1, syl: '1.a', topic: 'Inklusi-eksklusi tiga kejadian', src: 'SOA Exam P #1 (kunci resmi: 52%)',
+    fast: 'P(tidak satu pun) = 1 − [ΣP(tunggal) − ΣP(berpasangan) + P(ketiganya)]. Jumlahkan tiga angka tunggal, kurangi tiga angka irisan, tambahkan irisan tiga, lalu kurangkan dari 1.',
+    gen: function (r) {
+      var a = r.pick([28, 30, 25]), b = r.pick([29, 26, 32]), c = r.pick([19, 22, 18]), ab = r.pick([14, 12, 10]), bc = r.pick([12, 9, 11]), ac = r.pick([10, 8, 7]), abc = r.pick([8, 5, 6]);
+      var uni = a + b + c - ab - bc - ac + abc, ans = (100 - uni) / 100;
+      var q = 'Survei kebiasaan menonton setahun terakhir: ' + a + '% menonton senam, ' + b + '% bisbol, ' + c + '% sepak bola, ' + ab + '% senam dan bisbol, ' + bc + '% bisbol dan sepak bola, ' + ac + '% senam dan sepak bola, serta ' + abc + '% ketiganya. Hitung persentase yang tidak menonton satu pun dari ketiga olahraga.';
+      var sol = 'P(gabungan) = ' + a + ' + ' + b + ' + ' + c + ' − ' + ab + ' − ' + bc + ' − ' + ac + ' + ' + abc + ' = ' + uni + '%. Tidak satu pun = 100% − ' + uni + '% = <b>' + n(ans * 100, 0) + '%</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans * 100, [100 - (a + b + c - ab - bc - ac), 100 - (a + b + c), 100 - (a + b + c - ab - bc - ac - abc), 100 - (a + b + c - ab - bc - ac + 2 * abc)], 0, function (s) { return s + '%'; }));
+    } });
+  soa({ id: 's_dedpmf', sec: 2, syl: '2.c', topic: 'Pembayaran dengan deductible (diskrit)', src: 'SOA Exam P #49 (kunci resmi: 0,031)',
+    fast: 'Cari K dari ΣK/N = 1 (Σ1/N untuk N = 1..5 = 137/60). Pembayaran = (N − d)⁺, jadi cukup hitung nilai N > d. Jangan lupa kalikan dengan peluang terjadinya kerugian.',
+    gen: function (r) {
+      var d = r.pick([1, 2, 3]), pl = r.pick([0.05, 0.1, 0.08]), H = 5;
+      var sinv = 0; for (var k = 1; k <= H; k++) sinv += 1 / k;
+      var K = 1 / sinv, E = 0; for (k = 1; k <= H; k++) E += Math.max(k - d, 0) * K / k;
+      var ans = pl * E;
+      var q = 'Polis asuransi mobil satu tahun memiliki deductible ' + d + '. Peluang tertanggung mengalami kerugian ' + n(pl, 2) + '. Jika terjadi kerugian, peluang kerugian sebesar N adalah K/N untuk N = 1, …, 5 (K konstanta), dan paling banyak terjadi satu kerugian. Hitung ekspektasi pembayaran polis.';
+      var sol = 'K = 1/Σ(1/N) = 60/137 = ' + n(K, 4) + '. E[(N − ' + d + ')⁺ | rugi] = Σ (N − ' + d + ')·K/N = ' + n(E, 4) + '. Ekspektasi = ' + n(pl, 2) + ' × ' + n(E, 4) + ' = <b>' + n(ans, 4) + '</b>.';
+      var Em = 0; for (k = 1; k <= H; k++) Em += k * K / k;
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [E, pl * (Em - d), pl * Em, pl * E * 2], 4));
+    } });
+  soa({ id: 's_paretolim', sec: 2, syl: '2.d', topic: 'Batas manfaat pada distribusi ekor tebal', src: 'SOA Exam P #50 (kunci resmi: 1,9)',
+    fast: 'E[min(Y, u)] = ∫₀ᵘ S(y) dy. Untuk f = k y^{−k−1} pada y > 1: S(y) = y^{−k}, jadi E = 1 + ∫₁ᵘ y^{−k} dy. Integral fungsi survival lebih cepat daripada memecah dua bagian.',
+    gen: function (r) {
+      var k = r.pick([2, 3, 4]), u = r.pick([10, 5, 4]);
+      var ans = 1 + (1 - Math.pow(u, 1 - k)) / (k - 1);
+      var q = 'Polis mengganti kerugian hingga batas manfaat ' + u + '. Kerugian Y memiliki densitas \\(f(y) = ' + k + 'y^{-' + (k + 1) + '}\\) untuk y > 1. Hitung ekspektasi manfaat yang dibayar.';
+      var sol = 'S(y) = y^{−' + k + '} untuk y > 1. E[min(Y, ' + u + ')] = 1 + ∫₁^{' + u + '} y^{−' + k + '} dy = 1 + (1 − ' + u + '^{' + (1 - k) + '})/' + (k - 1) + ' = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [k / (k - 1), (1 - Math.pow(u, 1 - k)) / (k - 1), 1 + (1 - Math.pow(u, -k)) / k, u * Math.pow(u, -k) + 1], 3));
+    } });
+  soa({ id: 's_expvar', sec: 2, syl: '2.d, 2.g', topic: 'Deductible eksponensial: rataan & varians', src: 'SOA Exam P #101 (kunci resmi: 1%)',
+    fast: 'Untuk eksponensial dengan deductible d, misal p = e^{−d/θ}: E[pembayaran] = θp dan Var = θ²(2p − p²). Jika rataan turun a%, maka p = 1 − a, dan penurunan varians = 1 − (2p − p²) = (1 − p)².',
+    gen: function (r) {
+      var a = r.pick([0.1, 0.2, 0.15, 0.3]), p = 1 - a, ans = 1 - (2 * p - p * p);
+      var q = 'Pembayaran klaim asuransi mobil berdistribusi eksponensial. Dengan menerapkan deductible d, perusahaan menurunkan ekspektasi pembayaran klaim sebesar ' + pct(a) + '. Hitung persentase penurunan varians pembayaran klaim.';
+      var sol = 'p = e^{−d/θ} = ' + n(p, 2) + '. Var baru/Var lama = 2p − p² = ' + n(2 * p - p * p, 4) + ' ⇒ penurunan = (1 − p)² = <b>' + n(ans * 100, 2) + '%</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans * 100, [a * 100, (1 - p * p) * 100, 2 * a * 100, a * 50], 2, function (s) { return s + '%'; }));
+    } });
+  soa({ id: 's_georace', sec: 3, syl: '3.a, 3.h', topic: 'Perbandingan dua variabel geometrik', src: 'SOA Exam P #106 (kunci resmi: 0,2857)',
+    fast: 'P(R < T) = Σ P(R = k)P(T > k) adalah deret geometrik: p₁(1 − p₂)/[1 − (1 − p₁)(1 − p₂)]. Untuk “R ≤ T” tambahkan P(R = T) atau pakai pembilang p₁ saja.',
+    gen: function (r) {
+      var p1 = r.pick([0.1, 0.15, 0.2]), p2 = r.pick([0.2, 0.25, 0.3]);
+      if (p2 <= p1) p2 = p1 + 0.1;
+      var q1 = 1 - p1, q2 = 1 - p2, ans = p1 * q2 / (1 - q1 * q2);
+      var q = 'Aktuaris Rahul memeriksa polis risiko rendah satu per satu sampai menemukan polis yang memiliki klaim, lalu berhenti. Aktuaris Toby melakukan hal yang sama pada polis risiko tinggi. Peluang klaim per polis ' + pct(p1) + ' (risiko rendah) dan ' + pct(p2) + ' (risiko tinggi), saling bebas. Hitung peluang Rahul memeriksa <b>lebih sedikit</b> polis daripada Toby.';
+      var sol = 'P(R < T) = Σₖ ' + n(p1, 2) + '·' + n(q1, 2) + '^{k−1}·' + n(q2, 2) + '^k = ' + n(p1, 2) + '·' + n(q2, 2) + '/(1 − ' + n(q1, 2) + '·' + n(q2, 2) + ') = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [p1 / (1 - q1 * q2), p1 / (p1 + p2), p1 * p2 / (1 - q1 * q2), q2 * p1 / (p1 + p2)], 4));
+    } });
+  soa({ id: 's_explim', sec: 2, syl: '2.d', topic: 'Deductible + batas maksimum (eksponensial)', src: 'SOA Exam P #115 (kunci resmi: 2e^{−1/2} − 2e^{−3})',
+    fast: 'Pembayaran = min((X − d)⁺, m). E = ∫_d^{d+m} S(x) dx = θ(e^{−d/θ} − e^{−(d+m)/θ}). Satu baris, tanpa integral parsial.',
+    gen: function (r) {
+      var th = r.pick([2, 3, 4]), d = r.pick([1, 2]), m = r.pick([5, 4, 6]);
+      var ans = th * (Math.exp(-d / th) - Math.exp(-(d + m) / th));
+      var q = 'Polis asuransi mobil memiliki deductible ' + d + ' dan pembayaran klaim maksimum ' + m + '. Besar kerugian berdistribusi eksponensial dengan rataan ' + th + '. Hitung ekspektasi pembayaran klaim per kerugian.';
+      var sol = 'E = ∫_{' + d + '}^{' + (d + m) + '} e^{−x/' + th + '} dx = ' + th + '(e^{−' + n(d / th, 3) + '} − e^{−' + n((d + m) / th, 3) + '}) = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [th * Math.exp(-d / th), th * (1 - Math.exp(-m / th)), th * (Math.exp(-d / th) - Math.exp(-m / th)), th - d], 4));
+    } });
+  soa({ id: 's_hyper', sec: 2, syl: '2.g', topic: 'Distribusi hipergeometrik', src: 'SOA Exam P #128 (kunci resmi: 0,333)',
+    fast: 'Tanpa pengembalian → hipergeometrik: C(L, x)·C(H, k − x)/C(N, k). Untuk 2 orang: “tepat satu” = L·H/C(N, 2). Jangan pakai binomial, karena itu jebakan opsi.',
+    gen: function (r) {
+      var L = r.pick([20, 15, 12]), H = r.pick([5, 6, 8]), k = r.pick([2, 3]), x = 1;
+      var N = L + H, ans = C(L, x) * C(H, k - x) / C(N, k), pL = L / N;
+      var q = 'Dalam kelompok ' + N + ' pekerja pabrik, ' + L + ' berisiko rendah dan ' + H + ' berisiko tinggi. Dipilih acak ' + k + ' pekerja tanpa pengembalian. Hitung peluang tepat satu yang berisiko rendah.';
+      var sol = 'C(' + L + ',1)·C(' + H + ',' + (k - 1) + ')/C(' + N + ',' + k + ') = ' + C(L, 1) * C(H, k - 1) + '/' + C(N, k) + ' = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [k * pL * Math.pow(1 - pL, k - 1), L / N, C(L, 1) / C(N, k), ans * 1.25], 4));
+    } });
+  soa({ id: 's_riskmix', sec: 1, syl: '1.e', topic: 'Bayes dengan campuran Poisson', src: 'Pola SOA Exam P (pengemudi risiko rendah/tinggi)',
+    fast: 'Likelihood setiap kelompok = Poisson(k; λ_kelompok). Posterior = proporsi × likelihood ÷ jumlah. Faktor k! saling menghilangkan, jadi cukup bandingkan p·λᵏe^{−λ}.',
+    gen: function (r) {
+      var pL = r.pick([0.7, 0.8, 0.6]), lL = r.pick([0.5, 1]), lH = r.pick([2, 3]), k = r.pick([1, 2, 3]);
+      var a = pL * Math.pow(lL, k) * Math.exp(-lL), b = (1 - pL) * Math.pow(lH, k) * Math.exp(-lH), ans = b / (a + b);
+      var q = 'Pengemudi terdiri dari ' + pct(pL) + ' risiko rendah dan sisanya risiko tinggi. Banyaknya klaim setahun berdistribusi Poisson dengan rataan ' + n(lL, 1) + ' (risiko rendah) dan ' + lH + ' (risiko tinggi). Seorang pengemudi mengajukan tepat ' + k + ' klaim tahun ini. Hitung peluang ia berisiko tinggi.';
+      var sol = 'Bobot rendah ∝ ' + n(pL, 2) + '·' + n(lL, 1) + '^' + k + 'e^{−' + n(lL, 1) + '} = ' + n(a, 5) + '; tinggi ∝ ' + n(1 - pL, 2) + '·' + lH + '^' + k + 'e^{−' + lH + '} = ' + n(b, 5) + '. Posterior = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [1 - pL, (1 - pL) * lH / ((1 - pL) * lH + pL * lL), a / (a + b), b], 4));
+    } });
+  soa({ id: 's_condtab', sec: 3, syl: '3.b, 3.d', topic: 'Ekspektasi bersyarat dari tabel gabungan', src: 'Pola SOA Exam P (tabel peluang gabungan)',
+    fast: 'Ambil baris X = x saja, bagi setiap sel dengan jumlah baris (marginal), lalu hitung Σ y·p(y|x). Tidak perlu marginal Y.',
+    gen: function (r) {
+      var tbl = r.pick([[[0.1, 0.2, 0.1], [0.15, 0.25, 0.2]], [[0.05, 0.15, 0.2], [0.2, 0.3, 0.1]], [[0.12, 0.08, 0.2], [0.1, 0.3, 0.2]]]), ys = [0, 1, 2], xr = r.pick([0, 1]);
+      var row = tbl[xr], m = row[0] + row[1] + row[2], ans = (row[1] * 1 + row[2] * 2) / m;
+      var q = 'X (banyak kecelakaan, 0 atau 1) dan Y (banyak klaim, 0/1/2) memiliki peluang gabungan: X=0 → ' + tbl[0].map(function (p, j) { return 'P(0,' + j + ') = ' + n(p, 2); }).join(', ') + '; X=1 → ' + tbl[1].map(function (p, j) { return 'P(1,' + j + ') = ' + n(p, 2); }).join(', ') + '. Hitung E[Y | X = ' + xr + '].';
+      var sol = 'P(X = ' + xr + ') = ' + n(m, 2) + '. E[Y|X=' + xr + '] = (1·' + n(row[1], 2) + ' + 2·' + n(row[2], 2) + ')/' + n(m, 2) + ' = <b>' + n(ans, 4) + '</b>.';
+      var all = tbl[0][1] + tbl[1][1] + 2 * (tbl[0][2] + tbl[1][2]);
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [row[1] + 2 * row[2], all, (row[1] + row[2]) / m, ans * m + 0.3], 4));
+    } });
+  soa({ id: 's_corr', sec: 3, syl: '3.e', topic: 'Koefisien korelasi dari distribusi gabungan', src: 'Pola SOA Exam P (korelasi diskrit)',
+    fast: 'Hitung E[X], E[Y], E[XY], E[X²], E[Y²] dari tabel dalam satu lintasan. ρ = (E[XY] − E[X]E[Y])/√(Var X·Var Y). Untuk nilai 0/1, E[X²] = E[X].',
+    gen: function (r) {
+      var p = r.pick([[0.4, 0.1, 0.2, 0.3], [0.3, 0.2, 0.1, 0.4], [0.25, 0.25, 0.15, 0.35]]);
+      var EX = p[2] + p[3], EY = p[1] + p[3], EXY = p[3], vX = EX - EX * EX, vY = EY - EY * EY, ans = (EXY - EX * EY) / Math.sqrt(vX * vY);
+      var q = 'X dan Y bernilai 0 atau 1 dengan P(0,0) = ' + n(p[0], 2) + ', P(0,1) = ' + n(p[1], 2) + ', P(1,0) = ' + n(p[2], 2) + ', P(1,1) = ' + n(p[3], 2) + '. Hitung koefisien korelasi X dan Y.';
+      var sol = 'E[X] = ' + n(EX, 2) + ', E[Y] = ' + n(EY, 2) + ', E[XY] = ' + n(EXY, 2) + '. Cov = ' + n(EXY - EX * EY, 4) + '; Var X = ' + n(vX, 4) + ', Var Y = ' + n(vY, 4) + ' ⇒ ρ = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [EXY - EX * EY, (EXY - EX * EY) / (vX + vY), EXY / Math.sqrt(EX * EY), -ans], 4));
+    } });
+  soa({ id: 's_poissum', sec: 3, syl: '3.e, 3.h', topic: 'Jumlah variabel acak lewat MGF', src: 'Pola SOA Exam P (identifikasi MGF)',
+    fast: 'Kalikan MGF variabel yang saling bebas: e^{a(e^t−1)}·e^{b(e^t−1)} = e^{(a+b)(e^t−1)} ⇒ X + Y ~ Poisson(a + b). Setelah mengenali distribusinya, peluangnya tinggal dihitung langsung.',
+    gen: function (r) {
+      var a = r.pick([1, 2, 1.5]), b = r.pick([0.5, 1, 2]), k = r.pick([2, 3, 4]), L = a + b;
+      var ans = Math.exp(-L) * Math.pow(L, k) / fact(k);
+      var q = 'X dan Y saling bebas dengan \\(M_X(t) = e^{' + t(a, 1) + '(e^t - 1)}\\) dan \\(M_Y(t) = e^{' + t(b, 1) + '(e^t - 1)}\\). Hitung \\(P(X + Y = ' + k + ')\\).';
+      var sol = 'M_{X+Y}(t) = e^{' + n(L, 1) + '(e^t − 1)} ⇒ X + Y ~ Poisson(' + n(L, 1) + '). P = e^{−' + n(L, 1) + '}·' + n(L, 1) + '^' + k + '/' + k + '! = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [pois(k, a) * pois(0, b) + pois(0, a) * pois(k, b), pois(k, a * b), pois(k, L) * 1.2, pois(k - 1, L)], 4));
+    } });
+  soa({ id: 's_cltdisc', sec: 3, syl: '3.g', topic: 'Aproksimasi normal untuk total klaim diskrit', src: 'Pola SOA Exam P (TLP dengan koreksi kontinuitas)',
+    fast: 'Hitung μ dan σ² per polis dari tabel kecil, lalu kalikan n. Total berupa bilangan bulat, jadi P(S > c) ≈ 1 − Φ((c + 0,5 − nμ)/(σ√n)).',
+    gen: function (r) {
+      var pr = r.pick([[0.6, 0.3, 0.1], [0.7, 0.2, 0.1], [0.5, 0.35, 0.15]]), N = r.pick([100, 200, 150]);
+      var mu = pr[1] + 2 * pr[2], v = pr[1] + 4 * pr[2] - mu * mu, c = Math.round(N * mu + r.pick([0.5, 1, 1.5]) * Math.sqrt(N * v));
+      var ans = 1 - Phi((c + 0.5 - N * mu) / Math.sqrt(N * v));
+      var q = 'Banyaknya klaim setahun per polis bernilai 0, 1, atau 2 dengan peluang ' + n(pr[0], 2) + ', ' + n(pr[1], 2) + ', ' + n(pr[2], 2) + ', saling bebas antar polis. Untuk ' + N + ' polis, gunakan aproksimasi normal dengan koreksi kontinuitas untuk menghitung peluang total klaim lebih dari ' + c + '.';
+      var sol = 'μ = ' + n(mu, 2) + ', σ² = ' + n(v, 4) + ' per polis. Total: rataan ' + n(N * mu, 1) + ', SD ' + n(Math.sqrt(N * v), 4) + '. P(S > ' + c + ') ≈ 1 − Φ((' + c + ',5 − ' + n(N * mu, 1) + ')/' + n(Math.sqrt(N * v), 4) + ') = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [1 - Phi((c - N * mu) / Math.sqrt(N * v)), 1 - Phi((c - 0.5 - N * mu) / Math.sqrt(N * v)), 1 - Phi((c + 0.5 - N * mu) / (Math.sqrt(v) * N / 10)), Phi((c + 0.5 - N * mu) / Math.sqrt(N * v))], 4));
+    } });
+  soa({ id: 's_hazard', sec: 2, syl: '2.b, 2.d', topic: 'Fungsi survival & laju hazard', src: 'Pola SOA Exam P (hazard rate)',
+    fast: 'S(t) = exp(−∫₀ᵗ h(u) du). Untuk h(t) = ct: S(t) = e^{−ct²/2}. Median: S(m) = 0,5 ⇒ m = √(2 ln 2/c). Peluang bersyarat P(T > b | T > a) = S(b)/S(a).',
+    gen: function (r) {
+      var c = r.pick([0.02, 0.05, 0.08]), v = r.pick(['med', 'cond']), q, sol, ans, w;
+      var S = function (x) { return Math.exp(-c * x * x / 2); };
+      if (v === 'med') {
+        ans = Math.sqrt(2 * Math.log(2) / c);
+        q = 'Masa hidup komponen T memiliki laju hazard h(t) = ' + n(c, 2) + 't untuk t > 0. Tentukan median T.';
+        sol = 'S(t) = e^{−' + n(c / 2, 3) + 't²}. S(m) = 0,5 ⇒ m = √(2 ln 2/' + n(c, 2) + ') = <b>' + n(ans, 4) + '</b>.';
+        w = [Math.log(2) / c, Math.sqrt(Math.log(2) / c), Math.sqrt(2 / c), 2 * Math.log(2) / c];
+      } else {
+        var a = r.pick([2, 3]), bb = a + r.pick([2, 3]);
+        ans = S(bb) / S(a);
+        q = 'Masa hidup komponen T memiliki laju hazard h(t) = ' + n(c, 2) + 't untuk t > 0. Diketahui komponen masih berfungsi di t = ' + a + '. Hitung peluang komponen masih berfungsi di t = ' + bb + '.';
+        sol = 'P = S(' + bb + ')/S(' + a + ') = exp[−' + n(c / 2, 3) + '(' + bb + '² − ' + a + '²)] = <b>' + n(ans, 4) + '</b>.';
+        w = [S(bb), S(bb - a), Math.exp(-c * (bb - a)), 1 - ans];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+  soa({ id: 's_expcomp', sec: 3, syl: '3.a, 3.h', topic: 'Persaingan dua umur eksponensial', src: 'Pola SOA Exam P (dua komponen eksponensial)',
+    fast: 'Untuk eksponensial saling bebas dengan laju λ₁, λ₂: P(X < Y) = λ₁/(λ₁ + λ₂), min ~ eksponensial(λ₁ + λ₂), dan P(min > t) = e^{−(λ₁+λ₂)t}. Ingat: laju = 1/rataan.',
+    gen: function (r) {
+      var m1 = r.pick([2, 3, 4]), m2 = r.pick([5, 6, 8]), l1 = 1 / m1, l2 = 1 / m2, v = r.pick(['first', 'min']), q, sol, ans, w;
+      if (v === 'first') {
+        ans = l1 / (l1 + l2);
+        q = 'Dua komponen saling bebas dengan masa hidup eksponensial berataan ' + m1 + ' dan ' + m2 + ' tahun. Hitung peluang komponen pertama rusak lebih dulu.';
+        sol = 'P(X < Y) = λ₁/(λ₁ + λ₂) = (1/' + m1 + ')/(1/' + m1 + ' + 1/' + m2 + ') = ' + m2 + '/' + (m1 + m2) + ' = <b>' + n(ans, 4) + '</b>.';
+        w = [m1 / (m1 + m2), 0.5, l1, 1 - Math.exp(-l1 * m2)];
+      } else {
+        var tt = r.pick([1, 2]);
+        ans = Math.exp(-(l1 + l2) * tt);
+        q = 'Sistem berhenti saat salah satu dari dua komponen rusak. Masa hidup komponen saling bebas dan eksponensial dengan rataan ' + m1 + ' dan ' + m2 + ' tahun. Hitung peluang sistem masih berfungsi setelah ' + tt + ' tahun.';
+        sol = 'P(min > ' + tt + ') = e^{−(1/' + m1 + ' + 1/' + m2 + ')·' + tt + '} = <b>' + n(ans, 4) + '</b>.';
+        w = [Math.exp(-tt / (m1 + m2)), 1 - (1 - Math.exp(-l1 * tt)) * (1 - Math.exp(-l2 * tt)), Math.exp(-l1 * tt), Math.exp(-tt * 2 / (m1 + m2))];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+  soa({ id: 's_negbin', sec: 2, syl: '2.g', topic: 'Distribusi binomial negatif', src: 'Pola SOA Exam P (percobaan sampai sukses ke-r)',
+    fast: 'P(sukses ke-r terjadi pada percobaan ke-n) = C(n − 1, r − 1)pʳ(1 − p)^{n−r}: percobaan terakhir pasti sukses, sisanya disusun bebas.',
+    gen: function (r) {
+      var p = r.pick([0.2, 0.3, 0.4]), rr = r.pick([2, 3]), nn = rr + r.pick([2, 3, 4]);
+      var ans = C(nn - 1, rr - 1) * Math.pow(p, rr) * Math.pow(1 - p, nn - rr);
+      var q = 'Setiap panggilan telepon, saling bebas, berhasil menjual polis dengan peluang ' + n(p, 1) + '. Hitung peluang penjualan ke-' + rr + ' terjadi tepat pada panggilan ke-' + nn + '.';
+      var sol = 'C(' + (nn - 1) + ', ' + (rr - 1) + ')·' + n(p, 1) + '^' + rr + '·' + n(1 - p, 1) + '^{' + (nn - rr) + '} = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [C(nn, rr) * Math.pow(p, rr) * Math.pow(1 - p, nn - rr), Math.pow(p, rr) * Math.pow(1 - p, nn - rr), C(nn - 1, rr) * Math.pow(p, rr) * Math.pow(1 - p, nn - rr), p * Math.pow(1 - p, nn - 1)], 4));
+    } });
+
+  function buildSoaPaper(seed) {
+    var out = [];
+    for (var i = 0; i < S.length; i++) {
+      var r = makeR((seed * 6007 + i * 15485863) >>> 0);
+      var g = S[i].gen(r);
+      var opts = shuffle([{ s: g.correct, ok: true }].concat(g.wrong.map(function (w) { return { s: w, ok: false }; })), r);
+      out.push({ no: i + 1, id: S[i].id, topic: S[i].topic, conf: 'SOA', src: S[i].src, syl: S[i].syl, sec: S[i].sec, q: g.q, sol: g.sol, fast: S[i].fast,
+        options: opts.map(function (o) { return o.s; }), answer: opts.findIndex(function (o) { return o.ok; }) });
+    }
+    return out;
+  }
+
   // ---------- Perakitan paket ----------
   var LETTERS = ['a', 'b', 'c', 'd', 'e'];
   function buildPaper(seed) {
@@ -869,6 +1044,6 @@
     }
     return out;
   }
-  var api = { buildPaper: buildPaper, templates: T, paper: P, sections: SECTIONS, LETTERS: LETTERS, _n: n };
+  var api = { buildPaper: buildPaper, buildSoaPaper: buildSoaPaper, soaTemplates: S, templates: T, paper: P, sections: SECTIONS, LETTERS: LETTERS, _n: n };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CF2Bank = api;
 })(this);

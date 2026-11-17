@@ -9,11 +9,12 @@
     del: function(k){ try { localStorage.removeItem(k); } catch(e){} }
   };
   var params = new URLSearchParams(location.search);
-  var state = { seed: +(params.get('paket')) || 101, mode: 'ujian', order: 'topik', answers: {}, submitted: false, start: null };
+  var state = { src: params.get('sumber') === 'soa' && B.buildSoaPaper ? 'soa' : 'pai', seed: +(params.get('paket')) || 101, mode: 'ujian', order: 'topik', answers: {}, submitted: false, start: null };
   var paper = [], view = [];
   var $ = function(id){ return document.getElementById(id); };
 
-  function key(){ return CFG.key + ':' + state.seed; }
+  function key(){ return CFG.key + (state.src === 'soa' ? ':soa:' : ':') + state.seed; }
+  function N(){ return paper.length; }
   // ubah ^{..} dan _{..} di teks biasa (di luar \( \)) menjadi sup/sub
   function prettify(s){
     return s.split(/(\\\(.*?\\\))/).map(function(part){
@@ -24,7 +25,7 @@
   function math(el){ if (window.renderMathInElement) renderMathInElement(el, {delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}], throwOnError:false}); }
 
   function load(){
-    paper = B.buildPaper(state.seed);
+    paper = state.src === 'soa' ? B.buildSoaPaper(state.seed) : B.buildPaper(state.seed);
     var saved = store.get(key()) || {};
     state.answers = saved.answers || {};
     state.submitted = !!saved.submitted;
@@ -37,7 +38,8 @@
     renderControls(); renderList(); renderResult(); tick();
   }
   function save(){ store.set(key(), {answers: state.answers, submitted: state.submitted, start: state.start, mode: state.mode}); }
-  function link(){ return location.origin + location.pathname + '?paket=' + state.seed; }
+  function urlFor(){ return '?paket=' + state.seed + (state.src === 'soa' ? '&sumber=soa' : ''); }
+  function link(){ return location.origin + location.pathname + urlFor(); }
 
   function renderControls(){
     var box = $('paket'); box.innerHTML = '';
@@ -55,12 +57,13 @@
     r.onclick = function(){ setSeed(1000 + Math.floor(Math.random()*900000)); }; box.appendChild(r);
     document.querySelectorAll('[data-mode]').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.mode === state.mode)); });
     document.querySelectorAll('[data-order]').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.order === state.order)); });
+    document.querySelectorAll('[data-src]').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.src === state.src)); });
     var name = PAKET.filter(function(p){ return p[1] === state.seed; })[0];
-    $('paketInfo').innerHTML = (name ? 'Paket <b>' + name[0] + '</b> · ' : 'Paket acak · ') + 'kode <b>' + state.seed + '</b>';
+    $('paketInfo').innerHTML = (state.src === 'soa' ? 'Pola SOA · ' : '') + (name ? 'Paket <b>' + name[0] + '</b> · ' : 'Paket acak · ') + 'kode <b>' + state.seed + '</b>';
     $('timer').hidden = state.mode !== 'ujian';
   }
   function setSeed(s){
-    state.seed = s; history.replaceState(null, '', '?paket=' + s); load(); window.scrollTo({top:0});
+    state.seed = s; history.replaceState(null, '', urlFor()); load(); window.scrollTo({top:0});
   }
 
   function renderList(){
@@ -70,7 +73,7 @@
       var card = document.createElement('article'); card.className = 'q'; card.id = 'q' + q.no;
       card.setAttribute('aria-labelledby', 'h' + q.no);
       var h = '<div class="qhead"><span class="qno" id="h' + q.no + '">Soal ' + (idx+1) + '</span>' +
-        '<span class="conf' + (q.conf === 'Tinggi' ? ' hi' : '') + '">' + (q.conf === 'Baru' ? 'Topik silabus, belum pernah keluar' : 'Peluang keluar ' + q.conf.toLowerCase()) + '</span></div>' +
+        '<span class="conf' + (q.conf === 'Tinggi' ? ' hi' : '') + '">' + (q.conf === 'Baru' ? 'Topik silabus, belum pernah keluar' : q.conf === 'SOA' ? 'Pola SOA, belum dipakai PAI' : 'Peluang keluar ' + q.conf.toLowerCase()) + '</span></div>' +
         '<div class="qtopic">Silabus ' + q.syl + ' · ' + q.topic + '</div>' +
         '<div class="qtext">' + q.q + '</div><div class="opts" role="radiogroup" aria-labelledby="h' + q.no + '">';
       q.options.forEach(function(o, i){
@@ -111,8 +114,8 @@
       if (a !== undefined) { done++; el.className = (state.submitted || state.mode === 'latihan') ? (a === q.answer ? 'r' : 'w') : 'done'; }
       nav.appendChild(el);
     });
-    $('progress').textContent = done + '/30 dijawab';
-    $('trackFill').style.width = (done / 30 * 100) + '%';
+    $('progress').textContent = done + '/' + N() + ' dijawab';
+    $('trackFill').style.width = (done / N() * 100) + '%';
     $('submit').querySelector('.long').textContent = state.submitted ? 'Lihat nilai' : 'Selesai & nilai';
     $('submit').querySelector('.short').textContent = state.submitted ? 'Nilai' : 'Selesai';
     $('cancel').hidden = state.submitted || (done === 0 && !state.start);
@@ -128,8 +131,8 @@
     });
     var weak = Object.keys(by).filter(function(k){ return by[k].r < by[k].t; });
     var sec = B.sections.map(function(sc){ var qs = paper.filter(function(q){ return q.sec === sc.no; }); return {sc: sc, t: qs.length, r: qs.filter(function(q){ return state.answers[q.no] === q.answer; }).length}; });
-    var pctv = Math.round(right/30*100);
-    var h = '<section class="result" id="res" aria-labelledby="resTitle"><h2 id="resTitle">Nilai Anda</h2><div class="score">' + right + '/30 <small>(' + pctv + '%)</small></div>' +
+    var pctv = Math.round(right/N()*100);
+    var h = '<section class="result" id="res" aria-labelledby="resTitle"><h2 id="resTitle">Nilai Anda</h2><div class="score">' + right + '/' + N() + ' <small>(' + pctv + '%)</small></div>' +
       '<p>' + (pctv >= 80 ? 'Sudah di zona aman. Lanjut ke paket lain untuk memastikan hasil ini konsisten, bukan kebetulan.' :
                pctv >= 60 ? 'Masih di batas aman. Fokuskan latihan pada topik yang salah di bawah sebelum pindah ke paket lain.' :
                'Masih jauh dari aman. Pelajari ulang konsep tiap topik yang salah, jangan hanya mencocokkan pembahasan.') + '</p>';
@@ -183,6 +186,7 @@
 
   document.querySelectorAll('[data-mode]').forEach(function(b){ b.onclick = function(){ state.mode = b.dataset.mode; save(); renderControls(); renderList(); tick(); }; });
   document.querySelectorAll('[data-order]').forEach(function(b){ b.onclick = function(){ state.order = b.dataset.order; load(); }; });
+  document.querySelectorAll('[data-src]').forEach(function(b){ b.onclick = function(){ state.src = b.dataset.src; history.replaceState(null, '', urlFor()); load(); window.scrollTo({top:0}); }; });
   $('reset').onclick = resetPaper;
   $('cancel').onclick = cancelAttempt;
   $('copy').onclick = function(){
@@ -194,7 +198,7 @@
   $('nav').addEventListener('click', function(e){ if (e.target.tagName === 'A' && matchMedia('(max-width:600px)').matches) $('jump').open = false; });
   $('submit').onclick = function(){
     if (!state.submitted) {
-      var left = 30 - Object.keys(state.answers).length;
+      var left = N() - Object.keys(state.answers).length;
       if (left > 0 && !confirm(left + ' soal belum dijawab. Tetap selesai dan nilai?')) return;
       state.submitted = true; save(); renderList(); renderResult(); tick();
     }
