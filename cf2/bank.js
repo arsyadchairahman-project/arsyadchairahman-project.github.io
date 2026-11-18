@@ -1019,6 +1019,373 @@
       return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [C(nn, rr) * Math.pow(p, rr) * Math.pow(1 - p, nn - rr), Math.pow(p, rr) * Math.pow(1 - p, nn - rr), C(nn - 1, rr) * Math.pow(p, rr) * Math.pow(1 - p, nn - rr), p * Math.pow(1 - p, nn - 1)], 4));
     } });
 
+  // ---------- Model variasi: setiap slot paket punya beberapa bentuk soal ----------
+  var V = {};
+  function vt(o) { o.conf = 'Variasi'; o.src = o.src || 'Model variasi latihan (silabus ' + o.syl + ')'; V[o.id] = o; }
+
+  vt({ id: 'v_test', syl: '1.e', topic: 'Bayes: tes diagnostik',
+    fast: 'Pohon 2 cabang: P(+) = p·sens + (1 − p)(1 − spes). P(sakit | +) = p·sens / P(+). Jangan tertukar: sensitivitas = P(+ | sakit), spesifisitas = P(− | sehat).',
+    gen: function (r) {
+      var p = r.pick([0.01, 0.02, 0.05, 0.1]), se = r.pick([0.9, 0.95, 0.98]), sp = r.pick([0.9, 0.95, 0.97]), pos = r() < 0.7;
+      var Pp = p * se + (1 - p) * (1 - sp), ans = pos ? p * se / Pp : p * (1 - se) / (p * (1 - se) + (1 - p) * sp);
+      var q = 'Prevalensi suatu penyakit di populasi tertanggung ' + pct(p) + '. Tes medis memberi hasil positif pada ' + pct(se) + ' orang yang sakit (sensitivitas) dan hasil negatif pada ' + pct(sp) + ' orang yang sehat (spesifisitas). Jika hasil tes seorang calon tertanggung <b>' + (pos ? 'positif' : 'negatif') + '</b>, berapa peluang ia benar-benar sakit?';
+      var sol = pos ? 'P(+) = ' + n(p, 2) + '·' + n(se, 2) + ' + ' + n(1 - p, 2) + '·' + n(1 - sp, 2) + ' = ' + n(Pp, 4) + '. P(sakit | +) = ' + n(p * se, 4) + '/' + n(Pp, 4) + ' = <b>' + n(ans, 4) + '</b>. Prevalensi kecil membuat angka ini jauh di bawah sensitivitas.'
+        : 'P(−) = ' + n(p, 2) + '·' + n(1 - se, 2) + ' + ' + n(1 - p, 2) + '·' + n(sp, 2) + ' = ' + n(p * (1 - se) + (1 - p) * sp, 4) + '. P(sakit | −) = ' + n(p * (1 - se), 4) + '/' + n(p * (1 - se) + (1 - p) * sp, 4) + ' = <b>' + n(ans, 4) + '</b>.';
+      var w = pos ? [se, p * se, 1 - sp, p * se / (p * se + (1 - sp))] : [1 - se, p * (1 - se), 1 - sp, (1 - se) / (1 - se + sp)];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_urn', syl: '1.c, 1.e', topic: 'Bayes: dua tahap (kotak & bola)',
+    fast: 'Tahap 1 pilih kotak, tahap 2 ambil bola. P(data | kotak) tanpa pengembalian = C(merah, 2)/C(total, 2). Lalu Bayes: prior × likelihood, dibagi jumlahnya.',
+    gen: function (r) {
+      var a = r.pick([4, 5, 6]), b = r.pick([2, 3, 4]), c = r.pick([2, 3]), d = r.pick([4, 5, 6]), die = r.pick([2, 3, 4]);
+      var q1 = die / 6, l1 = C(a, 2) / C(a + b, 2), l2 = C(c, 2) / C(c + d, 2), ans = q1 * l1 / (q1 * l1 + (1 - q1) * l2);
+      var w1 = Math.pow(a / (a + b), 2), w2 = Math.pow(c / (c + d), 2);
+      var q = 'Kotak I berisi ' + a + ' bola merah dan ' + b + ' bola putih; kotak II berisi ' + c + ' bola merah dan ' + d + ' bola putih. Sebuah dadu dilempar: jika muncul mata ' + (die === 2 ? '1 atau 2' : '1 sampai ' + die) + ', dipilih kotak I; selain itu kotak II. Dari kotak terpilih diambil 2 bola <b>tanpa pengembalian</b>, dan keduanya merah. Berapa peluang bola diambil dari kotak I?';
+      var sol = 'P(I) = ' + die + '/6. P(MM | I) = C(' + a + ',2)/C(' + (a + b) + ',2) = ' + n(l1, 4) + ', P(MM | II) = C(' + c + ',2)/C(' + (c + d) + ',2) = ' + n(l2, 4) + '. P(I | MM) = ' + n(q1 * l1, 4) + '/(' + n(q1 * l1, 4) + ' + ' + n((1 - q1) * l2, 4) + ') = <b>' + n(ans, 4) + '</b>.';
+      var w = [q1, l1 / (l1 + l2), q1 * w1 / (q1 * w1 + (1 - q1) * w2), q1 * l1];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_indep', syl: '1.d', topic: 'Kejadian saling bebas',
+    fast: 'Saling bebas: P(A∩B) = P(A)P(B). Dari P(A∪B) = a + b − ab diperoleh b = (P(A∪B) − a)/(1 − a). Komplemen kejadian bebas juga bebas: P(A′∩B′) = (1 − a)(1 − b).',
+    gen: function (r) {
+      var a = r.pick([0.2, 0.3, 0.4]), b = r.pick([0.25, 0.5, 0.6]), u = a + b - a * b, v = r.pick(['b', 'ab', 'none']), ans, q, sol, w;
+      if (v === 'b') {
+        ans = b;
+        q = 'Kejadian A dan B saling bebas dengan P(A) = ' + n(a, 2) + ' dan P(A ∪ B) = ' + n(u, 2) + '. Tentukan P(B).';
+        sol = 'P(A∪B) = a + b − ab ⇒ b = (' + n(u, 2) + ' − ' + n(a, 2) + ')/(1 − ' + n(a, 2) + ') = <b>' + n(ans, 4) + '</b>.';
+        w = [u - a, (u - a) / a, u / (1 + a), (u - a) / (1 + a)];
+      } else if (v === 'ab') {
+        ans = a * (1 - b);
+        q = 'Peluang mesin A rusak dalam setahun ' + n(a, 2) + ' dan mesin B rusak ' + n(b, 2) + ', saling bebas. Berapa peluang <b>hanya mesin A</b> yang rusak?';
+        sol = 'P(A ∩ B′) = P(A)·(1 − P(B)) = ' + n(a, 2) + '·' + n(1 - b, 2) + ' = <b>' + n(ans, 4) + '</b>.';
+        w = [a, a - b * 0.1, a * b, a + b - 2 * a * b];
+      } else {
+        ans = (1 - a) * (1 - b);
+        q = 'Dua tertanggung saling bebas. Peluang tertanggung pertama mengajukan klaim tahun ini ' + n(a, 2) + ' dan tertanggung kedua ' + n(b, 2) + '. Berapa peluang <b>tidak ada</b> yang mengajukan klaim?';
+        sol = 'De Morgan + saling bebas: P(A′∩B′) = (1 − ' + n(a, 2) + ')(1 − ' + n(b, 2) + ') = <b>' + n(ans, 4) + '</b>. Cek: 1 − P(A∪B) = 1 − ' + n(u, 4) + ' sama.';
+        w = [1 - a - b, 1 - a * b, a * b, 1 - (a + b) / 2];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_demorgan', syl: '1.a', topic: 'De Morgan & inklusi-eksklusi',
+    fast: 'Isi diagram Venn dari irisan: hanya A = a − c, hanya B = b − c. Tidak satu pun = 1 − (a + b − c). Tepat satu = a + b − 2c. Tidak keduanya sekaligus = 1 − c.',
+    gen: function (r) {
+      var a = r.pick([0.45, 0.5, 0.6, 0.65]), b = r.pick([0.3, 0.35, 0.4]), c = r.pick([0.1, 0.15, 0.2]), v = r.pick(['none', 'one', 'cond', 'notboth']);
+      var none = 1 - a - b + c, ans, ask, sol;
+      if (v === 'none') { ans = none; ask = 'tidak memiliki asuransi jiwa <b>maupun</b> asuransi kesehatan'; sol = 'P(J′∩K′) = 1 − P(J∪K) = 1 − (' + n(a, 2) + ' + ' + n(b, 2) + ' − ' + n(c, 2) + ') = <b>' + n(ans, 4) + '</b>.'; }
+      else if (v === 'one') { ans = a + b - 2 * c; ask = 'memiliki <b>tepat satu</b> dari kedua asuransi'; sol = 'Tepat satu = (a − c) + (b − c) = ' + n(a - c, 2) + ' + ' + n(b - c, 2) + ' = <b>' + n(ans, 4) + '</b>.'; }
+      else if (v === 'notboth') { ans = 1 - c; ask = 'tidak memiliki kedua asuransi <b>sekaligus</b>'; sol = 'P(J′∪K′) = 1 − P(J∩K) = 1 − ' + n(c, 2) + ' = <b>' + n(ans, 4) + '</b>.'; }
+      else { ans = none / (1 - b); ask = 'tidak memiliki asuransi jiwa, <b>jika diketahui</b> ia tidak memiliki asuransi kesehatan'; sol = 'P(J′ | K′) = P(J′∩K′)/P(K′) = ' + n(none, 4) + '/' + n(1 - b, 2) + ' = <b>' + n(ans, 4) + '</b>.'; }
+      var q = 'Survei nasabah: ' + pct(a) + ' memiliki asuransi jiwa (J), ' + pct(b) + ' memiliki asuransi kesehatan (K), dan ' + pct(c) + ' memiliki keduanya. Berapa peluang seorang nasabah acak ' + ask + '?';
+      var pool = [none, a + b - 2 * c, 1 - c, none / (1 - b), (1 - a) * (1 - b), 1 - a - b, a + b - c];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, pool.filter(function (x) { return Math.abs(x - ans) > 1e-9; }), 4));
+    } });
+
+  vt({ id: 'v_combin', syl: '1.b', topic: 'Enumerasi & kombinatorik',
+    fast: 'Ambil tanpa pengembalian tanpa memperhatikan urutan: hipergeometrik C(K, j)C(N − K, k − j)/C(N, k). “Paling sedikit satu” → 1 − P(nol).',
+    gen: function (r) {
+      var m = r.pick([6, 7, 8]), w = r.pick([4, 5]), k = r.pick([3, 4]), j = r.pick([1, 2]), atl = r() < 0.4, N = m + w;
+      var ans = atl ? 1 - C(m, k) / C(N, k) : C(w, j) * C(m, k - j) / C(N, k);
+      var q = 'Panitia ' + k + ' orang dipilih acak dari ' + m + ' aktuaris pria dan ' + w + ' aktuaris wanita. Berapa peluang panitia berisi ' + (atl ? '<b>paling sedikit satu</b> wanita' : '<b>tepat ' + j + '</b> wanita') + '?';
+      var sol = atl ? '1 − P(tanpa wanita) = 1 − C(' + m + ',' + k + ')/C(' + N + ',' + k + ') = 1 − ' + C(m, k) + '/' + C(N, k) + ' = <b>' + n(ans, 4) + '</b>.'
+        : 'C(' + w + ',' + j + ')·C(' + m + ',' + (k - j) + ')/C(' + N + ',' + k + ') = ' + (C(w, j) * C(m, k - j)) + '/' + C(N, k) + ' = <b>' + n(ans, 4) + '</b>.';
+      var pw = w / N;
+      var wr = atl ? [1 - Math.pow(1 - pw, k), k * pw, C(w, 1) * C(m, k - 1) / C(N, k), 1 - C(m, k) / Math.pow(N, k) * fact(k)] : [binom(j, k, pw), C(w, j) / C(N, k), j / k, C(w, j) * C(m, k - j) / C(N, k) / 2];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, wr, 4));
+    } });
+
+  vt({ id: 'v_condpois', syl: '1.c, 2.g', topic: 'Ekspektasi bersyarat (Poisson terpotong)',
+    fast: 'E[N | N ≥ 1] = E[N]/P(N ≥ 1) = λ/(1 − e^{−λ}), karena suku N = 0 bernilai nol. Untuk syarat N ≤ k: Σ_{j≤k} j·P(j) / Σ_{j≤k} P(j).',
+    gen: function (r) {
+      var l = r.pick([0.5, 1, 1.5, 2, 3]), v = r() < 0.6, ans, q, sol, w;
+      if (v) {
+        ans = l / (1 - Math.exp(-l));
+        q = 'Banyaknya klaim N seorang pemegang polis berdistribusi Poisson dengan rataan ' + n(l, 1) + '. Diketahui pemegang polis itu <b>mengajukan paling sedikit satu klaim</b>. Hitung ekspektasi banyaknya klaimnya.';
+        sol = 'E[N | N ≥ 1] = λ/(1 − e^{−λ}) = ' + n(l, 1) + '/' + n(1 - Math.exp(-l), 4) + ' = <b>' + n(ans, 4) + '</b>.';
+        w = [l, l + 1, l * (1 - Math.exp(-l)), (l - Math.exp(-l)) / (1 - Math.exp(-l))];
+      } else {
+        var p0 = pois(0, l), p1 = pois(1, l), p2 = pois(2, l);
+        ans = (p1 + 2 * p2) / (p0 + p1 + p2);
+        q = 'Banyaknya klaim N berdistribusi Poisson dengan rataan ' + n(l, 1) + '. Hitung E[N | N ≤ 2].';
+        sol = 'P(0) = ' + n(p0, 4) + ', P(1) = ' + n(p1, 4) + ', P(2) = ' + n(p2, 4) + '. E = (1·' + n(p1, 4) + ' + 2·' + n(p2, 4) + ')/' + n(p0 + p1 + p2, 4) + ' = <b>' + n(ans, 4) + '</b>.';
+        w = [p1 + 2 * p2, Math.min(l, 2), (p1 + 2 * p2) / (p1 + p2), 1];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_binprofit', syl: '2.g, 2.d', topic: 'Binomial: laba portofolio polis',
+    fast: 'Laba = nπ − B·N dengan N ~ Bin(n, p). Var(laba) = B²np(1 − p) (premi konstan tidak ikut). Peluang rugi: ubah ke N > nπ/B lalu pakai PMF binomial.',
+    gen: function (r) {
+      var nn = r.pick([10, 12, 15, 20]), p = r.pick([0.05, 0.1]), B = r.pick([10000, 5000]), prem = B * p * r.pick([1.5, 2]), v = r() < 0.5, ans, q, sol, w;
+      if (v) {
+        ans = B * Math.sqrt(nn * p * (1 - p));
+        q = 'Perusahaan menjual ' + nn + ' polis saling bebas; tiap polis membayar manfaat ' + n(B, 0) + ' dengan peluang ' + n(p, 2) + ' dan premi tiap polis ' + n(prem, 0) + '. Hitung <b>simpangan baku</b> laba perusahaan.';
+        sol = 'Laba = ' + n(nn * prem, 0) + ' − ' + n(B, 0) + 'N, N ~ Bin(' + nn + '; ' + n(p, 2) + '). SD = ' + n(B, 0) + '·√(' + nn + '·' + n(p, 2) + '·' + n(1 - p, 2) + ') = <b>' + n(ans, 2) + '</b>.';
+        w = [B * nn * p * (1 - p), B * Math.sqrt(nn * p), Math.sqrt(B * nn * p * (1 - p)), B * Math.sqrt(nn * p * (1 - p)) / Math.sqrt(nn)];
+        return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 2));
+      }
+      var kmax = Math.floor(nn * prem / B + 1e-9), cdf = 0; for (var k = 0; k <= kmax; k++) cdf += binom(k, nn, p);
+      ans = 1 - cdf;
+      q = 'Perusahaan menjual ' + nn + ' polis saling bebas; tiap polis membayar manfaat ' + n(B, 0) + ' dengan peluang ' + n(p, 2) + ' dan premi tiap polis ' + n(prem, 0) + '. Abaikan bunga dan biaya. Hitung peluang perusahaan <b>rugi</b> (total klaim melebihi total premi).';
+      sol = 'Rugi ⇔ ' + n(B, 0) + 'N > ' + n(nn * prem, 0) + ' ⇔ N > ' + n(nn * prem / B, 2) + ' ⇔ N ≥ ' + (kmax + 1) + '. P = 1 − P(N ≤ ' + kmax + ') = <b>' + n(ans, 4) + '</b>.';
+      var c2 = 0; for (k = 0; k < kmax; k++) c2 += binom(k, nn, p);
+      w = [1 - c2, cdf, binom(kmax + 1, nn, p), 1 - Phi((kmax + 0.5 - nn * p) / Math.sqrt(nn * p * (1 - p))) + 0.02];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_nplusd', syl: '2.c, 2.d', topic: 'Deductible pada variabel diskret',
+    fast: 'E[(N − d)₊] = E[N] − d + Σ_{k<d}(d − k)P(N = k). Untuk d = 2: E[N] − 2 + 2P(0) + P(1). Batas: E[min(N, d)] = Σ_{k<d} P(N > k).',
+    gen: function (r) {
+      var l = r.pick([1.5, 2, 2.5, 3]), d = r.pick([1, 2, 3]), lim = r() < 0.35, i, ans, q, sol, corr = 0, parts = [];
+      for (i = 0; i < d; i++) { corr += (d - i) * pois(i, l); parts.push((d - i) + '·' + n(pois(i, l), 4)); }
+      var ded = l - d + corr;
+      if (lim) {
+        ans = l - ded;
+        q = 'Banyaknya hari rawat inap N berdistribusi Poisson dengan rataan ' + n(l, 1) + '. Polis membayar 1 satuan per hari rawat, maksimum ' + d + ' hari. Hitung ekspektasi pembayaran, E[min(N, ' + d + ')].';
+        sol = 'E[min(N, d)] = E[N] − E[(N − d)₊]. E[(N − ' + d + ')₊] = ' + n(l, 1) + ' − ' + d + ' + ' + parts.join(' + ') + ' = ' + n(ded, 4) + '. Jadi <b>' + n(ans, 4) + '</b>.';
+      } else {
+        ans = ded;
+        q = 'Banyaknya klaim N berdistribusi Poisson dengan rataan ' + n(l, 1) + '. Polis membayar 1 satuan untuk setiap klaim <b>di atas ' + d + '</b> klaim pertama, yaitu (N − ' + d + ')₊. Hitung ekspektasi pembayaran.';
+        sol = 'E[(N − ' + d + ')₊] = E[N] − ' + d + ' + ' + parts.join(' + ') + ' = <b>' + n(ans, 4) + '</b>.';
+      }
+      var w = lim ? [d, l - (l - d), Math.min(l, d) - 0.1, d * (1 - pois(0, l))] : [l - d, l - d + pois(0, l), l * (1 - pois(0, l)) - d, l - d + d * pois(0, l)];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_mgfmom', syl: '2.e', topic: 'Momen dari MGF',
+    fast: 'Kenali bentuk MGF: (1 − θt)^{−α} → Gamma: E = αθ, Var = αθ². Σ pₖe^{kt} → PMF diskret: P(X = k) = pₖ. e^{λ(eᵗ − 1)} → Poisson.',
+    gen: function (r) {
+      var v = r.pick(['gamma', 'disc', 'pois']), ans, q, sol, w;
+      if (v === 'gamma') {
+        var a = r.pick([2, 3, 4]), th = r.pick([0.5, 2, 5]);
+        ans = a * th * th;
+        q = 'MGF variabel acak X adalah \\(M_X(t) = (1 - ' + t(th, 1) + 't)^{-' + a + '}\\) untuk \\(t < ' + t(1 / th, 2) + '\\). Tentukan Var(X).';
+        sol = 'Bentuk Gamma(α = ' + a + ', θ = ' + n(th, 1) + '). Var = αθ² = <b>' + n(ans, 2) + '</b>. (Lewat turunan: M′(0) = αθ, M″(0) = α(α + 1)θ².)';
+        w = [a * th, a * (a + 1) * th * th, a * a * th * th, a / (th * th)];
+      } else if (v === 'disc') {
+        var p = r.pick([[0.2, 0.5, 0.3], [0.3, 0.3, 0.4], [0.1, 0.6, 0.3]]), E = p[0] + 2 * p[1] + 3 * p[2], E2 = p[0] + 4 * p[1] + 9 * p[2];
+        ans = E2 - E * E;
+        q = 'MGF variabel acak X adalah \\(M_X(t) = ' + t(p[0], 1) + 'e^{t} + ' + t(p[1], 1) + 'e^{2t} + ' + t(p[2], 1) + 'e^{3t}\\). Tentukan Var(X).';
+        sol = 'X bernilai 1, 2, 3 dengan peluang ' + p.map(function (x) { return n(x, 1); }).join(', ') + '. E[X] = ' + n(E, 2) + ', E[X²] = ' + n(E2, 2) + '. Var = <b>' + n(ans, 4) + '</b>.';
+        w = [E2, E, E2 - E, (p[0] * p[0] + 4 * p[1] * p[1] + 9 * p[2] * p[2])];
+      } else {
+        var l = r.pick([2, 3, 4]), c = r.pick([2, 3]);
+        ans = c * c * l;
+        q = 'MGF variabel acak X adalah \\(M_X(t) = e^{' + l + '(e^{' + c + 't} - 1)}\\). Tentukan Var(X).';
+        sol = 'M_X(t) = M_N(' + c + 't) dengan N ~ Poisson(' + l + '), jadi X = ' + c + 'N. Var = ' + c + '²·' + l + ' = <b>' + n(ans, 2) + '</b>.';
+        w = [l, c * l, c * c * l + c * c * l * l, l * l];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_pctl', syl: '2.d', topic: 'Persentil distribusi kontinu',
+    fast: 'Selesaikan F(x_p) = p, atau S(x_p) = 1 − p. Eksponensial: x_p = −θ ln(1 − p). Pareto S(x) = (θ/(x + θ))^α: x_p = θ[(1 − p)^{−1/α} − 1].',
+    gen: function (r) {
+      var p = r.pick([0.5, 0.75, 0.9, 0.95]), par = r() < 0.5, ans, q, sol, w;
+      if (!par) {
+        var th = r.pick([500, 1000, 2000]);
+        ans = -th * Math.log(1 - p);
+        q = 'Besar klaim berdistribusi eksponensial dengan rataan ' + n(th, 0) + '. Tentukan persentil ke-' + Math.round(p * 100) + ' besar klaim.';
+        sol = '1 − e^{−x/θ} = ' + n(p, 2) + ' ⇒ x = −θ ln(1 − p) = −' + n(th, 0) + '·ln(' + n(1 - p, 2) + ') = <b>' + n(ans, 2) + '</b>.';
+        w = [th * p, -th * Math.log(p), th / (1 - p), th * Math.log(1 + p)];
+      } else {
+        var a = r.pick([2, 3, 4]), th2 = r.pick([1000, 2000, 3000]);
+        ans = th2 * (Math.pow(1 - p, -1 / a) - 1);
+        q = 'Besar kerugian X memiliki fungsi survival \\(S(x) = \\left(\\tfrac{' + th2 + '}{x + ' + th2 + '}\\right)^{' + a + '}\\) untuk x > 0. Tentukan persentil ke-' + Math.round(p * 100) + ' dari X.';
+        sol = 'S(x) = ' + n(1 - p, 2) + ' ⇒ x = θ[(1 − p)^{−1/α} − 1] = ' + n(th2, 0) + '[' + n(Math.pow(1 - p, -1 / a), 4) + ' − 1] = <b>' + n(ans, 2) + '</b>.';
+        w = [th2 * (Math.pow(p, -1 / a) - 1), th2 * Math.pow(1 - p, -1 / a), th2 * (Math.pow(1 - p, -a) - 1), th2 * p / (a - 1)];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 2));
+    } });
+
+  vt({ id: 'v_trans', syl: '2.f', topic: 'Transformasi: metode CDF',
+    fast: 'Metode CDF: F_Y(y) = P(g(X) ≤ y), ubah ke X lalu turunkan. Untuk g naik: f_Y(y) = f_X(g⁻¹(y))·|dg⁻¹/dy|.',
+    gen: function (r) {
+      var v = r() < 0.5, ans, q, sol, w;
+      if (v) {
+        var th = r.pick([1, 2, 4]), y = r.pick([1, 4, 9]);
+        ans = Math.exp(-Math.sqrt(y) / th) / (2 * th * Math.sqrt(y));
+        q = 'X berdistribusi eksponensial dengan rataan ' + th + ' dan Y = X². Tentukan \\(f_Y(' + y + ')\\).';
+        sol = 'F_Y(y) = P(X ≤ √y) = 1 − e^{−√y/θ}. f_Y(y) = e^{−√y/θ}/(2θ√y). Di y = ' + y + ': e^{−' + Math.sqrt(y) + '/' + th + '}/(2·' + th + '·' + Math.sqrt(y) + ') = <b>' + n(ans, 4) + '</b>.';
+        w = [Math.exp(-y / th) / th, Math.exp(-Math.sqrt(y) / th) / th, Math.exp(-Math.sqrt(y) / th) / (2 * Math.sqrt(y)), 1 - Math.exp(-Math.sqrt(y) / th)];
+      } else {
+        var k = r.pick([1.5, 2, 2.5]);
+        ans = 1 - Math.log(k);
+        q = 'X berdistribusi seragam pada (0, 1) dan Y = e^X. Tentukan P(Y > ' + n(k, 1) + ').';
+        sol = 'P(e^X > ' + n(k, 1) + ') = P(X > ln ' + n(k, 1) + ') = 1 − ln ' + n(k, 1) + ' = <b>' + n(ans, 4) + '</b>. (f_Y(y) = 1/y pada (1, e).)';
+        w = [Math.log(k), 1 - k / Math.E, (Math.E - k) / Math.E, 1 / k];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_jointexp', syl: '3.a, 3.b', topic: 'Densitas bersama: dua eksponensial',
+    fast: 'f(x, y) = ab·e^{−ax−by} = dua eksponensial bebas (laju a, b). P(X < Y) = a/(a + b). P(X + Y ≤ 1) = 1 − (b e^{−a} − a e^{−b})/(b − a).',
+    gen: function (r) {
+      var a = r.pick([1, 2, 3]), b = r.pick([4, 5, 6]) - (r() < 0.5 ? 0 : 1), v = r() < 0.5, ans, q, sol, w;
+      if (b === a) b = a + 2;
+      var dens = '\\(f(x,y) = ' + (a * b) + 'e^{-' + (a === 1 ? '' : a) + 'x-' + b + 'y}\\)';
+      if (v) {
+        ans = a / (a + b);
+        q = 'Waktu (tahun) sampai dua komponen rusak memiliki densitas bersama ' + dens + ' untuk x, y > 0. Hitung P(X < Y).';
+        sol = 'Densitas terfaktor: X ~ Eksp(laju ' + a + '), Y ~ Eksp(laju ' + b + ') saling bebas. P(X < Y) = a/(a + b) = <b>' + n(ans, 4) + '</b>.';
+        w = [b / (a + b), 0.5, a / b, 1 - Math.exp(-a / b)];
+      } else {
+        ans = 1 - (b * Math.exp(-a) - a * Math.exp(-b)) / (b - a);
+        q = 'X dan Y memiliki densitas bersama ' + dens + ' untuk x, y > 0. Hitung P(X + Y ≤ 1).';
+        sol = 'P(X + Y > 1) = (b e^{−a} − a e^{−b})/(b − a) = ' + n(1 - ans, 4) + ' (konvolusi dua eksponensial). Jawaban: <b>' + n(ans, 4) + '</b>.';
+        w = [(1 - Math.exp(-a)) * (1 - Math.exp(-b)), 1 - Math.exp(-(a + b)), 1 - ans, 1 - Math.exp(-a)];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_compound', syl: '3.d, 3.g', topic: 'Distribusi majemuk (total klaim)',
+    fast: 'S = X₁ + … + X_N: E[S] = E[N]E[X], Var(S) = E[N]Var(X) + Var(N)(E[X])². Poisson: Var(S) = λE[X²].',
+    gen: function (r) {
+      var mu = r.pick([500, 1000, 2000]), sd = mu * r.pick([0.5, 1, 2]), binN = r() < 0.4, EN, VN, lbl;
+      if (binN) { var nn = r.pick([20, 50]), p = r.pick([0.1, 0.2]); EN = nn * p; VN = nn * p * (1 - p); lbl = 'binomial dengan n = ' + nn + ' dan p = ' + n(p, 1); }
+      else { EN = r.pick([3, 5, 8]); VN = EN; lbl = 'Poisson dengan rataan ' + EN; }
+      var ans = Math.sqrt(EN * sd * sd + VN * mu * mu);
+      var q = 'Banyaknya klaim N berdistribusi ' + lbl + '. Besar klaim saling bebas (juga bebas dari N) dengan rataan ' + n(mu, 0) + ' dan simpangan baku ' + n(sd, 0) + '. Hitung simpangan baku total klaim S.';
+      var sol = 'Var(S) = E[N]Var(X) + Var(N)(E[X])² = ' + n(EN, 1) + '·' + n(sd * sd, 0) + ' + ' + n(VN, 1) + '·' + n(mu * mu, 0) + ' = ' + n(ans * ans, 0) + '. SD = <b>' + n(ans, 2) + '</b>.';
+      var w = [Math.sqrt(EN) * sd, Math.sqrt(EN * sd * sd), Math.sqrt(EN * (sd * sd + mu * mu)) * (binN ? 1.1 : 0.9), EN * sd];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 2));
+    } });
+
+  vt({ id: 'v_cltn', syl: '4.c', topic: 'Teorema limit pusat: ukuran sampel minimum',
+    fast: 'P(|X̄ − μ| < e) ≥ 1 − α ⇔ z_{α/2}·σ/√n ≤ e ⇔ n ≥ (z_{α/2}σ/e)². Bulatkan ke atas.',
+    gen: function (r) {
+      var sd = r.pick([100, 150, 200, 250]), e = r.pick([20, 25, 30, 40]), lvl = r.pick([[0.95, 1.96], [0.9, 1.645], [0.99, 2.576]]);
+      var ans = Math.ceil(Math.pow(lvl[1] * sd / e, 2));
+      var q = 'Besar klaim memiliki simpangan baku ' + sd + '. Berapa ukuran sampel minimum agar rata-rata sampel berada dalam ±' + e + ' dari rataan populasi dengan peluang paling sedikit ' + pct(lvl[0]) + '? (Gunakan aproksimasi normal.)';
+      var sol = 'n ≥ (z·σ/e)² = (' + n(lvl[1], 3) + '·' + sd + '/' + e + ')² = ' + n(Math.pow(lvl[1] * sd / e, 2), 2) + ' ⇒ n = <b>' + ans + '</b> (selalu bulatkan ke atas).';
+      var zOne = lvl[0] === 0.95 ? 1.645 : lvl[0] === 0.9 ? 1.282 : 2.326;
+      var w = [Math.floor(Math.pow(lvl[1] * sd / e, 2)), Math.ceil(Math.pow(zOne * sd / e, 2)), Math.ceil(lvl[1] * sd / e), Math.ceil(Math.pow(lvl[1] * sd / e, 2) * 1.5)];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 0));
+    } });
+
+  vt({ id: 'v_pval', syl: '4.h', topic: 'Uji hipotesis: nilai-p',
+    fast: 'z = (x̄ − μ₀)/(σ/√n). Satu sisi: p = 1 − Φ(|z|). Dua sisi: p = 2(1 − Φ(|z|)). Tolak H₀ jika p ≤ α.',
+    gen: function (r) {
+      var mu = r.pick([500, 1000]), sd = r.pick([60, 80, 100]), nn = r.pick([25, 36, 64]), z0 = r.pick([1.5, 1.8, 2.1, 2.4]), two = r() < 0.5;
+      var xb = mu + z0 * sd / Math.sqrt(nn), z = (xb - mu) / (sd / Math.sqrt(nn)), one = 1 - Phi(z), ans = two ? 2 * one : one;
+      var q = 'Rata-rata klaim historis ' + mu + ' dengan simpangan baku populasi ' + sd + '. Sampel ' + nn + ' klaim terbaru memiliki rata-rata ' + n(xb, 1) + '. Uji H₀: μ = ' + mu + ' melawan H₁: ' + (two ? 'μ ≠ ' + mu : 'μ > ' + mu) + '. Hitung nilai-p.';
+      var sol = 'z = (' + n(xb, 1) + ' − ' + mu + ')/(' + sd + '/√' + nn + ') = ' + n(z, 2) + '. ' + (two ? 'Dua sisi: p = 2[1 − Φ(' + n(z, 2) + ')]' : 'Satu sisi: p = 1 − Φ(' + n(z, 2) + ')') + ' = <b>' + n(ans, 4) + '</b>.';
+      var w = [two ? one : 2 * one, Phi(z), 1 - Phi(z * Math.sqrt(nn) / 10), 1 - Phi((xb - mu) / sd)];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_margE', syl: '3.b', topic: 'Densitas bersama di daerah segitiga',
+    fast: 'Gambar daerahnya dulu (0 < y < x < 1), baru tentukan batas integral. Marginal Y: integralkan x dari y ke 1. E[Y] = ∫∫ y f(x, y) dy dx dengan y dari 0 ke x.',
+    gen: function (r) {
+      var m = r.pick([0, 1, 2]), k = m + 2, v = r.pick(['ey', 'ex', 'fy']), y0 = r.pick([0.25, 0.5]), ans, sol, ask, w;
+      var dens = m === 0 ? '2' : m === 1 ? '3x' : '4x^2';
+      var EY = k / (2 * (m + 3)), EX = k / (m + 3), FY = k * (1 - Math.pow(y0, m + 1)) / (m + 1);
+      if (v === 'ey') { ans = EY; ask = 'E[Y]'; sol = 'E[Y] = ∫₀¹ ' + k + 'x^' + m + '·(x²/2) dx = ' + k + '/(2·' + (m + 3) + ') = <b>' + n(ans, 4) + '</b>.'; w = [EX, 0.5, k / (m + 3) / 3, 1 / 3]; }
+      else if (v === 'ex') { ans = EX; ask = 'E[X]'; sol = 'f_X(x) = ' + k + 'x^' + m + '·x = ' + k + 'x^' + (m + 1) + '. E[X] = ' + k + '/' + (m + 3) + ' = <b>' + n(ans, 4) + '</b>.'; w = [EY, 0.5, (m + 1) / (m + 2), 2 / 3 + 0.05]; }
+      else { ans = FY; ask = 'f_Y(' + n(y0, 2) + '), densitas marginal Y'; sol = 'f_Y(y) = ∫_y^1 ' + k + 'x^' + m + ' dx = ' + k + '(1 − y^' + (m + 1) + ')/' + (m + 1) + '. Di y = ' + n(y0, 2) + ': <b>' + n(ans, 4) + '</b>.'; w = [k * Math.pow(y0, m + 1) / (m + 1), k * (1 - y0), k * Math.pow(y0, m) * y0, k * (1 - Math.pow(y0, m + 1))]; }
+      var q = 'X dan Y memiliki densitas bersama \\(f(x,y) = ' + dens + '\\) untuk 0 < y < x < 1 dan 0 di luar itu. Hitung ' + ask + '.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_unifgeo', syl: '3.a', topic: 'Dua seragam bebas: peluang geometris',
+    fast: 'X, Y ~ Seragam(0, 1) bebas: peluang = luas daerah di persegi satuan. P(X + Y < s) = s²/2 (s ≤ 1) atau 1 − (2 − s)²/2 (s > 1). P(XY < c) = c(1 − ln c).',
+    gen: function (r) {
+      var v = r() < 0.6, ans, q, sol, w;
+      if (v) {
+        var s = r.pick([0.6, 0.8, 1.2, 1.5]);
+        ans = s <= 1 ? s * s / 2 : 1 - Math.pow(2 - s, 2) / 2;
+        q = 'Waktu tunggu (jam) dua nasabah, X dan Y, saling bebas dan masing-masing berdistribusi seragam pada (0, 1). Hitung P(X + Y < ' + n(s, 1) + ').';
+        sol = s <= 1 ? 'Daerah x + y < ' + n(s, 1) + ' adalah segitiga dengan luas s²/2 = <b>' + n(ans, 4) + '</b>.' : 'Komplemen x + y > ' + n(s, 1) + ' adalah segitiga dengan luas (2 − s)²/2 = ' + n(1 - ans, 4) + '. Jawaban 1 − ' + n(1 - ans, 4) + ' = <b>' + n(ans, 4) + '</b>.';
+        w = [s / 2, s * s / 2, 1 - s * s / 2, Math.pow(2 - s, 2) / 2, s * s];
+      } else {
+        var c = r.pick([0.2, 0.25, 0.4, 0.5]);
+        ans = c * (1 - Math.log(c));
+        q = 'X dan Y saling bebas dan berdistribusi seragam pada (0, 1). Hitung P(XY < ' + n(c, 2) + ').';
+        sol = 'P = c + ∫_c^1 (c/x) dx = c − c ln c = ' + n(c, 2) + '(1 − ln ' + n(c, 2) + ') = <b>' + n(ans, 4) + '</b>.';
+        w = [c, c * c, Math.sqrt(c), -c * Math.log(c)];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w.filter(function (x) { return Math.abs(x - ans) > 1e-9; }), 4));
+    } });
+
+  vt({ id: 'v_poisdiff', syl: '2.g, 3.e', topic: 'Jumlah dua Poisson & syarat totalnya',
+    fast: 'N₁ + N₂ ~ Poisson(a + b). Diketahui total k: N₁ | (N₁ + N₂ = k) ~ Binomial(k, a/(a + b)).',
+    gen: function (r) {
+      var a = r.pick([1, 2, 3]), b = r.pick([1.5, 2, 4]), k = r.pick([3, 4, 5]), j = r.pick([1, 2]), cond = r() < 0.5, ans, q, sol, w, p = a / (a + b);
+      if (cond) {
+        ans = binom(j, k, p);
+        q = 'Banyaknya klaim dari lini A dan lini B saling bebas, berdistribusi Poisson dengan rataan ' + n(a, 1) + ' dan ' + n(b, 1) + '. Diketahui total klaim kedua lini adalah ' + k + '. Berapa peluang tepat ' + j + ' klaim berasal dari lini A?';
+        sol = 'N_A | total = ' + k + ' ~ Binomial(' + k + '; ' + n(a, 1) + '/' + n(a + b, 1) + ' = ' + n(p, 4) + '). P = C(' + k + ',' + j + ')·' + n(p, 4) + '^' + j + '·' + n(1 - p, 4) + '^' + (k - j) + ' = <b>' + n(ans, 4) + '</b>.';
+        w = [pois(j, a), pois(j, a) * pois(k - j, b), binom(j, k, 0.5), pois(j, a) * pois(k - j, b) / pois(k, a + b) * 0.9];
+      } else {
+        ans = pois(k, a + b);
+        q = 'Banyaknya klaim dari lini A dan lini B saling bebas, berdistribusi Poisson dengan rataan ' + n(a, 1) + ' dan ' + n(b, 1) + '. Berapa peluang total klaim kedua lini tepat ' + k + '?';
+        sol = 'N_A + N_B ~ Poisson(' + n(a + b, 1) + '). P = e^{−' + n(a + b, 1) + '}·' + n(a + b, 1) + '^' + k + '/' + k + '! = <b>' + n(ans, 4) + '</b>.';
+        w = [pois(k, a) * pois(k, b) * 4, pois(k, a) + pois(k, b), pois(k, (a + b) / 2), 1 - Math.exp(-(a + b))];
+      }
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_sampchi', syl: '4.b', topic: 'Distribusi variansi sampel (chi-square)',
+    fast: '(n − 1)S²/σ² ~ χ²(n − 1) untuk sampel dari normal. Ubah P(S² > c) menjadi P(χ² > (n − 1)c/σ²) lalu baca tabel chi-square.',
+    gen: function (r) {
+      var tb = r.pick([[10, [[18.307, 0.05], [15.987, 0.1], [20.483, 0.025]]], [14, [[23.685, 0.05], [21.064, 0.1], [26.119, 0.025]]], [20, [[31.410, 0.05], [28.412, 0.1], [34.170, 0.025]]]]);
+      var df = tb[0], e = r.pick(tb[1]), sg = r.pick([4, 9, 16, 25]), c = e[0] * sg / df;
+      var q = 'Sampel acak berukuran ' + (df + 1) + ' diambil dari populasi normal dengan variansi ' + sg + '. Hitung P(S² > ' + n(c, 3) + '), dengan S² variansi sampel.';
+      var sol = '(n − 1)S²/σ² ~ χ²(' + df + '). P(S² > ' + n(c, 3) + ') = P(χ² > ' + df + '·' + n(c, 3) + '/' + sg + ') = P(χ² > ' + n(e[0], 3) + ') = <b>' + n(e[1], 3) + '</b> (tabel χ², df = ' + df + ').';
+      var o = strOpts(n(e[1], 3), ['0,050', '0,100', '0,025', '0,950', '0,900', '0,010'].filter(function (s) { return s !== n(e[1], 3); }));
+      return Object.assign({ q: q, sol: sol }, o);
+    } });
+
+  vt({ id: 'v_bayesdisc', syl: '4.e, 1.e', topic: 'Bayes: prior diskret & ekspektasi berikutnya',
+    fast: 'Posterior ∝ prior × likelihood. Prediksi tahun depan = Σ λᵢ·P(kelas i | data), bukan banyaknya klaim teramati dan bukan rataan prior.',
+    gen: function (r) {
+      var pg = r.pick([0.7, 0.75, 0.8]), lg = r.pick([0.5, 1]), lb = r.pick([2, 3]), k = r.pick([0, 1, 2, 3]);
+      var ug = pg * pois(k, lg), ub = (1 - pg) * pois(k, lb), postB = ub / (ug + ub), ans = lg * (1 - postB) + lb * postB;
+      var q = 'Pengemudi terbagi dua kelas: ' + pct(pg) + ' kelas baik dengan banyaknya klaim per tahun Poisson(' + n(lg, 1) + ') dan sisanya kelas buruk dengan Poisson(' + lb + '). Seorang pengemudi acak mengajukan ' + k + ' klaim tahun ini. Hitung ekspektasi banyaknya klaimnya tahun depan.';
+      var sol = 'P(buruk | ' + k + ') = ' + n(ub, 4) + '/(' + n(ug, 4) + ' + ' + n(ub, 4) + ') = ' + n(postB, 4) + '. E = ' + n(lg, 1) + '·' + n(1 - postB, 4) + ' + ' + lb + '·' + n(postB, 4) + ' = <b>' + n(ans, 4) + '</b>.';
+      var w = [pg * lg + (1 - pg) * lb, k, (k + pg * lg + (1 - pg) * lb) / 2, lg * pg + lb * postB];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_mgfjoint', syl: '3.e, 3.f', topic: 'MGF bersama normal bivariat',
+    fast: 'M(s, t) = exp(μ₁s + μ₂t + ½[σ₁²s² + 2c·st + σ₂²t²]): koefisien st adalah Cov(X, Y) = c, koefisien s² adalah σ₁²/2. Var(aX + bY) = a²σ₁² + 2ab·c + b²σ₂².',
+    gen: function (r) {
+      var v1 = r.pick([4, 9]), v2 = r.pick([1, 4, 16]), c = r.pick([-2, -1, 1, 2]), m1 = r.pick([1, 2]), m2 = r.pick([3, 5]), a = r.pick([1, 2]), b = r.pick([-1, 1, 2]);
+      var ans = a * a * v1 + 2 * a * b * c + b * b * v2;
+      var q = 'MGF bersama X dan Y adalah \\(M(s,t) = \\exp\\left(' + m1 + 's + ' + m2 + 't + ' + t(v1 / 2, 1).replace('{,}0', '') + 's^2 ' + (c < 0 ? '- ' : '+ ') + Math.abs(c) + 'st + ' + t(v2 / 2, 1).replace('{,}0', '') + 't^2\\right)\\). Hitung Var(' + (a === 1 ? '' : a) + 'X ' + (b < 0 ? '− ' : '+ ') + (Math.abs(b) === 1 ? '' : Math.abs(b)) + 'Y).';
+      var sol = 'Normal bivariat: σ₁² = ' + v1 + ', σ₂² = ' + v2 + ', Cov = ' + c + '. Var = ' + (a * a) + '·' + v1 + ' + 2·' + a + '·(' + b + ')·(' + c + ') + ' + (b * b) + '·' + v2 + ' = <b>' + n(ans, 2) + '</b>.';
+      var w = [a * a * v1 + b * b * v2, a * v1 + b * v2 + 2 * c, a * a * v1 + a * b * c + b * b * v2, a * a * v1 / 4 + 2 * a * b * c + b * b * v2 / 4, a * a * v1 + 4 * a * b * c + b * b * v2];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w.filter(function (x) { return x !== ans; }), 2));
+    } });
+
+  // ---------- Pool model per slot ----------
+  var SID = {}; S.forEach(function (s) { SID[s.id] = s; });
+  var EXTRA = {
+    bayes3: ['v_test', 's_riskmix'], renters: ['v_urn', 'v_bayesdisc'], region: ['v_indep'], cars: ['v_demorgan', 's_incl3'],
+    events: ['v_combin'], couple: ['v_condpois'],
+    discrete: ['s_negbin', 's_hyper'], binomial: ['v_binprofit'], poisson: ['v_poisdiff'], poiscap: ['v_nplusd', 's_dedpmf'], pgf3: ['v_mgfmom'],
+    mixed: ['s_hazard'], quantile: ['v_pctl'], transform: ['v_trans'], payment: ['s_expvar', 's_explim', 's_paretolim'],
+    jointcond: ['v_jointexp'], triangle: ['v_margE'], bids: ['v_unifgeo'], totvar: ['v_compound', 's_condtab'], jointmgf: ['s_poissum', 'v_mgfjoint'], cov: ['s_corr'],
+    order: ['s_georace', 's_expcomp'], cltpct: ['v_cltn'], twolines: ['s_cltdisc'], htest: ['v_pval'], sampmean: ['v_sampchi'], bayesest: ['v_bayesdisc']
+  };
+  P = P.map(function (slot) {
+    var base = (slot.variants || [slot.id]).map(function (id) { return { t: byId[id], w: 2, own: true }; });
+    (EXTRA[slot.id] || []).forEach(function (id) { base.push({ t: V[id] || SID[id], w: 1 }); });
+    var tot = base.reduce(function (s, x) { return s + x.w; }, 0);
+    slot.models = base.map(function (x) { return x.t.id; });
+    slot.gen = function (r) {
+      var u = r() * tot, k = 0; while (u >= base[k].w) { u -= base[k].w; k++; }
+      var b = base[k], g = b.t.gen(r);
+      g.fast = b.t.fast;
+      if (!b.own) { g.topic = b.t.topic; g.conf = b.t.conf; g.src = b.t.src; }
+      return g;
+    };
+    return slot;
+  });
+
   function buildSoaPaper(seed) {
     var out = [];
     for (var i = 0; i < S.length; i++) {
@@ -1039,7 +1406,7 @@
       var r = makeR((seed * 7919 + i * 104729) >>> 0);
       var g = P[i].gen(r);
       var opts = shuffle([{ s: g.correct, ok: true }].concat(g.wrong.map(function (w) { return { s: w, ok: false }; })), r);
-      out.push({ no: i + 1, id: P[i].id, topic: P[i].topic, conf: P[i].conf, src: P[i].src, syl: P[i].syl, sec: +P[i].syl.charAt(0), q: g.q, sol: g.sol, fast: g.fast || P[i].fast,
+      out.push({ no: i + 1, id: P[i].id, topic: g.topic || P[i].topic, conf: g.conf || P[i].conf, src: g.src || P[i].src, syl: P[i].syl, sec: +P[i].syl.charAt(0), q: g.q, sol: g.sol, fast: g.fast || P[i].fast,
         options: opts.map(function (o) { return o.s; }), answer: opts.findIndex(function (o) { return o.ok; }) });
     }
     return out;

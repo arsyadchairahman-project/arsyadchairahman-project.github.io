@@ -73,7 +73,7 @@
       var card = document.createElement('article'); card.className = 'q'; card.id = 'q' + q.no;
       card.setAttribute('aria-labelledby', 'h' + q.no);
       var h = '<div class="qhead"><span class="qno" id="h' + q.no + '">Soal ' + (idx+1) + '</span>' +
-        '<span class="conf' + (q.conf === 'Tinggi' ? ' hi' : '') + '">' + (q.conf === 'Baru' ? 'Topik silabus, belum pernah keluar' : q.conf === 'SOA' ? 'Pola SOA, belum dipakai PAI' : 'Peluang keluar ' + q.conf.toLowerCase()) + '</span></div>' +
+        '<span class="conf' + (q.conf === 'Tinggi' ? ' hi' : '') + '">' + (q.conf === 'Baru' ? 'Topik silabus, belum pernah keluar' : q.conf === 'SOA' ? 'Pola SOA, belum dipakai PAI' : q.conf === 'Variasi' ? 'Model variasi latihan' : 'Peluang keluar ' + q.conf.toLowerCase()) + '</span></div>' +
         '<div class="qtopic">Silabus ' + q.syl + ' · ' + q.topic + '</div>' +
         '<div class="qtext">' + q.q + '</div><div class="opts" role="radiogroup" aria-labelledby="h' + q.no + '">';
       q.options.forEach(function(o, i){

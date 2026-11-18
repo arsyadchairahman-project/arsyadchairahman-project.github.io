@@ -1108,6 +1108,104 @@
       return Object.assign({ q: q, sol: sol }, money(r, ans, [L * i + L / sn(i, N) - am, L / sn(j, N) - L / sn(i, N) + 10, L / an(j, N) - am, (i - j) * L], 2));
     } });
 
+  // ---------- Model variasi: setiap slot paket punya beberapa bentuk soal ----------
+  var V = {};
+  function vt(o) { o.conf = 'Variasi'; o.src = o.src || 'Model variasi latihan (silabus ' + o.syl + ')'; V[o.id] = o; }
+
+  vt({ id: 'v_irr', sec: 1, syl: '1.f', topic: 'IRR dua periode (persamaan kuadrat)',
+    fast: 'C₀ = R₁v + R₂v². Misalkan x = 1 + i: C₀x² − R₁x − R₂ = 0 ⇒ x = [R₁ + √(R₁² + 4C₀R₂)]/(2C₀). Ambil akar positif.',
+    gen: function (r) {
+      var C0 = r.pick([10000, 20000, 15000]), R1 = C0 * r.pick([0.4, 0.5, 0.6]), R2 = C0 * r.pick([0.7, 0.8, 0.65]);
+      var x = (R1 + Math.sqrt(R1 * R1 + 4 * C0 * R2)) / (2 * C0), ans = x - 1;
+      var q = 'Proyek membutuhkan investasi ' + n(C0, 0) + ' sekarang dan menghasilkan ' + n(R1, 0) + ' di akhir tahun ke-1 serta ' + n(R2, 0) + ' di akhir tahun ke-2. Tentukan IRR proyek.';
+      var sol = n(C0, 0) + 'x² − ' + n(R1, 0) + 'x − ' + n(R2, 0) + ' = 0, x = 1 + i ⇒ x = [' + n(R1, 0) + ' + √(' + n(R1 * R1 + 4 * C0 * R2, 0) + ')]/' + n(2 * C0, 0) + ' = ' + n(x, 6) + ' ⇒ IRR = <b>' + pc(ans, 2) + '</b>.';
+      var w = [(R1 + R2 - C0) / C0, (R1 + R2 - C0) / C0 / 2, (R1 + R2 - C0) / (R1 + R2), Math.sqrt((R1 + R2) / C0) - 1];
+      return Object.assign({ q: q, sol: sol }, pcOpts(r, ans, w, 2));
+    } });
+
+  vt({ id: 'v_eqtime', sec: 1, syl: '1.c', topic: 'Equated time vs waktu ekuivalen eksak',
+    fast: 'Eksak: (a + b)vᵗ = a v^{t₁} + b v^{t₂} ⇒ t = ln[(a v^{t₁} + b v^{t₂})/(a + b)]/ln v. Equated time: t̄ = (a t₁ + b t₂)/(a + b), selalu sedikit lebih besar dari t eksak.',
+    gen: function (r) {
+      var a = r.pick([1000, 2000, 3000]), b = r.pick([2000, 4000, 5000]), t1 = r.pick([1, 2, 3]), t2 = t1 + r.pick([4, 6, 8]), i = r.pick([0.05, 0.06, 0.08]), exact = r() < 0.6;
+      var v = 1 / (1 + i), te = Math.log((a * Math.pow(v, t1) + b * Math.pow(v, t2)) / (a + b)) / Math.log(v), tb = (a * t1 + b * t2) / (a + b), ans = exact ? te : tb;
+      var q = 'Pembayaran ' + n(a, 0) + ' pada akhir tahun ke-' + t1 + ' dan ' + n(b, 0) + ' pada akhir tahun ke-' + t2 + ' akan diganti dengan satu pembayaran ' + n(a + b, 0) + '. Pada bunga efektif ' + pc(i, 0) + ', tentukan waktu pembayaran tunggal tersebut ' + (exact ? 'secara <b>eksak</b>' : 'dengan metode <b>equated time</b>') + '.';
+      var sol = exact ? (a + b) + 'vᵗ = ' + n(a * Math.pow(v, t1) + b * Math.pow(v, t2), 2) + ' ⇒ t = ln(' + n((a * Math.pow(v, t1) + b * Math.pow(v, t2)) / (a + b), 6) + ')/ln(' + n(v, 6) + ') = <b>' + n(ans, 3) + '</b> tahun (equated time ' + n(tb, 3) + ' sedikit lebih besar).'
+        : 't̄ = (' + n(a, 0) + '·' + t1 + ' + ' + n(b, 0) + '·' + t2 + ')/' + n(a + b, 0) + ' = <b>' + n(ans, 3) + '</b> tahun.';
+      var w = [exact ? tb : te, (t1 + t2) / 2, (b * t1 + a * t2) / (a + b), ans + 0.25];
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 3));
+    } });
+
+  vt({ id: 'v_reinvann', sec: 2, syl: '2.c, 1.f', topic: 'Akumulasi deposito dengan bunga direinvestasi',
+    fast: 'Setoran P di akhir tiap tahun, bunga i dibayarkan tiap tahun lalu diinvestasikan pada j: AV = P[n + i·(Is)_{n−1|j}], dengan (Is)_{m|j} = (s̈_{m|j} − m)/j. Bunga yang diterima naik 1·Pi, 2·Pi, …, (n − 1)·Pi.',
+    gen: function (r) {
+      var P = r.pick([1000, 500, 2000]), N = r.pick([10, 15, 20]), i = r.pick([0.08, 0.1]), j = r.pick([0.05, 0.06]);
+      var fund = 0; for (var k = 1; k <= N; k++) { fund = fund * (1 + j) + P * i * (k - 1); }
+      var ans = P * N + fund, m = N - 1, Is = (sn(j, m) * (1 + j) - m) / j;
+      var q = 'Setiap akhir tahun selama ' + N + ' tahun, Nadia menyetor ' + n(P, 0) + ' ke rekening yang membayar bunga efektif ' + pc(i, 0) + ' per tahun. Bunga dibayarkan tiap akhir tahun dan langsung diinvestasikan ke rekening lain yang memberi ' + pc(j, 0) + '. Hitung total nilai akumulasi kedua rekening di akhir tahun ke-' + N + '.';
+      var sol = 'Pokok tetap ' + n(P * N, 0) + '. Bunga yang diterima: ' + n(P * i, 0) + '·(1, 2, …, ' + m + '), diakumulasi pada j: ' + n(P * i, 0) + '·(Is)_{' + m + '|' + pc(j, 0) + '} = ' + n(P * i, 0) + '·' + n(Is, 4) + ' = ' + n(P * i * Is, 2) + '. Total = <b>' + n(ans, 2) + '</b>.';
+      var w = [P * sn(i, N), P * sn(j, N), P * N + P * i * (sn(j, N) * (1 + j) - N) / j, P * N * (1 + i)];
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
+    } });
+
+  vt({ id: 'v_swaprate', sec: 3, syl: '3.b', topic: 'Swap rate dari spot rate',
+    fast: 'Swap rate R (pembayaran tahunan, nosional tetap) = (1 − P_n)/Σ Pₜ, dengan Pₜ = (1 + sₜ)^{−t} harga zero-coupon. Ini sama dengan kupon obligasi par.',
+    gen: function (r) {
+      var s = r.pick([[0.04, 0.045, 0.05], [0.03, 0.035, 0.04, 0.045], [0.05, 0.052, 0.055], [0.02, 0.03, 0.035, 0.04]]);
+      var Ps = s.map(function (x, k) { return Math.pow(1 + x, -(k + 1)); }), sum = Ps.reduce(function (a, b) { return a + b; }, 0), nn = s.length, ans = (1 - Ps[nn - 1]) / sum;
+      var q = 'Spot rate efektif tahunan: ' + s.map(function (x, k) { return pc(x, 1) + ' (' + (k + 1) + ' tahun)'; }).join(', ') + '. Tentukan swap rate untuk swap suku bunga ' + nn + ' tahun dengan pembayaran tahunan dan nosional tetap.';
+      var sol = 'Pₜ = ' + Ps.map(function (x) { return n(x, 5); }).join('; ') + '. R = (1 − ' + n(Ps[nn - 1], 5) + ')/' + n(sum, 5) + ' = <b>' + pc(ans, 3) + '</b>.';
+      var avg = s.reduce(function (a, b) { return a + b; }, 0) / nn;
+      var w = [avg, s[nn - 1], (1 - Ps[nn - 1]) / nn, s.reduce(function (a, x, k) { return a + x * Ps[k]; }, 0) / sum + 0.0015];
+      return Object.assign({ q: q, sol: sol }, pcOpts(r, ans, w, 3));
+    } });
+
+  vt({ id: 'v_ytc', sec: 5, syl: '5.b', topic: 'Yield to call',
+    fast: 'Yield to call: samakan harga dengan PV kupon sampai tanggal call + harga call. Coba nilai j di kalkulator (atau interpolasi). Untuk obligasi premi, yield to call < yield to maturity.',
+    gen: function (r) {
+      var cp = r.pick([0.08, 0.09, 0.1]), Y = r.pick([10, 15]), k = r.pick([3, 4, 5]), P = r.pick([1080, 1100, 1120]), Cp = r.pick([1000, 1020, 1050]);
+      var f = function (j) { return 1000 * cp * an(j, k) + Cp * vv(j, k) - P; }, ans = solve(f, 0.0001, 0.3);
+      var ytm = solve(function (j) { return 1000 * cp * an(j, Y) + 1000 * vv(j, Y) - P; }, 0.0001, 0.3);
+      var q = 'Obligasi ' + Y + ' tahun, nominal 1000, kupon tahunan ' + pc(cp, 0) + ', dibeli seharga ' + n(P, 0) + '. Obligasi dapat dipanggil pada akhir tahun ke-' + k + ' dengan harga call ' + n(Cp, 0) + '. Tentukan <b>yield to call</b> (efektif tahunan).';
+      var sol = n(P, 0) + ' = ' + n(1000 * cp, 0) + '·a_{' + k + '|j} + ' + n(Cp, 0) + 'v^' + k + ' ⇒ j = <b>' + pc(ans, 2) + '</b>. (Bandingkan yield to maturity ' + pc(ytm, 2) + '.)';
+      var w = [ytm, cp, 1000 * cp / P, (1000 * cp + (Cp - P) / k) / P + 0.004];
+      return Object.assign({ q: q, sol: sol }, pcOpts(r, ans, w, 2));
+    } });
+
+  vt({ id: 'v_betacov', sec: 7, syl: '7.a, 7.b', topic: 'Beta dari kovarians & korelasi',
+    fast: 'β = Cov(Rᵢ, R_M)/Var(R_M) = ρ·σᵢ/σ_M. Setelah β diketahui, CAPM: E[Rᵢ] = r_f + β(E[R_M] − r_f).',
+    gen: function (r) {
+      var rho = r.pick([0.4, 0.6, 0.8]), si = r.pick([0.2, 0.25, 0.3]), sm = r.pick([0.15, 0.2]), rf = r.pick([0.03, 0.04]), rm = r.pick([0.09, 0.1, 0.11]), useCov = r() < 0.5, askR = r() < 0.5;
+      var beta = rho * si / sm, cov = rho * si * sm, ans = askR ? rf + beta * (rm - rf) : beta;
+      var info = useCov ? 'kovarians imbal hasil saham dengan pasar ' + n(cov, 4) + ' dan simpangan baku pasar ' + pc(sm, 0) : 'simpangan baku imbal hasil saham ' + pc(si, 0) + ', simpangan baku pasar ' + pc(sm, 0) + ', dan korelasi keduanya ' + n(rho, 1);
+      var q = 'Diketahui ' + info + '. Bunga bebas risiko ' + pc(rf, 0) + ' dan imbal hasil harapan pasar ' + pc(rm, 0) + '. Tentukan ' + (askR ? 'imbal hasil harapan saham menurut CAPM' : 'beta saham') + '.';
+      var sol = 'β = ' + (useCov ? n(cov, 4) + '/' + n(sm * sm, 4) : n(rho, 1) + '·' + n(si, 2) + '/' + n(sm, 2)) + ' = ' + n(beta, 4) + (askR ? '. E[R] = ' + pc(rf, 0) + ' + ' + n(beta, 4) + '·(' + pc(rm, 0) + ' − ' + pc(rf, 0) + ') = <b>' + pc(ans, 2) + '</b>.' : ' = <b>' + n(ans, 4) + '</b>.');
+      if (askR) return Object.assign({ q: q, sol: sol }, pcOpts(r, ans, [rf + rho * (rm - rf), beta * rm, rf + si / sm * (rm - rf), rf + beta * rm], 2));
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [useCov ? cov / sm : si / sm, rho * sm / si, cov / (si * sm), rho * si / (sm * sm) / 10], 4));
+    } });
+
+  // ---------- Pool model per slot ----------
+  var SID = {}; S.forEach(function (s) { SID[s.id] = s; });
+  var EXTRA = {
+    eqrate: ['f_infl', 'f_force'], eqval: ['f_simp', 'v_eqtime'], npv: ['v_irr'],
+    perp: ['f_perpsplit'], annrel: ['f_annk'], monthly: ['f_contann'], reinvest: ['v_reinvann'],
+    macd: ['f_durperp'], moddur: ['f_macapprox'], convex: ['f_convbond'], match: ['f_redington', 'f_convimm'], swap: ['f_swapnet', 'v_swaprate'],
+    amort: ['f_loansum'], olb: ['f_drop'], sinking: ['f_sinkcmp'],
+    bprice: ['f_ytm'], bamort: ['f_bookval'], callable: ['v_ytc'], spread: ['f_covcall'], beta: ['v_betacov'], capm: ['v_betacov']
+  };
+  P = T.map(function (slot) {
+    var base = [{ t: { id: slot.id, gen: slot.gen, fast: slot.fast }, w: 2, own: true }];
+    (EXTRA[slot.id] || []).forEach(function (id) { base.push({ t: V[id] || SID[id], w: 1 }); });
+    var tot = base.reduce(function (s, x) { return s + x.w; }, 0);
+    return { id: slot.id, sec: slot.sec, syl: slot.syl, topic: slot.topic, conf: slot.conf, src: slot.src, fast: slot.fast, models: base.map(function (x) { return x.t.id; }),
+      gen: function (r) {
+        var u = r() * tot, k = 0; while (u >= base[k].w) { u -= base[k].w; k++; }
+        var b = base[k], g = b.t.gen(r);
+        g.fast = b.t.fast;
+        if (!b.own) { g.topic = b.t.topic; g.conf = b.t.conf; g.src = b.t.src; }
+        return g;
+      } };
+  });
+
   function buildSoaPaper(seed) {
     var out = [];
     for (var i = 0; i < S.length; i++) {
@@ -1127,7 +1225,7 @@
       var r = makeR((seed * 7919 + i * 104729) >>> 0);
       var g = P[i].gen(r);
       var opts = shuffle([{ s: g.correct, ok: true }].concat(g.wrong.map(function (w) { return { s: w, ok: false }; })), r);
-      out.push({ no: i + 1, id: P[i].id, topic: P[i].topic, conf: P[i].conf, src: P[i].src, syl: P[i].syl, sec: P[i].sec, q: g.q, sol: g.sol, fast: P[i].fast,
+      out.push({ no: i + 1, id: P[i].id, topic: g.topic || P[i].topic, conf: g.conf || P[i].conf, src: g.src || P[i].src, syl: P[i].syl, sec: P[i].sec, q: g.q, sol: g.sol, fast: g.fast || P[i].fast,
         options: opts.map(function (o) { return o.s; }), answer: opts.findIndex(function (o) { return o.ok; }) });
     }
     return out;
