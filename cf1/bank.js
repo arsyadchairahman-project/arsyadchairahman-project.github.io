@@ -476,16 +476,51 @@
       return Object.assign({ q: q, sol: sol }, money(r, ans, w, 3));
     } });
 
-  T.push({ id: 'convex', sec: 3, syl: '3.d', topic: 'Aproksimasi harga dengan durasi & konveksitas', conf: 'Sedang',
-    src: 'Mei 2026 #17',
-    fast: 'P_baru ≈ P[1 − D_mod·Δi + ½·C·(Δi)²], dengan Δi dalam desimal (0,5% = 0,005). Tanpa konveksitas, cukup suku pertama. Harga turun saat yield naik, jadi buang opsi yang lebih besar dari P.',
+  T.push({ id: 'convex', sec: 3, syl: '3.d', topic: 'Konveksitas & aproksimasi harga', conf: 'Tinggi',
+    src: 'Mei 2026 #17; silabus 3.d (konveksitas)',
+    fast: 'Hafalkan 4 bentuk: (1) P_baru ≈ P[1 − D_mod·Δi + ½·C·(Δi)²], Δi dalam desimal; (2) zero coupon: C = n(n + 1)/(1 + i)²; (3) perpetuitas: C = 2/i²; (4) C_mod = (C_Mac + D_Mac)/(1 + i)². Untuk arus kas umum: C = Σ t(t + 1)CFₜv^{t+2}/P. Di fx-991, hitung Σ t(t + 1)CFₜvᵗ di MODE STAT lalu bagi dengan P(1 + i)².',
     gen: function (r) {
-      var P = r.pick([1000, 1050, 980]), D = r.pick([5.3, 6.2, 4.8]), C = r.pick([210, 45, 60]), dy = r.pick([0.005, 0.01, -0.005]);
+      var v = r.pick(['approx', 'approx', 'zero', 'cf2', 'conv', 'perp']), q, sol, ans, w;
+      if (v === 'zero') {
+        var N = r.pick([5, 8, 10, 12]), i = r.pick([0.05, 0.06, 0.08]);
+        ans = N * (N + 1) / Math.pow(1 + i, 2);
+        q = 'Hitung konveksitas (modifikasi) obligasi zero-coupon dengan jatuh tempo ' + N + ' tahun pada bunga efektif ' + pc(i, 0) + '.';
+        sol = 'P = vⁿ, P″ = n(n + 1)v^{n+2}, jadi C = P″/P = n(n + 1)/(1 + i)² = ' + N + '·' + (N + 1) + '/' + n(Math.pow(1 + i, 2), 4) + ' = <b>' + n(ans, 3) + '</b>.';
+        w = [N * N, N * (N + 1), N * (N + 1) / (1 + i), N * N / Math.pow(1 + i, 2)];
+        return Object.assign({ q: q, sol: sol }, money(r, ans, w, 3));
+      }
+      if (v === 'perp') {
+        var ip = r.pick([0.04, 0.05, 0.08, 0.1]);
+        ans = 2 / (ip * ip);
+        q = 'Hitung konveksitas (modifikasi) perpetuitas-immediate level pada bunga efektif ' + pc(ip, 0) + '.';
+        sol = 'P = 1/i, P′ = −1/i², P″ = 2/i³. C = P″/P = 2/i² = <b>' + n(ans, 2) + '</b>.';
+        w = [1 / (ip * ip), 2 / ip, (1 + ip) / (ip * ip), 2 * (1 + ip) / (ip * ip)];
+        return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
+      }
+      if (v === 'conv') {
+        var Dm = r.pick([4.5, 6.2, 7.8, 8.4]), Cm = Math.round(Dm * Dm * r.pick([1.1, 1.2, 1.3]) * 10) / 10, ic = r.pick([0.05, 0.06, 0.07]);
+        ans = (Cm + Dm) / Math.pow(1 + ic, 2);
+        q = 'Sebuah obligasi memiliki durasi Macaulay ' + n(Dm, 1) + ' dan konveksitas Macaulay ' + n(Cm, 1) + ' pada bunga efektif ' + pc(ic, 0) + '. Tentukan konveksitas modifikasinya.';
+        sol = 'C_mod = (C_Mac + D_Mac)/(1 + i)² = (' + n(Cm, 1) + ' + ' + n(Dm, 1) + ')/' + n(Math.pow(1 + ic, 2), 4) + ' = <b>' + n(ans, 3) + '</b>.';
+        w = [Cm / Math.pow(1 + ic, 2), (Cm - Dm) / Math.pow(1 + ic, 2), (Cm + Dm) / (1 + ic), Cm / (1 + ic)];
+        return Object.assign({ q: q, sol: sol }, money(r, ans, w, 3));
+      }
+      if (v === 'cf2') {
+        var c1 = r.pick([1000, 2000]), c2 = r.pick([3000, 4000, 5000]), t2 = r.pick([3, 4, 5]), y = r.pick([0.05, 0.06, 0.08]);
+        var p1 = c1 * vv(y, 1), p2 = c2 * vv(y, t2), Pp = p1 + p2;
+        ans = (2 * p1 + t2 * (t2 + 1) * p2) / Pp / Math.pow(1 + y, 2);
+        var cmac = (p1 + t2 * t2 * p2) / Pp, dmac = (p1 + t2 * p2) / Pp;
+        q = 'Investasi membayar ' + n(c1, 0) + ' di akhir tahun ke-1 dan ' + n(c2, 0) + ' di akhir tahun ke-' + t2 + '. Pada bunga efektif ' + pc(y, 0) + ', hitung konveksitas (modifikasi) investasi ini.';
+        sol = 'PV₁ = ' + n(p1, 2) + ', PV₂ = ' + n(p2, 2) + ', P = ' + n(Pp, 2) + '. C = Σ t(t + 1)PVₜ / [P(1 + i)²] = (2·' + n(p1, 2) + ' + ' + (t2 * (t2 + 1)) + '·' + n(p2, 2) + ')/(' + n(Pp, 2) + '·' + n(Math.pow(1 + y, 2), 4) + ') = <b>' + n(ans, 3) + '</b>. (Cek: C_Mac = ' + n(cmac, 3) + ', D_Mac = ' + n(dmac, 3) + ', (C_Mac + D_Mac)/(1 + i)² memberi hasil yang sama.)';
+        w = [cmac, (2 * p1 + t2 * (t2 + 1) * p2) / Pp, cmac / Math.pow(1 + y, 2), dmac * dmac];
+        return Object.assign({ q: q, sol: sol }, money(r, ans, w, 3));
+      }
+      var P = r.pick([1000, 1050, 980]), D = r.pick([5.3, 6.2, 4.8]), Cx = r.pick([210, 45, 60]), dy = r.pick([0.005, 0.01, -0.005]);
       var withC = r() < 0.7;
-      var ans = P * (1 - D * dy + (withC ? 0.5 * C * dy * dy : 0));
-      var q = 'Obligasi seharga ' + n(P, 0) + ' memiliki durasi termodifikasi ' + n(D, 1) + ' dan konveksitas ' + C + '. Imbal hasil berubah ' + (dy > 0 ? 'naik' : 'turun') + ' ' + n(Math.abs(dy) * 100, 1) + ' poin persen. Estimasi harga baru ' + (withC ? 'dengan aturan durasi dan konveksitas' : 'dengan aproksimasi durasi orde pertama') + '.';
-      var sol = 'Δi = ' + n(dy, 3) + '. P ≈ ' + n(P, 0) + '[1 − ' + n(D, 1) + '·' + n(dy, 3) + (withC ? ' + ½·' + C + '·' + n(dy * dy, 6) : '') + '] = <b>' + n(ans, 2) + '</b>.';
-      var w = [P * (1 - D * dy + (withC ? 0 : 0.5 * C * dy * dy)), P * (1 + D * dy + 0.5 * C * dy * dy), P * (1 - D * dy - 0.5 * C * dy * dy), P * (1 - D * dy * 100)];
+      ans = P * (1 - D * dy + (withC ? 0.5 * Cx * dy * dy : 0));
+      q = 'Obligasi seharga ' + n(P, 0) + ' memiliki durasi termodifikasi ' + n(D, 1) + ' dan konveksitas ' + Cx + '. Imbal hasil ' + (dy > 0 ? 'naik' : 'turun') + ' ' + n(Math.abs(dy) * 100, 1) + ' poin persen. Estimasi harga baru ' + (withC ? 'dengan aturan durasi dan konveksitas' : 'dengan aproksimasi durasi orde pertama') + '.';
+      sol = 'Δi = ' + n(dy, 3) + '. P ≈ ' + n(P, 0) + '[1 − ' + n(D, 1) + '·' + n(dy, 3) + (withC ? ' + ½·' + Cx + '·' + n(dy * dy, 6) : '') + '] = <b>' + n(ans, 2) + '</b>.';
+      w = [P * (1 - D * dy + (withC ? 0 : 0.5 * Cx * dy * dy)), P * (1 + D * dy + 0.5 * Cx * dy * dy), P * (1 - D * dy - 0.5 * Cx * dy * dy), P * (1 - D * dy * 100)];
       return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
     } });
 
@@ -989,6 +1024,41 @@
       sol = (v === 'mac' ? 'D_Mac = (1 + i)/i' : 'D_mod = D_Mac/(1 + i) = 1/i') + ' = <b>' + n(ans, 2) + '</b>.';
       w = v === 'mac' ? [1 / i, (1 + i) / (i * i), 1 / (i * (1 + i)), 2 / i] : [(1 + i) / i, 1 / (i * (1 + i)), (1 + i) / (i * i), 1 / i / 2];
       return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
+    } });
+  soa({ id: 'f_convimm', sec: 3, syl: '3.d, 3.e', topic: 'Syarat konveksitas imunisasi Redington', src: 'Pola SOA Exam FM (C_A > C_L)',
+    fast: 'Jika PV dan durasi sudah sama, C_Mac aset − C_Mac liabilitas = Σ wₖ(tₖ − t_L)² (variansi waktu arus kas aset) dan selalu ≥ 0. Untuk konveksitas modifikasi, bagi selisih itu dengan (1 + i)². Bobot: w₂ = (t_L − t₁)/(t₂ − t₁), w₁ = 1 − w₂.',
+    gen: function (r) {
+      var L = r.pick([10000, 50000]), tL = r.pick([5, 6, 7]), t1 = r.pick([2, 3, 4]), t2 = r.pick([8, 9, 10]), i = r.pick([0.04, 0.05, 0.06]);
+      var w2 = (tL - t1) / (t2 - t1), w1 = 1 - w2, varT = w1 * Math.pow(t1 - tL, 2) + w2 * Math.pow(t2 - tL, 2), modOnly = r() < 0.5;
+      var ans = modOnly ? varT / Math.pow(1 + i, 2) : varT;
+      var q = 'Kewajiban ' + n(L, 0) + ' jatuh tempo dalam ' + tL + ' tahun didanai dengan obligasi zero-coupon ' + t1 + ' tahun dan ' + t2 + ' tahun, sehingga nilai sekarang dan durasi aset sama dengan kewajiban pada bunga efektif ' + pc(i, 0) + '. Hitung selisih konveksitas ' + (modOnly ? 'modifikasi' : 'Macaulay') + ' aset dan kewajiban (C_A − C_L).';
+      var sol = 'Bobot PV: w₂ = (' + tL + ' − ' + t1 + ')/(' + t2 + ' − ' + t1 + ') = ' + n(w2, 4) + ', w₁ = ' + n(w1, 4) + '. C_Mac,A − C_Mac,L = w₁t₁² + w₂t₂² − t_L² = w₁(t₁ − t_L)² + w₂(t₂ − t_L)² = ' + n(varT, 4) + (modOnly ? '. Karena D sama, selisih konveksitas modifikasi = ' + n(varT, 4) + '/(1 + i)² = <b>' + n(ans, 3) + '</b>.' : ' = <b>' + n(ans, 3) + '</b>.') + ' Positif, jadi syarat Redington C_A > C_L terpenuhi.';
+      var w = [modOnly ? varT : varT / Math.pow(1 + i, 2), (t1 * t1 + t2 * t2) / 2 - tL * tL, w1 * t1 * t1 + w2 * t2 * t2, varT / (1 + i), 0];
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 3));
+    } });
+  soa({ id: 'f_macapprox', sec: 3, syl: '3.d', topic: 'Aproksimasi harga orde pertama (Macaulay vs modifikasi)', src: 'Pola SOA Exam FM (first-order Macaulay approximation)',
+    fast: 'Macaulay: P(i₁) ≈ P(i₀)·[(1 + i₀)/(1 + i₁)]^{D_Mac}. Modifikasi: P(i₁) ≈ P(i₀)[1 − D_mod(i₁ − i₀)], D_mod = D_Mac/(1 + i₀). Baca soal: “Macaulay approximation” berarti rumus pangkat, bukan rumus linear.',
+    gen: function (r) {
+      var P0 = r.pick([1000, 950, 1080]), D = r.pick([6.5, 8, 9.2, 12]), i0 = r.pick([0.05, 0.06, 0.07]), di = r.pick([0.01, 0.005, -0.01]), i1 = i0 + di, mac = r() < 0.6;
+      var pMac = P0 * Math.pow((1 + i0) / (1 + i1), D), pMod = P0 * (1 - D / (1 + i0) * di);
+      var ans = mac ? pMac : pMod;
+      var q = 'Harga obligasi pada yield efektif ' + pc(i0, 0) + ' adalah ' + n(P0, 0) + ' dengan durasi Macaulay ' + n(D, 1) + '. Estimasi harga pada yield ' + pc(i1, 1) + ' memakai aproksimasi orde pertama ' + (mac ? 'Macaulay' : 'durasi modifikasi') + '.';
+      var sol = mac ? 'P ≈ ' + n(P0, 0) + '·(' + n(1 + i0, 3) + '/' + n(1 + i1, 3) + ')^{' + n(D, 1) + '} = <b>' + n(ans, 2) + '</b>.'
+        : 'D_mod = ' + n(D, 1) + '/' + n(1 + i0, 3) + ' = ' + n(D / (1 + i0), 4) + '. P ≈ ' + n(P0, 0) + '[1 − ' + n(D / (1 + i0), 4) + '·' + n(di, 3) + '] = <b>' + n(ans, 2) + '</b>.';
+      var w = [mac ? pMod : pMac, P0 * (1 - D * di), P0 * Math.pow((1 + i1) / (1 + i0), D), P0 * Math.pow(1 + i0, -D * di * 10)];
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
+    } });
+  soa({ id: 'f_convbond', sec: 3, syl: '3.d', topic: 'Konveksitas obligasi berkupon', src: 'Pola SOA Exam FM (konveksitas dari arus kas)',
+    fast: 'Tabelkan t, CFₜvᵗ, lalu t(t + 1)CFₜvᵗ. C_mod = Σ t(t + 1)CFₜvᵗ / [P(1 + i)²]. Di fx-991: MODE STAT dengan x = t, freq = CFₜvᵗ, lalu C_Mac = Σx²/n dan D_Mac = x̄; C_mod = (C_Mac + D_Mac)/(1 + i)².',
+    gen: function (r) {
+      var N = r.pick([3, 4, 5]), cp = r.pick([0.05, 0.08, 0.1]), y = r.pick([0.06, 0.07, 0.05]);
+      var P = 0, s1 = 0, s2 = 0, s3 = 0;
+      for (var k = 1; k <= N; k++) { var pv = (cp * 100 + (k === N ? 100 : 0)) * vv(y, k); P += pv; s1 += k * pv; s2 += k * k * pv; s3 += k * (k + 1) * pv; }
+      var mac = r() < 0.4, cMac = s2 / P, dMac = s1 / P, cMod = s3 / P / Math.pow(1 + y, 2), ans = mac ? cMac : cMod;
+      var q = 'Obligasi ' + N + ' tahun, nominal 100, kupon tahunan ' + pc(cp, 0) + ', dihargai pada yield efektif ' + pc(y, 0) + '. Hitung konveksitas ' + (mac ? 'Macaulay' : 'modifikasi') + ' obligasi ini.';
+      var sol = 'P = ' + n(P, 4) + ', D_Mac = ' + n(dMac, 4) + ', C_Mac = Σ t²·PVₜ/P = ' + n(cMac, 4) + '.' + (mac ? ' Jawaban: <b>' + n(ans, 3) + '</b>.' : ' C_mod = (C_Mac + D_Mac)/(1 + i)² = Σ t(t + 1)PVₜ/[P(1 + i)²] = <b>' + n(ans, 3) + '</b>.');
+      var w = mac ? [cMod, dMac * dMac, s3 / P, N * N] : [cMac, s3 / P, cMac / Math.pow(1 + y, 2), N * (N + 1) / Math.pow(1 + y, 2)];
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 3));
     } });
   soa({ id: 'f_contann', sec: 2, syl: '2.c', topic: 'Anuitas kontinu', src: 'Pola SOA Exam FM (pembayaran kontinu)',
     fast: 'āₙ = (1 − e^{−δn})/δ dengan δ = ln(1 + i). Untuk laju pembayaran t pada waktu t: (Īā)ₙ = (āₙ − n vⁿ)/δ. Hitung δ sekali dan simpan.',
