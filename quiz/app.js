@@ -95,6 +95,7 @@
       h += '</div>';
       if (show) {
         h += '<div class="verdict ' + (a === q.answer ? 'ok">Benar' : 'no">' + (a === undefined ? 'Tidak dijawab' : 'Salah') + '. Jawaban yang benar: ' + L[q.answer].toUpperCase()) + '</div>' +
+          csref(q) +
           '<div class="sol"><h4>Pembahasan</h4>' + prettify(q.sol) + '</div>' +
           (q.fast ? '<div class="fast"><h4>Cara cepat</h4>' + prettify(q.fast) + '</div>' : '');
       }
@@ -113,6 +114,25 @@
       list.appendChild(card);
     });
     math(list); renderNav();
+  }
+
+  // Rumus cheat sheet yang dipakai soal ini (peta dari csmap.js), dengan tautan ke barisnya.
+  function escH(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function csref(q){
+    var M = window.CSMAP, e = M && M.map[q.model || q.id];
+    if (!e) return '';
+    var ids = e.b.slice(), plain = q.q.replace(/<[^>]+>/g, '');
+    for (var i = 0; i < e.v.length; i++) {
+      var rx = new RegExp(e.v[i][0], 'i');
+      if (rx.test(plain) || rx.test(q.q)) { ids = ids.concat(e.v[i][1]); break; }
+    }
+    ids = ids.filter(function(x, k){ return ids.indexOf(x) === k && M.rows[x]; });
+    if (!ids.length) return '';
+    return '<div class="csref"><h4>Rumus di cheat sheet</h4><ul>' + ids.map(function(id){
+      var r = M.rows[id];
+      return '<li><div class="csref-f">\\(' + escH(r.t) + '\\)</div><div class="csref-m"><span>' + escH(r.s) + '</span>' +
+        '<button type="button" class="linkbtn csgo" data-row="' + id + '">Buka di cheat sheet</button></div></li>';
+    }).join('') + '</ul></div>';
   }
 
   function renderNav(){
@@ -282,6 +302,21 @@
     });
     $('csCount').textContent = hits ? hits + ' cocok' : 'Tidak ada yang cocok';
   }
+  // Dari pembahasan soal: buka cheat sheet tepat di baris rumusnya. Tab "Soal" tetap ingat posisi soal.
+  function openCs(id){
+    var row = $(id); if (!row) return;
+    $('t-cs').click();
+    var part = row.closest('.cs-part');
+    if (part && part.hidden) { var b = document.querySelector('[data-cs="' + part.id + '"]'); if (b) b.click(); }
+    if (csq && csq.value) { csq.value = ''; csFilter(); }
+    row.setAttribute('tabindex', '-1');
+    row.scrollIntoView({block: 'center'});
+    row.focus({preventScroll: true});
+    row.classList.remove('cs-flash'); void row.offsetWidth; row.classList.add('cs-flash');
+    setTimeout(function(){ row.classList.remove('cs-flash'); }, 2600);
+  }
+  $('list').addEventListener('click', function(e){ var b = e.target.closest('.csgo'); if (b) openCs(b.dataset.row); });
+
   if (csq) {
     csq.addEventListener('input', csFilter);
     csq.addEventListener('keydown', function(e){ if (e.key === 'Escape') { csq.value = ''; csFilter(); } });

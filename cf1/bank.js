@@ -1200,7 +1200,7 @@
       gen: function (r) {
         var u = r() * tot, k = 0; while (u >= base[k].w) { u -= base[k].w; k++; }
         var b = base[k], g = b.t.gen(r);
-        g.fast = b.t.fast;
+        g.fast = b.t.fast; g.model = b.t.id;
         if (!b.own) { g.topic = b.t.topic; g.conf = b.t.conf; g.src = b.t.src; }
         return g;
       } };
@@ -1212,7 +1212,7 @@
       var r = makeR((seed * 6007 + i * 15485863) >>> 0);
       var g = S[i].gen(r);
       var opts = shuffle([{ s: g.correct, ok: true }].concat(g.wrong.map(function (w) { return { s: w, ok: false }; })), r);
-      out.push({ no: i + 1, id: S[i].id, topic: S[i].topic, conf: 'SOA', src: S[i].src, syl: S[i].syl, sec: S[i].sec, q: g.q, sol: g.sol, fast: S[i].fast,
+      out.push({ no: i + 1, id: S[i].id, model: S[i].id, topic: S[i].topic, conf: 'SOA', src: S[i].src, syl: S[i].syl, sec: S[i].sec, q: g.q, sol: g.sol, fast: S[i].fast,
         options: opts.map(function (o) { return o.s; }), answer: opts.findIndex(function (o) { return o.ok; }) });
     }
     return out.sort(function (a, b) { return a.sec - b.sec; }).map(function (q, k) { q.no = k + 1; return q; });
@@ -1225,11 +1225,11 @@
       var r = makeR((seed * 7919 + i * 104729) >>> 0);
       var g = P[i].gen(r);
       var opts = shuffle([{ s: g.correct, ok: true }].concat(g.wrong.map(function (w) { return { s: w, ok: false }; })), r);
-      out.push({ no: i + 1, id: P[i].id, topic: g.topic || P[i].topic, conf: g.conf || P[i].conf, src: g.src || P[i].src, syl: P[i].syl, sec: P[i].sec, q: g.q, sol: g.sol, fast: g.fast || P[i].fast,
+      out.push({ no: i + 1, id: P[i].id, model: g.model || P[i].id, topic: g.topic || P[i].topic, conf: g.conf || P[i].conf, src: g.src || P[i].src, syl: P[i].syl, sec: P[i].sec, q: g.q, sol: g.sol, fast: g.fast || P[i].fast,
         options: opts.map(function (o) { return o.s; }), answer: opts.findIndex(function (o) { return o.ok; }) });
     }
     return out;
   }
-  var api = { buildPaper: buildPaper, buildSoaPaper: buildSoaPaper, soaTemplates: S, templates: T, paper: P, sections: SECTIONS, LETTERS: LETTERS, _n: n };
+  var api = { buildPaper: buildPaper, buildSoaPaper: buildSoaPaper, soaTemplates: S, templates: T, _V: V, paper: P, sections: SECTIONS, LETTERS: LETTERS, _n: n };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CF1Bank = api;
 })(this);
