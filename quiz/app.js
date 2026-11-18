@@ -68,7 +68,17 @@
 
   function renderList(){
     var list = $('list'); list.innerHTML = '';
+    var bySec = state.order === 'topik' && view.every(function(q, i){ return !i || view[i-1].sec <= q.sec; });
     view.forEach(function(q, idx){
+      if (bySec && (!idx || view[idx-1].sec !== q.sec)) {
+        var sc = B.sections.filter(function(s){ return s.no === q.sec; })[0];
+        if (sc) {
+          var cnt = view.filter(function(x){ return x.sec === q.sec; }).length;
+          var hd = document.createElement('div'); hd.className = 'secdiv';
+          hd.innerHTML = '<h2><span class="secno">' + sc.no + '</span>' + sc.name + '</h2><span>' + cnt + ' soal · bobot silabus ' + sc.range + '</span>';
+          list.appendChild(hd);
+        }
+      }
       var a = state.answers[q.no], show = state.submitted || (state.mode === 'latihan' && a !== undefined);
       var card = document.createElement('article'); card.className = 'q'; card.id = 'q' + q.no;
       card.setAttribute('aria-labelledby', 'h' + q.no);
@@ -208,12 +218,75 @@
   document.querySelectorAll('[data-cs]').forEach(function(b){ b.onclick = function(){
     document.querySelectorAll('[data-cs]').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); var el = $(x.dataset.cs); if (el) el.hidden = x !== b; });
   }; });
-  var tabs = document.querySelectorAll('.tab');
+  // Tab: bilah tab menempel di atas, dan posisi scroll tiap tab diingat,
+  // jadi Soal 12 → Cheat sheet → Kerjakan soal kembali tepat ke Soal 12.
+  var tabs = document.querySelectorAll('.tab'), tabbar = $('tabbar'), memo = {}, curTab = 't-quiz', curQ = null;
+  function barH(){ return tabbar ? tabbar.offsetHeight : 0; }
+  // posisi alami bilah tab (saat menempel, rect.top selalu 0, jadi ukur dari elemen sebelumnya)
+  function pinY(){
+    if (!tabbar) return 0;
+    var prev = tabbar.previousElementSibling, mt = parseFloat(getComputedStyle(tabbar).marginTop) || 0;
+    return prev ? prev.getBoundingClientRect().bottom + window.scrollY + mt : 0;
+  }
   tabs.forEach(function(t){ t.onclick = function(){
+    if (t.id === curTab) { if (window.scrollY > pinY()) window.scrollTo({top: pinY()}); return; }
+    var wasPinned = window.scrollY >= pinY() - 1;
+    memo[curTab] = window.scrollY;
     tabs.forEach(function(x){ x.setAttribute('aria-selected', String(x === t)); $(x.getAttribute('aria-controls')).hidden = x !== t; });
     $('bar').hidden = t.id !== 't-quiz';
+    curTab = t.id;
     if (t.id !== 't-quiz') { var pn = $(t.getAttribute('aria-controls')); if (!pn.dataset.math) { math(pn); pn.dataset.math = '1'; } }
+    var ctx = $('tabCtx');
+    if (ctx) { ctx.hidden = t.id === 't-quiz' || !curQ; if (curQ) ctx.innerHTML = '<span class="long">Soal </span>' + curQ; ctx.setAttribute('aria-label', 'kembali ke soal ' + curQ); }
+    if (memo[t.id] !== undefined) window.scrollTo({top: memo[t.id]});
+    else if (wasPinned) window.scrollTo({top: pinY()});
   }; });
+  function onScroll(){
+    if (tabbar) tabbar.classList.toggle('stuck', tabbar.getBoundingClientRect().top <= 0 && window.scrollY > 0);
+    if (curTab !== 't-quiz') return;
+    var line = barH() + 24, best = null;
+    document.querySelectorAll('#list article').forEach(function(a){ if (a.getBoundingClientRect().top <= line) best = a; });
+    curQ = best ? best.querySelector('.qno').textContent.replace('Soal ', '') : null;
+  }
+  var raf = 0;
+  window.addEventListener('scroll', function(){ if (!raf) raf = requestAnimationFrame(function(){ raf = 0; onScroll(); }); }, {passive: true});
+
+  // Cari rumus di cheat sheet: saring baris tabel dan bagian per kata kunci.
+  var csq = $('csq');
+  function csRoot(){ var parts = document.querySelectorAll('#p-cs .cs-part'); for (var i = 0; i < parts.length; i++) if (!parts[i].hidden) return parts[i]; return $('p-cs'); }
+  function csFilter(){
+    var q = (csq.value || '').trim().toLowerCase(), root = csRoot(), groups = [], g = null, hits = 0;
+    document.querySelectorAll('#p-cs .cs-hide').forEach(function(el){ el.classList.remove('cs-hide'); });
+    var pre = [];
+    Array.prototype.forEach.call(root.children, function(el){
+      if (el.tagName === 'H3') { g = {h: el, items: []}; groups.push(g); }
+      else if (g) g.items.push(el);
+      else if (el.tagName === 'P' || el.classList.contains('cs-toc')) pre.push(el);
+    });
+    if (!q) { $('csCount').textContent = ''; return; }
+    pre.forEach(function(el){ el.classList.add('cs-hide'); });
+    var terms = q.split(/\s+/);
+    var match = function(el){ var s = el.textContent.toLowerCase(); return terms.every(function(w){ return s.indexOf(w) >= 0; }); };
+    groups.forEach(function(gr){
+      if (match(gr.h)) { hits++; return; }
+      var any = false;
+      gr.items.forEach(function(el){
+        var rows = el.querySelectorAll('tbody tr, li');
+        if (rows.length && !el.classList.contains('cs-sym')) {
+          var n = 0; rows.forEach(function(r){ if (match(r)) n++; else r.classList.add('cs-hide'); });
+          if (n) { any = true; hits += n; } else el.classList.add('cs-hide');
+        } else if (match(el) && !el.classList.contains('cs-sym')) { any = true; hits++; }
+        else el.classList.add('cs-hide');
+      });
+      if (!any) { gr.h.classList.add('cs-hide'); gr.items.forEach(function(el){ el.classList.add('cs-hide'); }); }
+    });
+    $('csCount').textContent = hits ? hits + ' cocok' : 'Tidak ada yang cocok';
+  }
+  if (csq) {
+    csq.addEventListener('input', csFilter);
+    csq.addEventListener('keydown', function(e){ if (e.key === 'Escape') { csq.value = ''; csFilter(); } });
+    document.querySelectorAll('[data-cs]').forEach(function(b){ b.addEventListener('click', csFilter); });
+  }
 
   function start(){
     if (matchMedia('(min-width:601px)').matches) $('jump').open = true;

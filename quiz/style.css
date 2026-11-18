@@ -3,7 +3,7 @@
   --accent:#1f5f8b; --accent-ink:#ffffff; --accent-soft:#e3eef6;
   --ok:#1b7443; --ok-bg:#e2f2e8; --bad:#b0342b; --bad-bg:#fbe6e3; --warn:#7f5300; --warn-bg:#fbefd4;
   --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
-  --r1:6px; --r2:10px; --bar-h:68px;
+  --r1:6px; --r2:10px; --bar-h:68px; --tabbar-h:50px;
   --shadow:0 1px 2px rgba(28,27,25,.06), 0 4px 16px rgba(28,27,25,.05);
 }
 @media (prefers-color-scheme: dark){
@@ -21,7 +21,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-padding-top:var(--s4);scroll-padding-bottom:calc(var(--bar-h) + var(--s4))}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--tabbar-h) + var(--s3));scroll-padding-bottom:calc(var(--bar-h) + var(--s4))}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
 ::selection{background:var(--accent);color:var(--accent-ink)}
 a{color:var(--accent);text-underline-offset:3px}
@@ -34,8 +34,14 @@ header h1{font-size:1.625rem;line-height:1.2;margin:0;letter-spacing:-.015em;tex
 header .sub{margin:var(--s2) 0 0;color:var(--muted);max-width:62ch}
 
 /* Tabs */
-.tabs{display:flex;gap:var(--s5);border-bottom:1px solid var(--line);margin:var(--s5) 0 var(--s5)}
-.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:var(--s3) 0;font-weight:600;color:var(--muted);cursor:pointer}
+.tabbar{position:sticky;top:0;z-index:4;margin:var(--s5) 0 var(--s5);background:var(--bg);border-image:conic-gradient(var(--bg) 0 0) fill 0//0 100vw}
+.tabbar::after{content:"";position:absolute;left:50%;bottom:0;width:100vw;transform:translateX(-50%);height:1px;background:var(--line);opacity:0;transition:opacity .2s ease-out,box-shadow .2s ease-out;pointer-events:none}
+.tabbar.stuck::after{opacity:1;box-shadow:0 6px 14px rgba(28,27,25,.07)}
+.tabs{display:flex;gap:var(--s5);border-bottom:1px solid var(--line);height:var(--tabbar-h);align-items:stretch}
+.tabbar.stuck .tabs{border-bottom-color:transparent}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:0;font-weight:600;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:var(--s2);white-space:nowrap}
+.tab-ctx{font-size:.75rem;font-weight:650;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:2px 8px;line-height:1.4}
+.tab-ctx[hidden]{display:none}
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 .panel[hidden]{display:none}
@@ -268,7 +274,52 @@ td:last-child{color:var(--muted)}
   .cs-rk td.cs-f{overflow-x:auto;overflow-y:hidden;padding-bottom:var(--s1);margin-bottom:var(--s1)}
   .cs-rk td:last-child{font-size:.875rem;color:var(--muted)}
 }
-.cs-sym{margin:.5rem 0 .75rem;padding:.6rem .85rem;border-left:3px solid var(--accent);background:var(--sunken);border-radius:6px;font-size:.92em}
-.cs-sym>b{display:block;margin-bottom:.3rem}
-.cs-sym ul{margin:0;padding-left:1.1rem;display:grid;gap:.2rem}
-.cs-sym .cs-s{display:inline-block;min-width:3.2em;margin-right:.4em}
+.cs-sym{margin:var(--s2) 0 var(--s3);padding:var(--s3) var(--s4);background:var(--sunken);border-radius:var(--r2);font-size:.9375rem}
+.cs-sym>b{display:block;margin-bottom:var(--s2);font-size:.8125rem;color:var(--muted)}
+.cs-sym ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:fit-content(42%) minmax(0,1fr);gap:6px var(--s4);align-items:baseline}
+.cs-sym li{display:contents}
+.cs-sym .cs-s{grid-column:1;font-size:1.05em;margin:0;min-width:0}
+.cs-sym .cs-s{overflow-x:auto;overflow-y:hidden}
+@media (max-width:600px){ .cs-sym{padding:var(--s3)} .cs-sym ul{gap:var(--s2) var(--s3)} .cs-sym .cs-m{font-size:.875rem} }
+
+/* Pembatas bagian silabus */
+.secdiv{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s2) var(--s4);flex-wrap:wrap;margin:var(--s6) 0 calc(-1 * var(--s1))}
+.secdiv:first-child{margin-top:var(--s2)}
+.secdiv h2{margin:0;font-size:1.125rem;line-height:1.3;display:flex;align-items:baseline;gap:var(--s3);text-wrap:balance}
+.secno{flex:none;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:.875rem;font-weight:700;transform:translateY(-2px)}
+.secdiv>span{font-size:.8125rem;color:var(--muted)}
+
+/* Keterbacaan soal */
+.q{transition:border-color .15s ease-out}
+.q:has(input:checked){border-color:var(--line-strong)}
+.qno{font-size:1.125rem;letter-spacing:-.01em}
+.qtopic{color:var(--muted)}
+.qtext{font-size:1.0625rem;line-height:1.7;max-width:68ch}
+.qtext b{font-weight:650}
+.sol,.fast{line-height:1.65}
+@media (max-width:600px){ .qtext{font-size:1rem;line-height:1.65} .secdiv{margin-top:var(--s5)} }
+
+/* Cari rumus */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cs-search{position:relative;display:flex;align-items:center;margin:var(--s3) 0 var(--s2)}
+.cs-search svg{position:absolute;left:var(--s3);width:18px;height:18px;color:var(--muted);pointer-events:none}
+.cs-search input{width:100%;height:46px;border:1px solid var(--line-strong);border-radius:var(--r2);background:var(--surface);color:var(--ink);font:inherit;font-size:1rem;padding:0 92px 0 40px;caret-color:var(--accent)}
+.cs-search input::placeholder{color:var(--muted);opacity:1}
+.cs-search input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.cs-search input::-webkit-search-cancel-button{cursor:pointer}
+.cs-count{position:absolute;right:var(--s4);font-size:.8125rem;color:var(--muted);pointer-events:none}
+.cs-hide{display:none!important}
+@media (max-width:600px){
+  .cs-search input{padding-right:84px}
+  .tabs{gap:var(--s4)}
+  .cs-toc{flex-wrap:nowrap;overflow-x:auto;margin-left:calc(-1 * var(--s4));margin-right:calc(-1 * var(--s4));padding:0 var(--s4) var(--s1);scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--s4),#000 calc(100% - var(--s5)),transparent)}
+  .cs-toc::-webkit-scrollbar{display:none}
+  .cs-toc a{flex:none;white-space:nowrap}
+  .cs-switch{width:100%}
+  .cs-switch button{white-space:normal;line-height:1.25;padding:var(--s2)}
+}
+.cs h3{scroll-margin-top:calc(var(--tabbar-h) + var(--s3))}
+
+/* Permukaan browser */
+html{scrollbar-color:var(--line-strong) var(--bg)}
+input,textarea{caret-color:var(--accent)}
