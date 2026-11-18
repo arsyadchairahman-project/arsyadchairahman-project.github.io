@@ -205,6 +205,9 @@
     }
     $('result').scrollIntoView({behavior:'smooth'});
   };
+  document.querySelectorAll('[data-cs]').forEach(function(b){ b.onclick = function(){
+    document.querySelectorAll('[data-cs]').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); var el = $(x.dataset.cs); if (el) el.hidden = x !== b; });
+  }; });
   var tabs = document.querySelectorAll('.tab');
   tabs.forEach(function(t){ t.onclick = function(){
     tabs.forEach(function(x){ x.setAttribute('aria-selected', String(x === t)); $(x.getAttribute('aria-controls')).hidden = x !== t; });
