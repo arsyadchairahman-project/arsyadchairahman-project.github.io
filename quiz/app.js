@@ -95,9 +95,9 @@
       h += '</div>';
       if (show) {
         h += '<div class="verdict ' + (a === q.answer ? 'ok">Benar' : 'no">' + (a === undefined ? 'Tidak dijawab' : 'Salah') + '. Jawaban yang benar: ' + L[q.answer].toUpperCase()) + '</div>' +
-          csref(q) +
+          '<div class="explain">' + csref(q) +
           '<div class="sol"><h4>Pembahasan</h4>' + prettify(q.sol) + '</div>' +
-          (q.fast ? '<div class="fast"><h4>Cara cepat</h4>' + prettify(q.fast) + '</div>' : '');
+          (q.fast ? '<div class="fast"><h4>Cara cepat</h4>' + prettify(q.fast) + '</div>' : '') + '</div>';
       }
       h += '<div class="qfoot"><span class="src">Pola serupa: ' + q.src + '</span>' +
         (a !== undefined && !show ? '<button class="linkbtn clear" type="button">Hapus jawaban</button>' : '') + '</div>';
@@ -130,7 +130,7 @@
     if (!ids.length) return '';
     return '<div class="csref"><h4>Rumus di cheat sheet</h4><ul>' + ids.map(function(id){
       var r = M.rows[id];
-      return '<li><div class="csref-f">\\(' + escH(r.t) + '\\)</div><div class="csref-m"><span>' + escH(r.s) + '</span>' +
+      return '<li><div class="csref-f">\\(\\displaystyle ' + escH(r.t).replace(/\\tfrac/g, '\\dfrac') + '\\)</div><div class="csref-m"><span>' + escH(r.s) + '</span>' +
         '<button type="button" class="linkbtn csgo" data-row="' + id + '">Buka di cheat sheet</button></div></li>';
     }).join('') + '</ul></div>';
   }

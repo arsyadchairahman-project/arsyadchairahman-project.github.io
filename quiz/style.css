@@ -104,10 +104,15 @@ details.jump[open] summary::after{transform:rotate(225deg) translateY(-2px)}
 .opt.locked:hover{background:var(--surface);border-color:var(--line)}
 .opt.locked.right:hover{background:var(--ok-bg);border-color:var(--ok)}
 .opt.locked.wrong:hover{background:var(--bad-bg);border-color:var(--bad)}
-.verdict{font-weight:700;margin-top:var(--s4)}
+.verdict{font-weight:650;font-size:.9375rem;margin-top:var(--s4);display:flex;align-items:center;gap:var(--s2)}
+.verdict::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
 .verdict.ok{color:var(--ok)} .verdict.no{color:var(--bad)}
-.sol{margin-top:var(--s2);padding:var(--s3) var(--s4);background:var(--sunken);border-radius:var(--r2);font-size:.9375rem;overflow-wrap:anywhere}
-.sol h4{margin:0 0 var(--s1);font-size:.875rem}
+/* Panel pembahasan: satu wadah, tiga bagian (rumus, pembahasan, cara cepat) */
+.explain{margin-top:var(--s3);background:var(--sunken);border-radius:var(--r2);font-size:.9375rem;line-height:1.65}
+.explain>div{padding:var(--s3) var(--s4)}
+.explain>div+div{border-top:1px solid var(--line)}
+.explain h4{margin:0 0 var(--s1);font-size:.8125rem;font-weight:650;color:var(--muted)}
+.sol,.fast{overflow-wrap:anywhere}
 .qfoot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--s1) var(--s4);margin-top:var(--s4);padding-top:var(--s3);border-top:1px solid var(--line)}
 .src{font-size:.8125rem;color:var(--muted)}
 
@@ -159,6 +164,7 @@ td:last-child{color:var(--muted)}
 @media (max-width:600px){
   .wrap{padding-top:var(--s5)}
   header h1{font-size:1.375rem}
+  header .sub{font-size:.9375rem;line-height:1.55}
   .setup-grid{grid-template-columns:minmax(0,1fr);gap:var(--s1)}
   .setup-label{margin-top:var(--s2)}
   .setup-label:first-child{margin-top:0}
@@ -182,8 +188,8 @@ td:last-child{color:var(--muted)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* Cara cepat */
-.fast{margin-top:var(--s2);padding:var(--s3) var(--s4);background:var(--accent-soft);border-radius:var(--r2);font-size:.9375rem;overflow-wrap:anywhere}
-.fast h4{margin:0 0 var(--s1);font-size:.875rem;color:var(--accent)}
+.explain .fast{background:var(--accent-soft);border-radius:0 0 var(--r2) var(--r2)}
+.explain .fast h4{color:var(--accent)}
 /* Pilihan ujian */
 .examnav{display:flex;gap:var(--s2);margin-bottom:var(--s4)}
 .examnav a{display:inline-flex;align-items:center;min-height:36px;padding:0 var(--s4);border-radius:999px;border:1px solid var(--line-strong);color:var(--muted);text-decoration:none;font-weight:600;font-size:.9375rem}
@@ -199,7 +205,7 @@ td:last-child{color:var(--muted)}
 .calc-head{display:flex;align-items:center;gap:var(--s2)}
 .calc-head strong{font-size:.9375rem}
 .calc-note{font-size:.75rem;color:var(--muted);flex:1}
-.calc-x{appearance:none;border:0;background:var(--sunken);color:var(--ink);width:32px;height:32px;border-radius:50%;font-size:1.25rem;line-height:1;cursor:pointer}
+.calc-x{margin-left:auto;appearance:none;border:0;background:var(--sunken);color:var(--ink);width:32px;height:32px;border-radius:50%;font-size:1.25rem;line-height:1;cursor:pointer}
 .calc-screen{background:var(--sunken);border:1px solid var(--line);border-radius:var(--r1);padding:var(--s2) var(--s3);min-height:76px;display:flex;flex-direction:column;justify-content:flex-end;font-variant-numeric:tabular-nums}
 .calc-expr{font-size:.9375rem;color:var(--muted);word-break:break-all;min-height:1.4em;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .calc-res{font-size:1.625rem;font-weight:700;text-align:right;word-break:break-all;line-height:1.2}
@@ -261,7 +267,19 @@ td:last-child{color:var(--muted)}
 .cs-tbl th{background:var(--sunken)}
 @media (max-width:600px){ .cs-tbl{overflow-x:auto} .cs-tbl table{min-width:520px} }
 .cs-switch{margin:var(--s3) 0 var(--s2)}
-.cs-rk td.cs-f{width:52%}
+.cs-rk td.cs-f{width:56%}
+.cs-rk table,.cs-rk tbody{display:block;width:100%}
+.cs-rk td.cs-f{max-width:100%}
+@media (min-width:601px){
+  .cs-rk thead{display:block}
+  .cs-rk tr{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);column-gap:var(--s4);border-bottom:1px solid var(--line);padding:0 var(--s3)}
+  .cs-rk tbody tr:last-child{border-bottom:0}
+  .cs-rk th,.cs-rk td{border-bottom:0;width:auto!important;padding:var(--s3) 0;align-self:center}
+  .cs-rk th{padding:var(--s2) 0}
+  .cs-rk thead tr{background:var(--sunken)}
+  .cs-rk td.cs-f{overflow-x:auto;overflow-y:hidden}
+  .cs-rk td:last-child{font-size:.875rem;color:var(--muted);line-height:1.55}
+}
 .cs-rk td.cs-f .katex{font-size:1em}
 .cs-rk td{vertical-align:middle}
 @media (max-width:600px){ .cs-rk table{min-width:640px} }
@@ -296,7 +314,6 @@ td:last-child{color:var(--muted)}
 .qtopic{color:var(--muted)}
 .qtext{font-size:1.0625rem;line-height:1.7;max-width:68ch}
 .qtext b{font-weight:650}
-.sol,.fast{line-height:1.65}
 @media (max-width:600px){ .qtext{font-size:1rem;line-height:1.65} .secdiv{margin-top:var(--s5)} }
 
 /* Cari rumus */
@@ -325,12 +342,11 @@ html{scrollbar-color:var(--line-strong) var(--bg)}
 input,textarea{caret-color:var(--accent)}
 
 /* Rumus cheat sheet di pembahasan */
-.csref{margin-top:var(--s2);padding:var(--s3) var(--s4);border:1px solid var(--line-strong);border-radius:var(--r2);background:var(--surface);font-size:.9375rem}
-.csref h4{margin:0 0 var(--s2);font-size:.875rem}
+.csref h4{margin-bottom:var(--s2)}
 .csref ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--s2)}
-.csref li{display:grid;gap:2px;padding-top:var(--s2);border-top:1px solid var(--line)}
+.csref li{display:grid;gap:2px;padding-top:var(--s2);border-top:1px dashed var(--line-strong)}
 .csref li:first-child{padding-top:0;border-top:0}
-.csref-f{overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.csref-f{overflow-x:auto;overflow-y:hidden;padding:4px 0;font-size:1rem}
 .csref-m{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0 var(--s3);font-size:.8125rem;color:var(--muted)}
 .csref .linkbtn{font-size:.8125rem;min-height:32px}
 .cs-rk tr{scroll-margin-top:calc(var(--tabbar-h) + var(--s5))}
@@ -338,3 +354,6 @@ input,textarea{caret-color:var(--accent)}
 .cs-rk tr.cs-flash{animation:csflash 2.6s ease-out}
 @keyframes csflash{0%,35%{background:var(--warn-bg)}100%{background:transparent}}
 @media (prefers-reduced-motion:reduce){ .cs-rk tr.cs-flash{animation:none;background:var(--warn-bg)} }
+
+/* Tabel nilai: kolom angka tidak dipotong */
+.result td:not(:first-child),.result th:not(:first-child){white-space:nowrap}
