@@ -1183,14 +1183,209 @@
       return Object.assign({ q: q, sol: sol }, money(r, ans, [useCov ? cov / sm : si / sm, rho * sm / si, cov / (si * sm), rho * si / (sm * sm) / 10], 4));
     } });
 
+  // ---------- Model dari pola naskah PAI 2023–2024 (Drive) & opsi ----------
+  vt({ id: 'v_ratechg', sec: 1, syl: '1.a', topic: 'Tingkat bunga efektif per tahun dari A(t)',
+    src: 'Pola Apr 2024 #1–2, Okt 2024 #1',
+    fast: 'iₙ = [A(n) − A(n − 1)]/A(n − 1). Untuk iₜ yang berubah tiap tahun: A(m) = A(k)·Π(1 + iₜ) untuk t = k + 1, …, m.',
+    gen: function (r) {
+      if (r() < 0.5) {
+        var a = r.pick([100, 200, 50]), b = r.pick([5, 4, 8]), n1 = r.pick([3, 5]), n2 = n1 + r.pick([5, 7]);
+        var i1 = b / (a + b * (n1 - 1)), i2 = b / (a + b * (n2 - 1)), ans = i1 - i2;
+        var q = 'Nilai akumulasi suatu investasi pada tahun t adalah A(t) = ' + a + ' + ' + b + 't. Misalkan iₙ tingkat bunga efektif tahun ke-n. Tentukan i' + n1 + ' − i' + n2 + '.';
+        var sol = 'iₙ = [A(n) − A(n − 1)]/A(n − 1) = ' + b + '/(' + a + ' + ' + b + '(n − 1)). i' + n1 + ' = ' + pc(i1, 3) + ', i' + n2 + ' = ' + pc(i2, 3) + '. Selisih = <b>' + pc(ans, 3) + '</b>.';
+        return Object.assign({ q: q, sol: sol }, pcOpts(r, ans, [b / (a + b * n1) - b / (a + b * n2), b / a - i2, i1, (i1 - i2) / 2], 3));
+      }
+      var A4 = r.pick([10, 20, 50]), c = r.pick([0.01, 0.011, 0.012]), m = r.pick([7, 8]), k = 4, f = 1, parts = [];
+      for (var t = k + 1; t <= m; t++) { f *= 1 + c * t; parts.push('(1 + ' + n(c * t, 3) + ')'); }
+      var ans2 = A4 * f;
+      var q2 = 'A(n) nilai akumulasi investasi pada tahun n, dan tingkat bunga efektif tahun ke-n adalah iₙ = ' + n(c, 3) + 'n. Jika A(' + k + ') = ' + A4 + ' juta, tentukan A(' + m + ').';
+      var sol2 = 'A(' + m + ') = A(' + k + ')·' + parts.join('') + ' = <b>' + n(ans2, 2) + '</b> juta.';
+      return Object.assign({ q: q2, sol: sol2 }, money(r, ans2, [A4 * Math.pow(1 + c * m, m - k), A4 * (1 + c * (m - k)), A4 * Math.pow(1 + c * k, m - k), A4 * f * (1 + c * (m + 1))], 2));
+    } });
+
+  vt({ id: 'v_an2n', sec: 2, syl: '2.a', topic: 'Hubungan aₙ, a₂ₙ, a₃ₙ',
+    src: 'Pola Agu 2023 #18, Apr 2024 #14, Okt 2024 #10',
+    fast: 'a₂ₙ = aₙ(1 + vⁿ) dan a₃ₙ = aₙ(1 + vⁿ + v²ⁿ). Rasio dua anuitas langsung memberi vⁿ, lalu i dari aₙ = (1 − vⁿ)/i.',
+    gen: function (r) {
+      var vn = r.pick([0.5, 0.6, 0.4, 0.55]), i = r.pick([0.02, 0.025, 0.0125, 0.03]), an1 = (1 - vn) / i;
+      if (r() < 0.5) {
+        var a3 = an1 * (1 + vn + vn * vn), ans = an1 * (1 + vn);
+        var q = 'Pada tingkat bunga efektif i, nilai sekarang anuitas-immediate n tahun dengan pembayaran 1 adalah ' + n(an1, 2) + ', dan anuitas 3n tahun adalah ' + n(a3, 4) + '. Tentukan nilai sekarang anuitas 2n tahun.';
+        var sol = 'a₃ₙ/aₙ = 1 + vⁿ + v²ⁿ = ' + n(a3 / an1, 4) + ' ⇒ vⁿ = ' + n(vn, 2) + '. a₂ₙ = aₙ(1 + vⁿ) = <b>' + n(ans, 2) + '</b>.';
+        return Object.assign({ q: q, sol: sol }, money(r, ans, [(an1 + a3) / 2, 2 * an1, an1 * (1 + vn * vn), a3 - an1], 2));
+      }
+      var a2 = an1 * (1 + vn);
+      var q2 = 'Diketahui nilai sekarang anuitas-immediate n tahun = ' + n(an1, 4) + ' dan anuitas-immediate 2n tahun = ' + n(a2, 4) + ' (pembayaran 1). Tentukan tingkat bunga efektif i.';
+      var sol2 = 'a₂ₙ/aₙ = 1 + vⁿ ⇒ vⁿ = ' + n(vn, 2) + '. i = (1 − vⁿ)/aₙ = ' + n(1 - vn, 2) + '/' + n(an1, 4) + ' = <b>' + pc(i, 2) + '</b>.';
+      return Object.assign({ q: q2, sol: sol2 }, pcOpts(r, i, [vn / an1, (1 - vn) / a2, (1 - vn * vn) / an1, i * 1.25], 2));
+    } });
+
+  vt({ id: 'v_intport', sec: 4, syl: '4.a, 4.b', topic: 'Porsi bunga/pokok cicilan langsung dari R',
+    src: 'Pola Nov 2023 #12, Okt 2024 #22, Agu 2023 #24',
+    fast: 'Cicilan R selama n: Iₜ = R(1 − v^{n−t+1}), Pₜ = R·v^{n−t+1}. Total pokok k cicilan pertama = L·s_k/s_n. Total bunga = nR − L.',
+    gen: function (r) {
+      var L = r.pick([100, 200, 300]), N = r.pick([10, 15, 20]), i = r.pick([0.05, 0.06, 0.08]), R = L / an(i, N), v = r.pick(['it', 'sumP', 'tot']), q, sol, ans, w;
+      if (v === 'it') {
+        var t = r.pick([3, 5, 8]);
+        ans = R * (1 - vv(i, N - t + 1));
+        q = 'Pinjaman ' + L + ' juta dilunasi dengan ' + N + ' cicilan tahunan tetap di akhir tahun pada bunga efektif ' + pc(i, 0) + '. Hitung porsi bunga pada cicilan ke-' + t + '.';
+        sol = 'R = ' + L + '/a_{' + N + '|} = ' + n(R, 4) + '. I_' + t + ' = R(1 − v^{' + (N - t + 1) + '}) = <b>' + n(ans, 2) + '</b> juta.';
+        w = [R * vv(i, N - t + 1), R * (1 - vv(i, N - t)), i * L, R - L / N];
+      } else if (v === 'sumP') {
+        var k = r.pick([3, 4, 5]);
+        ans = L * sn(i, k) / sn(i, N);
+        q = 'Pinjaman ' + L + ' juta dilunasi dengan ' + N + ' cicilan tahunan tetap di akhir tahun pada bunga efektif ' + pc(i, 0) + '. Hitung total pokok yang dilunasi pada ' + k + ' cicilan pertama.';
+        sol = 'P₁ = L/s_{' + N + '|} = ' + n(L / sn(i, N), 4) + '. Σ = P₁·s_{' + k + '|} = <b>' + n(ans, 2) + '</b> juta.';
+        w = [k * L / N, k * (R - i * L), L * an(i, k) / an(i, N), k * R];
+      } else {
+        ans = N * R - L;
+        q = 'Pinjaman ' + L + ' juta dilunasi dengan ' + N + ' cicilan tahunan tetap di akhir tahun pada bunga efektif ' + pc(i, 0) + '. Pinjaman lain dengan jumlah, tenor, dan bunga yang sama hanya membayar bunga tiap tahun dan pokok di akhir. Hitung selisih total bunga kedua pinjaman.';
+        sol = 'Amortisasi: total bunga = nR − L = ' + n(N * R - L, 2) + '. Bunga saja: nLi = ' + n(N * L * i, 2) + '. Selisih = <b>' + n(N * L * i - (N * R - L), 2) + '</b> juta.';
+        ans = N * L * i - (N * R - L);
+        w = [N * R - L, N * L * i, N * R - N * L * i, L * i * N / 2];
+      }
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
+    } });
+
+  vt({ id: 'v_premdisc', sec: 5, syl: '5.a', topic: 'Rumus premium/diskonto obligasi',
+    src: 'Pola Apr 2024 #22, Nov 2023 #16–17, Agu 2023 #12',
+    fast: 'P − C = (Fr − Ci)·aₙ. Premi bila kupon > yield. Untuk dua obligasi dengan yield sama, selisih harganya = F·(r₂ − r₁)·aₙ.',
+    gen: function (r) {
+      var F = 1000, n2 = r.pick([20, 30, 40]), j = r.pick([0.04, 0.05, 0.03]), r1 = j + r.pick([-0.01, 0.01, 0.015]), r2 = r1 + r.pick([0.01, 0.005]);
+      var a = an(j, n2), P1 = F + (F * r1 - F * j) * a, ans = F + (F * r2 - F * j) * a;
+      var q = 'Dua obligasi nominal 1000 ditebus pada par, sama-sama ' + n2 + ' kupon semesteran dan dihargai pada yield ' + pc(2 * j, 0) + ' dikonversi semesteran. Obligasi A berkupon ' + pc(2 * r1, 1) + ' per tahun dan seharga ' + n(P1, 2) + '. Obligasi B berkupon ' + pc(2 * r2, 1) + ' per tahun. Tentukan harga obligasi B.';
+      var sol = 'P − C = (Fr − Cj)aₙ. Dari A: a_{' + n2 + '|} = (' + n(P1, 2) + ' − 1000)/(' + n(F * r1, 1) + ' − ' + n(F * j, 1) + ') = ' + n(a, 4) + '. P_B = 1000 + (' + n(F * r2, 1) + ' − ' + n(F * j, 1) + ')·' + n(a, 4) + ' = <b>' + n(ans, 2) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [P1 + F * (r2 - r1), P1 * r2 / r1, F + (F * r2 - F * j) * an(j, n2 / 2), P1 + F * (r2 - r1) * n2], 2));
+    } });
+
+  vt({ id: 'v_fwdzero', sec: 3, syl: '3.c', topic: 'Forward rate dari harga zero-coupon',
+    src: 'Pola Apr 2024 #25, Okt 2024 #18',
+    fast: '1 + f_{t,t+1} = Pₜ/Pₜ₊₁ (harga zero-coupon nominal sama). Sebaliknya Pₜ₊₁ = Pₜ/(1 + f).',
+    gen: function (r) {
+      var P1 = r.pick([95, 94.34, 96]), f = r.pick([0.06, 0.08, 0.07]), P2 = P1 / (1 + f);
+      if (r() < 0.5) {
+        var q = 'Harga obligasi zero-coupon nominal 100: jatuh tempo 1 tahun ' + n(P1, 2) + ', jatuh tempo 2 tahun ' + n(P2, 2) + '. Tentukan forward rate satu tahun untuk tahun ke-2.';
+        var sol = '1 + f = P₁/P₂ = ' + n(P1, 2) + '/' + n(P2, 2) + ' ⇒ f = <b>' + pc(f, 2) + '</b>.';
+        return Object.assign({ q: q, sol: sol }, pcOpts(r, f, [Math.sqrt(100 / P2) - 1, 100 / P1 - 1, 100 / P2 - 1, (100 / P2 - 1) / 2], 2));
+      }
+      var q2 = 'Harga obligasi zero-coupon nominal 100 jatuh tempo 1 tahun adalah ' + n(P1, 2) + '. Forward rate satu tahun untuk tahun ke-2 adalah ' + pc(f, 0) + '. Tentukan harga obligasi zero-coupon 2 tahun.';
+      var sol2 = 'P₂ = P₁/(1 + f) = ' + n(P1, 2) + '/' + n(1 + f, 2) + ' = <b>' + n(P2, 2) + '</b>.';
+      return Object.assign({ q: q2, sol: sol2 }, money(r, P2, [100 / Math.pow(1 + f, 2), P1 * (1 - f), 100 / (1 + f), P1 / Math.pow(1 + f, 2)], 2));
+    } });
+
+  vt({ id: 'v_moneyness', sec: 6, syl: '6.b', topic: 'Moneyness opsi (ITM/ATM/OTM)',
+    src: 'Pola Okt 2024 #25',
+    fast: 'Call ITM jika S > K, put ITM jika S < K. ATM jika S = K. Abaikan premi: moneyness hanya membandingkan harga spot dengan strike.',
+    gen: function (r) {
+      var items = [];
+      for (var k = 0; k < 3; k++) {
+        var call = r() < 0.5, K = r.pick([50, 60, 75, 90, 100]), d = r.pick([-8, -5, 0, 3, 6]), S = K + d;
+        items.push({ call: call, K: K, S: S, itm: call ? S > K : S < K });
+      }
+      var lab = ['(i)', '(ii)', '(iii)'], itm = items.map(function (x, k) { return x.itm ? lab[k] : null; }).filter(Boolean);
+      var fmt = function (arr) { return arr.length ? arr.join(' dan ') : 'Tidak ada'; };
+      var correct = fmt(itm);
+      var cand = ['(i)', '(ii)', '(iii)', '(i) dan (ii)', '(i) dan (iii)', '(ii) dan (iii)', '(i) dan (ii) dan (iii)', 'Tidak ada'].filter(function (s) { return s !== correct; });
+      var q = 'Manakah opsi berikut yang tergolong <b>in-the-money</b>? ' + items.map(function (x, k) { return lab[k] + ' ' + (x.call ? 'call' : 'put') + ' strike ' + x.K + ', harga spot ' + x.S + ', premi ' + n(r.pick([2.5, 3.25, 7.76, 9.31]), 2); }).join('; ') + '.';
+      var sol = items.map(function (x, k) { return lab[k] + ' ' + (x.call ? 'call' : 'put') + ': S ' + (x.S > x.K ? '&gt;' : x.S < x.K ? '&lt;' : '=') + ' K' + ' ⇒ ' + (x.itm ? 'ITM' : (x.S === x.K ? 'ATM' : 'OTM')); }).join('; ') + '. Jawaban: <b>' + correct + '</b>.';
+      return Object.assign({ q: q, sol: sol }, strOpts(correct, shuffle(cand, r)));
+    } });
+
+  vt({ id: 'v_pcpfwd', sec: 6, syl: '6.a, 6.b', topic: 'Put-call parity dengan harga forward',
+    src: 'Pola Okt 2024 #26',
+    fast: 'C − P = (F − K)·vᵀ. Dengan premi call, premi put, F, dan K diketahui: vᵀ = (C − P)/(F − K), lalu i = v^{−1/T} − 1.',
+    gen: function (r) {
+      var K = r.pick([100, 150, 200]), i = r.pick([0.05, 0.06, 0.08, 0.09]), T = r.pick([1, 1, 2]), F = K * r.pick([1.08, 1.1, 1.05]), P = r.pick([8, 11.79, 6.5]);
+      var C = P + (F - K) * Math.pow(1 + i, -T);
+      var q = 'Harga forward ' + T + ' tahun suatu aset ' + n(F, 2) + '. Premi call Eropa ' + T + ' tahun dengan strike ' + K + ' adalah ' + n(C, 2) + ' dan premi put dengan strike dan jatuh tempo sama ' + n(P, 2) + '. Tentukan tingkat bunga bebas risiko efektif tahunan.';
+      var sol = 'C − P = (F − K)vᵀ ⇒ vᵀ = ' + n(C - P, 2) + '/' + n(F - K, 2) + ' = ' + n((C - P) / (F - K), 6) + ' ⇒ i = <b>' + pc(i, 2) + '</b>.';
+      var vT = (C - P) / (F - K);
+      return Object.assign({ q: q, sol: sol }, pcOpts(r, i, [1 / vT - 1, (F - K) / (C - P) / T - 1 / T, (F - K - (C - P)) / K, Math.pow(F / K, 1 / T) - 1], 2));
+    } });
+
+  vt({ id: 'v_optbep', sec: 6, syl: '6.b, 6.e', topic: 'Profit, titik impas & untung/rugi maksimum opsi',
+    src: 'Silabus 6.b/6.e (pola profit opsi Okt 2024 #27)',
+    fast: 'Profit = payoff − premi·e^{rT}. BEP long call: K + FV(premi); BEP long put: K − FV(premi). Short put rugi maksimum = K − FV(premi).',
+    gen: function (r) {
+      var K = r.pick([40, 50, 100]), prem = r.pick([3, 5, 8]), rr = r.pick([0.04, 0.05, 0.06]), T = r.pick([0.5, 1]), fv = prem * Math.exp(rr * T), v = r.pick(['bepc', 'bepp', 'shortput', 'profit']), q, sol, ans, w;
+      var setup = 'Opsi Eropa ' + (T === 1 ? '1 tahun' : '6 bulan') + ' strike ' + K + ' dengan premi ' + prem + '; bunga bebas risiko kontinu ' + pc(rr, 0) + ' per tahun. ';
+      if (v === 'bepc') { ans = K + fv; q = setup + 'Opsinya call. Tentukan harga saham saat jatuh tempo agar profit pembeli call = 0.'; sol = 'BEP = K + premi·e^{rT} = ' + K + ' + ' + n(fv, 4) + ' = <b>' + n(ans, 2) + '</b>.'; w = [K + prem, K - fv, K, K + 2 * fv]; }
+      else if (v === 'bepp') { ans = K - fv; q = setup + 'Opsinya put. Tentukan harga saham saat jatuh tempo agar profit pembeli put = 0.'; sol = 'BEP = K − premi·e^{rT} = ' + K + ' − ' + n(fv, 4) + ' = <b>' + n(ans, 2) + '</b>.'; w = [K - prem, K + fv, K, K - 2 * fv]; }
+      else if (v === 'shortput') { ans = K - fv; q = setup + 'Opsinya put dan investor <b>menjual</b> put tersebut. Tentukan kerugian maksimum investor.'; sol = 'Rugi terbesar saat S_T = 0: payoff −K, ditambah FV premi ⇒ rugi maks = K − ' + n(fv, 4) + ' = <b>' + n(ans, 2) + '</b>.'; w = [K, K - prem, K + fv, fv]; }
+      else { var ST = K + r.pick([-6, 4, 10, 15]), call = r() < 0.5, pay = call ? Math.max(ST - K, 0) : Math.max(K - ST, 0); ans = pay - fv; q = setup + 'Investor membeli ' + (call ? 'call' : 'put') + ' tersebut dan harga saham saat jatuh tempo ' + ST + '. Hitung profit investor.'; sol = 'Payoff = ' + (call ? 'max(S − K, 0)' : 'max(K − S, 0)') + ' = ' + pay + '. Profit = ' + pay + ' − ' + prem + 'e^{' + n(rr * T, 3) + '} = <b>' + n(ans, 2) + '</b>.'; w = [pay - prem, pay, -fv, (call ? Math.max(K - ST, 0) : Math.max(ST - K, 0)) - fv]; }
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
+    } });
+
+  vt({ id: 'v_boxcollar', sec: 6, syl: '6.e', topic: 'Box spread, collar & strangle',
+    src: 'Silabus 6.e (strategi opsi)',
+    fast: 'Box spread: payoff pasti K₂ − K₁, harga = (K₂ − K₁)e^{−rT}. Collared stock: payoff min(max(S, K₁), K₂). Strangle: max(K₁ − S, 0) + max(S − K₂, 0).',
+    gen: function (r) {
+      var K1 = r.pick([40, 50, 90]), K2 = K1 + r.pick([10, 20]), rr = r.pick([0.04, 0.05, 0.08]), T = r.pick([1, 2]), v = r.pick(['box', 'collar', 'strangle']), q, sol, ans, w;
+      if (v === 'box') {
+        ans = (K2 - K1) * Math.exp(-rr * T);
+        q = 'Investor membentuk box spread: bull call spread dan bear put spread dengan strike ' + K1 + ' dan ' + K2 + ', jatuh tempo ' + T + ' tahun. Bunga bebas risiko kontinu ' + pc(rr, 0) + '. Tanpa arbitrase, berapa biaya bersih box spread ini?';
+        sol = 'Payoff box selalu K₂ − K₁ = ' + (K2 - K1) + ' di T. Biaya = ' + (K2 - K1) + 'e^{−' + n(rr * T, 2) + '} = <b>' + n(ans, 2) + '</b>.';
+        w = [K2 - K1, (K2 - K1) * Math.exp(rr * T), (K2 - K1) / 2, 0];
+      } else if (v === 'collar') {
+        var S = r.pick([K1 - 7, K1 + 4, K2 + 9]);
+        ans = Math.min(Math.max(S, K1), K2);
+        q = 'Investor memiliki satu saham, membeli put strike ' + K1 + ', dan menjual call strike ' + K2 + ' (collared stock), jatuh tempo sama. Jika harga saham saat jatuh tempo ' + S + ', berapa payoff total posisi ini?';
+        sol = 'Payoff = min(max(S, K₁), K₂) = min(max(' + S + ', ' + K1 + '), ' + K2 + ') = <b>' + n(ans, 0) + '</b>.';
+        w = [S, K1, K2, Math.max(S, K2)];
+        return Object.assign({ q: q, sol: sol }, money(r, ans, w, 0));
+      } else {
+        var S2 = r.pick([K1 - 12, K2 + 8, (K1 + K2) / 2]);
+        ans = Math.max(K1 - S2, 0) + Math.max(S2 - K2, 0);
+        q = 'Investor membeli put strike ' + K1 + ' dan call strike ' + K2 + ' (strangle). Harga saham saat jatuh tempo ' + S2 + '. Berapa payoff strangle (belum dikurangi premi)?';
+        sol = 'Payoff = max(K₁ − S, 0) + max(S − K₂, 0) = ' + Math.max(K1 - S2, 0) + ' + ' + Math.max(S2 - K2, 0) + ' = <b>' + n(ans, 0) + '</b>.';
+        w = [Math.abs(S2 - K1), Math.abs(S2 - K2), K2 - K1, Math.abs(S2 - (K1 + K2) / 2)];
+        return Object.assign({ q: q, sol: sol }, money(r, ans, w, 0));
+      }
+      return Object.assign({ q: q, sol: sol }, money(r, ans, w, 2));
+    } });
+
+  vt({ id: 'v_binom1', sec: 6, syl: '6.b (pengayaan)', topic: 'Binomial satu periode (pengayaan)',
+    src: 'Pengayaan opsi (pola SOA FM/IFM)',
+    fast: 'p* = (e^{(r−δ)h} − d)/(u − d); C = e^{−rh}[p*C_u + (1 − p*)C_d]. Cek: d < e^{(r−δ)h} < u, kalau tidak ada arbitrase.',
+    gen: function (r) {
+      var S = r.pick([50, 100, 40]), u = r.pick([1.2, 1.25, 1.3]), d = r.pick([0.8, 0.85, 0.9]), K = S * r.pick([1, 0.95, 1.05]), rr = r.pick([0.04, 0.05, 0.06]), call = r() < 0.6;
+      var Su = S * u, Sd = S * d, Cu = call ? Math.max(Su - K, 0) : Math.max(K - Su, 0), Cd = call ? Math.max(Sd - K, 0) : Math.max(K - Sd, 0);
+      var p = (Math.exp(rr) - d) / (u - d), ans = Math.exp(-rr) * (p * Cu + (1 - p) * Cd);
+      var q = 'Harga saham tanpa dividen ' + S + '. Dalam satu tahun harga naik menjadi ' + n(Su, 2) + ' atau turun menjadi ' + n(Sd, 2) + '. Bunga bebas risiko kontinu ' + pc(rr, 0) + '. Dengan model binomial satu periode, tentukan harga ' + (call ? 'call' : 'put') + ' Eropa 1 tahun dengan strike ' + n(K, 2) + '.';
+      var sol = 'u = ' + n(u, 2) + ', d = ' + n(d, 2) + '. p* = (e^{' + n(rr, 2) + '} − d)/(u − d) = ' + n(p, 4) + '. ' + (call ? 'C' : 'P') + '_u = ' + n(Cu, 2) + ', ' + (call ? 'C' : 'P') + '_d = ' + n(Cd, 2) + '. Harga = e^{−' + n(rr, 2) + '}[p*·' + n(Cu, 2) + ' + (1 − p*)·' + n(Cd, 2) + '] = <b>' + n(ans, 2) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, money(r, ans, [0.5 * Cu + 0.5 * Cd, p * Cu + (1 - p) * Cd, Math.exp(-rr) * (0.5 * Cu + 0.5 * Cd), Math.exp(-rr) * ((1 - p) * Cu + p * Cd)], 2));
+    } });
+
+  vt({ id: 'v_derivtheory', sec: 6, syl: '6.a', topic: 'Teori derivatif & posisi',
+    src: 'Pola Apr 2024 #28 & #30',
+    fast: 'Untung saat harga naik: long forward, long call, short put, long aset. Alasan memakai derivatif: manajemen risiko, spekulasi (leverage), biaya transaksi lebih rendah, arbitrase regulasi/pajak.',
+    gen: function (r) {
+      if (r() < 0.5) {
+        var up = r() < 0.5;
+        var pos = [['long forward', true], ['short forward', false], ['long call', true], ['short call', false], ['long put', false], ['short put', true]];
+        var pick = shuffle(pos, r).slice(0, 3), lab = ['(i)', '(ii)', '(iii)'];
+        var good = pick.map(function (p, k) { return (p[1] === up) ? lab[k] : null; }).filter(Boolean);
+        var correct = good.length ? good.join(' dan ') : 'Tidak ada';
+        var cand = ['(i)', '(ii)', '(iii)', '(i) dan (ii)', '(i) dan (iii)', '(ii) dan (iii)', '(i) dan (ii) dan (iii)', 'Tidak ada'].filter(function (s) { return s !== correct; });
+        var q = 'Posisi mana yang mendapat keuntungan dari <b>' + (up ? 'kenaikan' : 'penurunan') + '</b> harga aset dasar? ' + pick.map(function (p, k) { return lab[k] + ' ' + p[0]; }).join('; ') + '.';
+        var sol = pick.map(function (p, k) { return lab[k] + ' ' + p[0] + ': untung saat harga ' + (p[1] ? 'naik' : 'turun'); }).join('; ') + '. Jawaban: <b>' + correct + '</b>.';
+        return Object.assign({ q: q, sol: sol }, strOpts(correct, shuffle(cand, r)));
+      }
+      var wrong = r.pick(['Untuk membeli komoditas secara langsung', 'Untuk menghilangkan seluruh risiko investasi tanpa biaya', 'Untuk menjamin imbal hasil di atas bunga bebas risiko']);
+      var q2 = 'Manakah yang <b>bukan</b> alasan penggunaan derivatif?';
+      var sol2 = 'Derivatif dipakai untuk manajemen risiko, spekulasi dengan leverage, mengurangi biaya transaksi, dan arbitrase regulasi/pajak. “' + wrong + '” bukan alasannya. Jawaban: <b>' + wrong + '</b>.';
+      return Object.assign({ q: q2, sol: sol2 }, strOpts(wrong, shuffle(['Untuk mengelola risiko', 'Untuk mengurangi biaya transaksi pembelian dan penjualan investasi', 'Untuk membuat taruhan dengan leverage tinggi atas kejadian di masa depan', 'Untuk menunda pembayaran pajak atas keuntungan aset yang dimiliki'], r)));
+    } });
+
   // ---------- Pool model per slot ----------
   var SID = {}; S.forEach(function (s) { SID[s.id] = s; });
   var EXTRA = {
-    eqrate: ['f_infl', 'f_force'], eqval: ['f_simp', 'v_eqtime'], npv: ['v_irr'],
-    perp: ['f_perpsplit'], annrel: ['f_annk'], monthly: ['f_contann'], reinvest: ['v_reinvann'],
-    macd: ['f_durperp'], moddur: ['f_macapprox'], convex: ['f_convbond'], match: ['f_redington', 'f_convimm'], swap: ['f_swapnet', 'v_swaprate'],
-    amort: ['f_loansum'], olb: ['f_drop'], sinking: ['f_sinkcmp'],
-    bprice: ['f_ytm'], bamort: ['f_bookval'], callable: ['v_ytc'], spread: ['f_covcall'], beta: ['v_betacov'], capm: ['v_betacov']
+    eqrate: ['f_infl', 'f_force', 'v_ratechg'], eqval: ['f_simp', 'v_eqtime'], npv: ['v_irr'],
+    perp: ['f_perpsplit'], annrel: ['f_annk', 'v_an2n'], monthly: ['f_contann'], reinvest: ['v_reinvann'],
+    spotfwd: ['v_fwdzero'], macd: ['f_durperp'], moddur: ['f_macapprox'], convex: ['f_convbond'], match: ['f_redington', 'f_convimm'], swap: ['f_swapnet', 'v_swaprate'],
+    amort: ['f_loansum', 'v_intport'], olb: ['f_drop'], sinking: ['f_sinkcmp'],
+    bprice: ['f_ytm', 'v_premdisc'], bamort: ['f_bookval'], callable: ['v_ytc'],
+    pcp: ['v_pcpfwd', 'v_moneyness'], forward: ['v_derivtheory'], spread: ['f_covcall', 'v_optbep', 'v_boxcollar', 'v_binom1'], beta: ['v_betacov'], capm: ['v_betacov']
   };
   P = T.map(function (slot) {
     var base = [{ t: { id: slot.id, gen: slot.gen, fast: slot.fast }, w: 2, own: true }];

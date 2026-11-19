@@ -1361,15 +1361,91 @@
       return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w.filter(function (x) { return x !== ans; }), 2));
     } });
 
+  // ---------- Model dari pola naskah PAI A20 November 2023 (Drive) ----------
+  vt({ id: 'v_floorexp', syl: '2.c, 2.d', topic: 'Bilangan bulat dari waktu eksponensial',
+    src: 'Pola Nov 2023 #3',
+    fast: 'K = ⌊X⌋: E[K] = Σ_{k≥1} P(X ≥ k) = Σ e^{−k/θ} = e^{−1/θ}/(1 − e^{−1/θ}). P(K = k) = e^{−k/θ}(1 − e^{−1/θ}): geometrik.',
+    gen: function (r) {
+      var th = r.pick([1, 2, 0.5, 4]), q1 = Math.exp(-1 / th), ask = r() < 0.6 ? 'E' : 'P', k = r.pick([1, 2]);
+      var ans = ask === 'E' ? q1 / (1 - q1) : Math.pow(q1, k) * (1 - q1);
+      var q = 'Waktu sampai kejadian berikutnya X berdistribusi eksponensial dengan rataan ' + n(th, 1) + ' tahun. K adalah banyaknya tahun penuh sampai kejadian itu, yaitu P(K = k) = P(k < X ≤ k + 1). ' + (ask === 'E' ? 'Tentukan E[K].' : 'Tentukan P(K = ' + k + ').');
+      var sol = ask === 'E' ? 'E[K] = Σ_{k≥1} P(X ≥ k) = Σ e^{−k/' + n(th, 1) + '} = e^{−1/θ}/(1 − e^{−1/θ}) = <b>' + n(ans, 4) + '</b>. (Bandingkan E[X] = θ: pembulatan ke bawah menurunkan rataan.)'
+        : 'P(K = ' + k + ') = e^{−' + k + '/θ} − e^{−' + (k + 1) + '/θ} = <b>' + n(ans, 4) + '</b>.';
+      var w = ask === 'E' ? [th, th - 0.5, 1 / (1 - q1), q1] : [Math.pow(q1, k), 1 - q1, Math.pow(q1, k + 1), Math.exp(-k / th) / th];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_zeromod', syl: '2.b, 2.c', topic: 'Distribusi zero-modified',
+    src: 'Pola Nov 2023 #22',
+    fast: 'P(Y = 0) = α, P(Y = k) = c·P(X = k) dengan c = (1 − α)/(1 − P(X = 0)). Maka E[Y] = c·E[X] dan E[Y²] = c·E[X²].',
+    gen: function (r) {
+      var l = r.pick([1, 1.5, 2]), al = r.pick([0.3, 0.4, 0.5]), p0 = Math.exp(-l), c = (1 - al) / (1 - p0), askV = r() < 0.35;
+      var EY = c * l, EY2 = c * (l + l * l), ans = askV ? EY2 - EY * EY : EY;
+      var q = 'X berdistribusi Poisson dengan rataan ' + n(l, 1) + '. Variabel Y didefinisikan dengan P(Y = 0) = ' + n(al, 1) + ' dan P(Y = x) = c·P(X = x) untuk x = 1, 2, …, dengan c konstanta. Tentukan ' + (askV ? 'Var(Y)' : 'E[Y]') + '.';
+      var sol = 'c = (1 − ' + n(al, 1) + ')/(1 − e^{−' + n(l, 1) + '}) = ' + n(c, 4) + '. E[Y] = c·λ = ' + n(EY, 4) + (askV ? '; E[Y²] = c(λ + λ²) = ' + n(EY2, 4) + '; Var = <b>' + n(ans, 4) + '</b>.' : ' = <b>' + n(ans, 4) + '</b>.');
+      var w = askV ? [l, EY2, c * l * (1 - al), (1 - al) * l] : [(1 - al) * l, l, l / (1 - p0), c];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_covpm', syl: '3.e', topic: 'Kovarians jumlah dan selisih',
+    src: 'Pola Nov 2023 #20',
+    fast: 'Cov(X + Y, X − Y) = Var(X) − Var(Y); Cov(X, Y) saling menghapus. Umum: Cov(aX + bY, cX + dY) = ac·VarX + (ad + bc)Cov + bd·VarY.',
+    gen: function (r) {
+      var vx = r.pick([4, 9, 16, 25]), vy = r.pick([1, 4, 9]), cxy = r.pick([-2, 1, 2, 3]), a = r.pick([1, 2]), b = r.pick([1, 3]);
+      var gen = r() < 0.5, ans = gen ? a * a * vx - b * b * vy : vx - vy;
+      var q = 'Var(X) = ' + vx + ', Var(Y) = ' + vy + ', dan Cov(X, Y) = ' + cxy + '. Hitung Cov(' + (gen ? (a === 1 ? '' : a) + 'X + ' + (b === 1 ? '' : b) + 'Y, ' + (a === 1 ? '' : a) + 'X − ' + (b === 1 ? '' : b) + 'Y' : 'X + Y, X − Y') + ').';
+      var sol = gen ? 'Cov(aX + bY, aX − bY) = a²Var(X) − b²Var(Y) = ' + (a * a) + '·' + vx + ' − ' + (b * b) + '·' + vy + ' = <b>' + ans + '</b> (suku kovarians saling menghapus).'
+        : 'Cov(X + Y, X − Y) = Var(X) − Cov(X,Y) + Cov(Y,X) − Var(Y) = ' + vx + ' − ' + vy + ' = <b>' + ans + '</b>.';
+      var w = gen ? [a * a * vx + b * b * vy, a * a * vx - b * b * vy + 2 * a * b * cxy, a * vx - b * vy, a * a * vx - b * b * vy - 2 * a * b * cxy] : [vx + vy, vx - vy + 2 * cxy, vx - vy - 2 * cxy, vx + vy + 2 * cxy];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w.filter(function (x) { return x !== ans; }), 0));
+    } });
+
+  vt({ id: 'v_maxexp3', syl: '3.h', topic: 'Maksimum tiga eksponensial berbeda',
+    src: 'Pola Nov 2023 #11',
+    fast: 'F_max = Π(1 − e^{−λᵢy}). E[max] = ∫(1 − F_max) = Σ1/λᵢ − Σ1/(λᵢ + λⱼ) + 1/(λ₁ + λ₂ + λ₃) (inklusi-eksklusi).',
+    gen: function (r) {
+      var m = r.pick([[1, 2, 3], [1, 2, 4], [2, 3, 6], [1, 1, 2]]), l = m.map(function (x) { return 1 / x; });
+      var ans = 1 / l[0] + 1 / l[1] + 1 / l[2] - 1 / (l[0] + l[1]) - 1 / (l[0] + l[2]) - 1 / (l[1] + l[2]) + 1 / (l[0] + l[1] + l[2]);
+      var q = 'X₁, X₂, X₃ saling bebas dan berdistribusi eksponensial dengan rataan ' + m.join(', ') + '. Tentukan E[max(X₁, X₂, X₃)].';
+      var sol = 'λ = ' + l.map(function (x) { return n(x, 4); }).join('; ') + '. E[max] = Σ1/λᵢ − Σ1/(λᵢ + λⱼ) + 1/Σλ = ' + (m[0] + m[1] + m[2]) + ' − ' + n(1 / (l[0] + l[1]) + 1 / (l[0] + l[2]) + 1 / (l[1] + l[2]), 4) + ' + ' + n(1 / (l[0] + l[1] + l[2]), 4) + ' = <b>' + n(ans, 4) + '</b>.';
+      var w = [Math.max.apply(null, m), m[0] + m[1] + m[2], 1 / (l[0] + l[1] + l[2]), (m[0] + m[1] + m[2]) / 3 * 1.5];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
+  vt({ id: 'v_randbin', syl: '2.g, 3.d', topic: 'Binomial dengan banyak percobaan acak',
+    src: 'Pola Nov 2023 #19',
+    fast: 'Kondisikan pada N: P(Y ≥ k) = Σ P(Y ≥ k | N = n)·P(N = n), dengan Y | N = n ~ Binomial(n, p). Suku dengan n < k bernilai 0.',
+    gen: function (r) {
+      var pn = r.pick([[0.2, 0.5, 0.3], [0.3, 0.4, 0.3], [0.1, 0.6, 0.3]]), ns = [2, 3, 4], p = r.pick([0.25, 0.3, 0.2]), k = r.pick([2, 3]);
+      var tail = function (nn) { var s = 0; for (var j = k; j <= nn; j++) s += binom(j, nn, p); return s; };
+      var ans = 0, parts = []; for (var t = 0; t < 3; t++) { ans += pn[t] * tail(ns[t]); parts.push(n(tail(ns[t]), 4) + '·' + n(pn[t], 1)); }
+      var EN = pn[0] * 2 + pn[1] * 3 + pn[2] * 4, wr = 0; for (var j = k; j <= 4; j++) wr += binom(j, Math.round(EN), p);
+      var q = 'Banyaknya pasien N di klinik per hari bernilai 2, 3, atau 4 dengan peluang ' + pn.map(function (x) { return n(x, 1); }).join(', ') + '. Setiap pasien, saling bebas, membutuhkan perawatan khusus dengan peluang ' + n(p, 2) + '. Hitung peluang paling sedikit ' + k + ' pasien membutuhkan perawatan khusus dalam sehari.';
+      var sol = 'P(Y ≥ ' + k + ') = Σ P(Y ≥ ' + k + ' | N = n)P(N = n) = ' + parts.join(' + ') + ' = <b>' + n(ans, 4) + '</b>.';
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, [wr, tail(4), tail(3), ans * 3], 4));
+    } });
+
+  vt({ id: 'v_gammamed', syl: '2.d, 3.h', topic: 'Median jumlah dua eksponensial (Gamma)',
+    src: 'Pola Nov 2023 #6',
+    fast: 'X + Y ~ Gamma(2, θ): F(x) = 1 − e^{−x/θ}(1 + x/θ). Median: e^{−u}(1 + u) = 0,5 ⇒ u ≈ 1,678, jadi median ≈ 1,678θ. Uji opsi jawaban satu per satu di kalkulator.',
+    gen: function (r) {
+      var th = r.pick([1, 2, 3, 5]), u = 1.6783469900166605, ask = r() < 0.6 ? 'med' : 'p', x0 = r.pick([1, 2, 3]);
+      var ans = ask === 'med' ? u * th : 1 - Math.exp(-x0 / th) * (1 + x0 / th);
+      var q = 'X dan Y saling bebas dan berdistribusi eksponensial dengan rataan ' + th + '. ' + (ask === 'med' ? 'Tentukan median X + Y.' : 'Hitung P(X + Y ≤ ' + x0 + ').');
+      var sol = 'X + Y ~ Gamma(2, ' + th + '): F(s) = 1 − e^{−s/' + th + '}(1 + s/' + th + '). ' + (ask === 'med' ? 'F(m) = 0,5 ⇒ m/θ = 1,6783 ⇒ m = <b>' + n(ans, 4) + '</b>.' : 'F(' + x0 + ') = <b>' + n(ans, 4) + '</b>.');
+      var w = ask === 'med' ? [2 * th, th * Math.log(2), 2 * th * Math.log(2), th * 1.5] : [1 - Math.exp(-x0 / th), Math.pow(1 - Math.exp(-x0 / th), 2), Math.exp(-x0 / th) * (1 + x0 / th), 1 - Math.exp(-x0 / (2 * th))];
+      return Object.assign({ q: q, sol: sol }, numOpts(r, ans, w, 4));
+    } });
+
   // ---------- Pool model per slot ----------
   var SID = {}; S.forEach(function (s) { SID[s.id] = s; });
   var EXTRA = {
     bayes3: ['v_test', 's_riskmix'], renters: ['v_urn', 'v_bayesdisc'], region: ['v_indep'], cars: ['v_demorgan', 's_incl3'],
     events: ['v_combin'], couple: ['v_condpois'],
-    discrete: ['s_negbin', 's_hyper'], binomial: ['v_binprofit'], poisson: ['v_poisdiff'], poiscap: ['v_nplusd', 's_dedpmf'], pgf3: ['v_mgfmom'],
-    mixed: ['s_hazard'], quantile: ['v_pctl'], transform: ['v_trans'], payment: ['s_expvar', 's_explim', 's_paretolim'],
-    jointcond: ['v_jointexp'], triangle: ['v_margE'], bids: ['v_unifgeo'], totvar: ['v_compound', 's_condtab'], jointmgf: ['s_poissum', 'v_mgfjoint'], cov: ['s_corr'],
-    order: ['s_georace', 's_expcomp'], cltpct: ['v_cltn'], twolines: ['s_cltdisc'], htest: ['v_pval'], sampmean: ['v_sampchi'], bayesest: ['v_bayesdisc']
+    discrete: ['s_negbin', 's_hyper', 'v_floorexp'], binomial: ['v_binprofit', 'v_randbin'], poisson: ['v_poisdiff', 'v_zeromod'], poiscap: ['v_nplusd', 's_dedpmf'], pgf3: ['v_mgfmom'],
+    mixed: ['s_hazard'], quantile: ['v_pctl', 'v_gammamed'], transform: ['v_trans'], payment: ['s_expvar', 's_explim', 's_paretolim'],
+    jointcond: ['v_jointexp'], triangle: ['v_margE'], bids: ['v_unifgeo'], totvar: ['v_compound', 's_condtab'], jointmgf: ['s_poissum', 'v_mgfjoint'], cov: ['s_corr', 'v_covpm'],
+    order: ['s_georace', 's_expcomp', 'v_maxexp3'], cltpct: ['v_cltn'], twolines: ['s_cltdisc'], htest: ['v_pval'], sampmean: ['v_sampchi'], bayesest: ['v_bayesdisc']
   };
   P = P.map(function (slot) {
     var base = (slot.variants || [slot.id]).map(function (id) { return { t: byId[id], w: 2, own: true }; });
